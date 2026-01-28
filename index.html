@@ -3,135 +3,123 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hookah Mix</title>
-
+  <title>THE MENU</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     :root { color-scheme: dark; }
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial;
-      background: radial-gradient(1200px 800px at 30% 20%, #3b2b7a 0%, #0b0b12 55%, #05050a 100%);
-      color:#fff;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 800px at 30% 20%, #2b2b38 0%, #0b0b12 55%, #05050a 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
-    .card{
-      width:min(560px, 100%);
+    .card {
+      width: min(520px, 100%);
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: 18px;
-      padding: 22px 18px;
+      padding: 22px;
       backdrop-filter: blur(10px);
       box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      animation: fade .4s ease;
     }
-    h1{ margin:0 0 6px; font-size:28px; letter-spacing:.2px; }
-    p{ margin:0 0 16px; opacity:.85; }
-    .btn{
-      width:100%;
-      border:0;
-      border-radius:14px;
-      padding:14px 16px;
-      font-size:18px;
-      font-weight:700;
+    h1 { margin: 0 0 12px; font-size: 26px; }
+    p { opacity: .85; line-height: 1.5; }
+    .btn {
+      width: 100%;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 0;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
       background: linear-gradient(90deg, #ff7a18, #ff3d77);
-      color:#fff;
-      box-shadow: 0 10px 30px rgba(255, 80, 80, .25);
-      cursor:pointer;
+      color: #fff;
     }
-    .mix{
-      margin-top:16px;
-      padding:14px 14px;
-      border-radius:14px;
-      background: rgba(255,255,255,0.06);
-      border: 1px dashed rgba(255,255,255,0.18);
-      text-align:left;
-      animation: pop .35s ease;
-      display:none;
+    .btn.secondary {
+      background: rgba(255,255,255,0.1);
+      margin-top: 10px;
     }
-    .mix.show{ display:block; }
-    .title{ font-size:20px; font-weight:800; margin-bottom:6px; }
-    .line{ opacity:.9; }
-    .tag{
-      display:inline-block;
-      margin-top:10px;
-      padding:6px 10px;
-      border-radius:999px;
-      background: rgba(255,255,255,0.10);
-      border: 1px solid rgba(255,255,255,0.14);
-      font-size:13px;
-      opacity:.9;
-    }
-    @keyframes pop{
-      from{ opacity:0; transform: translateY(8px) scale(.98); }
-      to{ opacity:1; transform: translateY(0) scale(1); }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
+
   <div class="card">
-    <h1>💨 Hookah Mix</h1>
-    <p>Нажми кнопку — и получи название + состав.</p>
 
-    <button class="btn" onclick="generateMix()">Сгенерировать микс</button>
-
-    <div id="mixBox" class="mix">
-      <div id="mixTitle" class="title"></div>
-      <div id="mixRecipe" class="line"></div>
-      <div id="mixHint" class="tag"></div>
+    <!-- ЭКРАН 1 -->
+    <div class="screen active" id="screen-1">
+      <h1>Вечер начинается.</h1>
+      <p>
+        Я приготовлю для вас то, что подходит именно сегодня.<br><br>
+        Вы не выбираете вкус.<br>
+        Вы можете обозначить только границы.
+      </p>
+      <button class="btn" onclick="go(2)">Продолжить</button>
     </div>
+
+    <!-- ЭКРАН 2 -->
+    <div class="screen" id="screen-2">
+      <h1>Скажите «нет».</h1>
+      <p>
+        Не желания.<br>
+        Только исключения.
+      </p>
+      <button class="btn" onclick="go(3)">Принять</button>
+      <button class="btn secondary" onclick="go(1)">Назад</button>
+    </div>
+
+    <!-- ЭКРАН 3 -->
+    <div class="screen" id="screen-3">
+      <h1>…</h1>
+      <p>Я услышал.</p>
+      <button class="btn" onclick="go(4)">Далее</button>
+      <button class="btn secondary" onclick="go(2)">Назад</button>
+    </div>
+
+    <!-- ЭКРАН 4 -->
+    <div class="screen" id="screen-4">
+      <h1>Подача VII</h1>
+      <p>
+        Вкус, который не стремится понравиться.<br>
+        Он существует только в этом моменте.
+      </p>
+      <button class="btn" onclick="go(5)">Далее</button>
+      <button class="btn secondary" onclick="go(3)">Назад</button>
+    </div>
+
+    <!-- ЭКРАН 5 -->
+    <div class="screen" id="screen-5">
+      <h1>Если вы хотите вернуться —</h1>
+      <p>произнесите это.</p>
+      <button class="btn secondary" onclick="go(4)">Назад</button>
+    </div>
+
   </div>
 
   <script>
-    // Мини-база вкусов (потом расширим)
-    const base = {
-      fruits: ["Манго", "Ананас", "Персик", "Яблоко", "Груша"],
-      berries:["Малина", "Клубника", "Черника", "Смородина"],
-      fresh: ["Мята", "Лёд", "Эвкалипт"],
-      dessert:["Ваниль", "Карамель", "Печенье"]
-    };
+    function go(n) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-' + n).classList.add('active');
 
-    const moodNames = [
-      "Тихий", "Ночной", "Дикий", "Сладкий", "Лёгкий",
-      "Бархатный", "Неоновый", "Лунный", "Тропический"
-    ];
-
-    const places = ["Бангкок", "Гавана", "Токио", "Марракеш", "Майами", "Стамбул"];
-
-    function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
-
-    function generateMix(){
-      // 3-компонентный микс: база 55% + поддержка 30% + акцент 15%
-      const main = pick([...base.fruits, ...base.berries]);
-      const support = pick([...base.fruits, ...base.berries, ...base.dessert]);
-      const accent = pick([...base.fresh, ...base.berries]);
-
-      const title = `${pick(moodNames)} ${pick(places)}`;
-      const recipe = `${main} 55% · ${support} 30% · ${accent} 15%`;
-
-      const hint = accent === "Лёд" || accent === "Мята" || accent === "Эвкалипт"
-        ? "Совет: жар средний, чтобы свежесть не «съела» вкус"
-        : "Совет: жар чуть выше среднего для яркости";
-
-      document.getElementById("mixTitle").innerText = title;
-      document.getElementById("mixRecipe").innerText = "🧪 " + recipe;
-      document.getElementById("mixHint").innerText = hint;
-
-      const box = document.getElementById("mixBox");
-      box.classList.remove("show"); // перезапуск анимации
-      void box.offsetWidth;
-      box.classList.add("show");
-
-      // В Telegram будет приятная вибрация
       if (window.Telegram?.WebApp) {
-        Telegram.WebApp.HapticFeedback.impactOccurred("medium");
+        Telegram.WebApp.HapticFeedback.impactOccurred("light");
         Telegram.WebApp.expand();
       }
     }
   </script>
+
 </body>
 </html>
