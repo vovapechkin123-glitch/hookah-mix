@@ -1,125 +1,227 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>THE MENU</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE MENU</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <style>
-    :root { color-scheme: dark; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial;
-      background: radial-gradient(1200px 800px at 30% 20%, #2b2b38 0%, #0b0b12 55%, #05050a 100%);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    .card {
-      width: min(520px, 100%);
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 18px;
-      padding: 22px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 20px 60px rgba(0,0,0,.45);
-      animation: fade .4s ease;
-    }
-    h1 { margin: 0 0 12px; font-size: 26px; }
-    p { opacity: .85; line-height: 1.5; }
-    .btn {
-      width: 100%;
-      margin-top: 18px;
-      padding: 14px;
-      border-radius: 14px;
-      border: 0;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      background: linear-gradient(90deg, #ff7a18, #ff3d77);
-      color: #fff;
-    }
-    .btn.secondary {
-      background: rgba(255,255,255,0.1);
-      margin-top: 10px;
-    }
-    .screen { display: none; }
-    .screen.active { display: block; }
-    @keyframes fade {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+<style>
+:root { color-scheme: dark; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Arial;
+  background: radial-gradient(1200px 800px at 30% 20%, #2b2b38 0%, #0b0b12 55%, #05050a 100%);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.card {
+  width: min(520px, 100%);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px;
+  padding: 22px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.45);
+  animation: fade .4s ease;
+}
+
+h1 { margin: 0 0 12px; font-size: 26px; }
+p { opacity: .85; line-height: 1.5; }
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+.btn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 0;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(90deg, #ff7a18, #ff3d77);
+  color: #fff;
+}
+
+.btn.secondary {
+  background: rgba(255,255,255,0.1);
+}
+
+.no-item {
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin: 8px 0;
+  background: rgba(255,255,255,0.08);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.no-item input {
+  accent-color: #ff7a18;
+  transform: scale(1.2);
+}
+
+.no-input {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.3);
+  color: #fff;
+}
+
+.no-input::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
 </head>
+
 <body>
+<div class="card">
 
-  <div class="card">
+<!-- ЭКРАН 1 -->
+<div class="screen active" id="s1">
+  <h1>Вечер начинается.</h1>
+  <p>
+    Я приготовлю для вас то, что подходит именно сегодня.<br><br>
+    Вы не выбираете вкус.<br>
+    Вы можете обозначить только границы.
+  </p>
+  <button class="btn" onclick="go(2)">Продолжить</button>
+</div>
 
-    <!-- ЭКРАН 1 -->
-    <div class="screen active" id="screen-1">
-      <h1>Вечер начинается.</h1>
-      <p>
-        Я приготовлю для вас то, что подходит именно сегодня.<br><br>
-        Вы не выбираете вкус.<br>
-        Вы можете обозначить только границы.
-      </p>
-      <button class="btn" onclick="go(2)">Продолжить</button>
-    </div>
+<!-- ЭКРАН 2 -->
+<div class="screen" id="s2">
+  <h1>Скажите «нет».</h1>
+  <p>Не желания. Только исключения.</p>
 
-    <!-- ЭКРАН 2 -->
-    <div class="screen" id="screen-2">
-      <h1>Скажите «нет».</h1>
-      <p>
-        Не желания.<br>
-        Только исключения.
-      </p>
-      <button class="btn" onclick="go(3)">Принять</button>
-      <button class="btn secondary" onclick="go(1)">Назад</button>
-    </div>
+  <label class="no-item">
+    <input type="checkbox" value="Сладкое"> Сладкое
+  </label>
+  <label class="no-item">
+    <input type="checkbox" value="Свежесть"> Свежесть / холод
+  </label>
+  <label class="no-item">
+    <input type="checkbox" value="Десерт"> Десертные ноты
+  </label>
+  <label class="no-item">
+    <input type="checkbox" value="Фрукты"> Яркие фрукты
+  </label>
+  <label class="no-item">
+    <input type="checkbox" value="Пряности"> Пряности
+  </label>
 
-    <!-- ЭКРАН 3 -->
-    <div class="screen" id="screen-3">
-      <h1>…</h1>
-      <p>Я услышал.</p>
-      <button class="btn" onclick="go(4)">Далее</button>
-      <button class="btn secondary" onclick="go(2)">Назад</button>
-    </div>
+  <input class="no-input" type="text"
+    placeholder="Например: без мяты, не кисло"
+    oninput="state.customNo = this.value">
 
-    <!-- ЭКРАН 4 -->
-    <div class="screen" id="screen-4">
-      <h1>Подача VII</h1>
-      <p>
-        Вкус, который не стремится понравиться.<br>
-        Он существует только в этом моменте.
-      </p>
-      <button class="btn" onclick="go(5)">Далее</button>
-      <button class="btn secondary" onclick="go(3)">Назад</button>
-    </div>
+  <button class="btn" onclick="saveNo()">Принять</button>
+  <button class="btn secondary" onclick="go(1)">Назад</button>
+</div>
 
-    <!-- ЭКРАН 5 -->
-    <div class="screen" id="screen-5">
-      <h1>Если вы хотите вернуться —</h1>
-      <p>произнесите это.</p>
-      <button class="btn secondary" onclick="go(4)">Назад</button>
-    </div>
+<!-- ЭКРАН 3 -->
+<div class="screen" id="s3">
+  <h1>…</h1>
+  <p id="pauseText">Я услышал.</p>
+</div>
 
-  </div>
+<!-- ЭКРАН 4 -->
+<div class="screen" id="s4">
+  <h1 id="courseTitle"></h1>
+  <p>
+    Вкус, который не стремится понравиться.<br>
+    Он существует только в этом моменте.
+  </p>
+  <p style="font-size:13px;opacity:.6">Рецепт не фиксируется.</p>
+  <button class="btn" onclick="go(5)">Далее</button>
+  <button class="btn secondary" onclick="go(3)">Назад</button>
+</div>
 
-  <script>
-    function go(n) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById('screen-' + n).classList.add('active');
+<!-- ЭКРАН 5 -->
+<div class="screen" id="s5">
+  <h1>Если вы хотите вернуться —</h1>
+  <p>произнесите это.</p>
 
-      if (window.Telegram?.WebApp) {
-        Telegram.WebApp.HapticFeedback.impactOccurred("light");
-        Telegram.WebApp.expand();
-      }
+  <input class="no-input" type="text"
+    placeholder="тот же самый"
+    onkeydown="checkSame(event)">
+
+  <p id="masterReply" style="margin-top:12px;opacity:.85"></p>
+
+  <button class="btn secondary" onclick="go(4)">Назад</button>
+</div>
+
+</div>
+
+<script>
+const state = {
+  exclusions: [],
+  customNo: '',
+  course: Math.floor(Math.random() * 9) + 1
+};
+
+function go(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s' + n).classList.add('active');
+  if (window.Telegram?.WebApp)
+    Telegram.WebApp.HapticFeedback.impactOccurred("light");
+}
+
+function saveNo() {
+  state.exclusions = [...document.querySelectorAll('#s2 input:checked')]
+    .map(i => i.value);
+  go(3);
+  pauseSequence();
+}
+
+function pauseSequence() {
+  const texts = ["Я услышал.", "Этого достаточно.", "Решение принято."];
+  let i = 0;
+  const el = document.getElementById('pauseText');
+  const t = setInterval(() => {
+    el.textContent = texts[i++];
+    if (i === texts.length) {
+      clearInterval(t);
+      setTimeout(showResult, 800);
     }
-  </script>
+  }, 900);
+}
+
+function showResult() {
+  document.getElementById('courseTitle').textContent =
+    "Подача " + toRoman(state.course);
+  go(4);
+}
+
+function checkSame(e) {
+  if (e.key === "Enter") {
+    document.getElementById('masterReply').innerHTML =
+      "Если вам захочется «тот же самый» —<br>значит, вы пропустили главное.<br><br><em>Я не повторяю. Я продолжаю.</em>";
+    e.target.disabled = true;
+  }
+}
+
+function toRoman(n) {
+  const r = ["","I","II","III","IV","V","VI","VII","VIII","IX","X"];
+  return r[n] || n;
+}
+</script>
 
 </body>
 </html>
