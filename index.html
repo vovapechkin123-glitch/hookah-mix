@@ -95,11 +95,41 @@ p { opacity: .85; line-height: 1.5; }
 <body>
 <div class="card">
 
+<!-- ЭКРАН 0 -->
+<div class="screen active" id="s0">
+  <h1>Прежде чем мы начнём.</h1>
+  <p>
+    Здесь не подбирают вкус.<br>
+    Здесь определяют момент.<br><br>
+    Кальян, который вы получите сегодня,<br>
+    не существует заранее.
+  </p>
+  <button class="btn" onclick="go(0.5)">Продолжить</button>
+</div>
+
+<!-- ЭКРАН 0.5 -->
+<div class="screen" id="s0.5">
+  <h1>Краткий курс.</h1>
+  <p>
+    Все вкусы совместимы.<br><br>
+    Не потому что они подходят друг другу —<br>
+    а потому что сегодня у них есть причина быть вместе.<br><br>
+    Вы не узнаете состав.<br>
+    Вы узнаете результат.
+  </p>
+  <p style="font-size:13px;opacity:.6">
+    Это не эксперимент.<br>
+    Это подача.
+  </p>
+  <button class="btn" onclick="go(1)">Я понял</button>
+</div>
+
 <!-- ЭКРАН 1 -->
-<div class="screen active" id="s1">
+<div class="screen" id="s1">
   <h1>Вечер начинается.</h1>
   <p>
-    Я приготовлю для вас то, что подходит именно сегодня.<br><br>
+    Я приготовлю для вас кальян,<br>
+    соответствующий этому моменту.<br><br>
     Вы не выбираете вкус.<br>
     Вы можете обозначить только границы.
   </p>
@@ -111,21 +141,11 @@ p { opacity: .85; line-height: 1.5; }
   <h1>Скажите «нет».</h1>
   <p>Не желания. Только исключения.</p>
 
-  <label class="no-item">
-    <input type="checkbox" value="Сладкое"> Сладкое
-  </label>
-  <label class="no-item">
-    <input type="checkbox" value="Свежесть"> Свежесть / холод
-  </label>
-  <label class="no-item">
-    <input type="checkbox" value="Десерт"> Десертные ноты
-  </label>
-  <label class="no-item">
-    <input type="checkbox" value="Фрукты"> Яркие фрукты
-  </label>
-  <label class="no-item">
-    <input type="checkbox" value="Пряности"> Пряности
-  </label>
+  <label class="no-item"><input type="checkbox" value="Сладкое"> Сладкое</label>
+  <label class="no-item"><input type="checkbox" value="Свежесть"> Свежесть / холод</label>
+  <label class="no-item"><input type="checkbox" value="Десерт"> Десертные ноты</label>
+  <label class="no-item"><input type="checkbox" value="Фрукты"> Яркие фрукты</label>
+  <label class="no-item"><input type="checkbox" value="Пряности"> Пряности</label>
 
   <input class="no-input" type="text"
     placeholder="Например: без мяты, не кисло"
@@ -150,7 +170,6 @@ p { opacity: .85; line-height: 1.5; }
   </p>
   <p style="font-size:13px;opacity:.6">Рецепт не фиксируется.</p>
   <button class="btn" onclick="go(5)">Далее</button>
-  <button class="btn secondary" onclick="go(3)">Назад</button>
 </div>
 
 <!-- ЭКРАН 5 -->
