@@ -53,17 +53,16 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
 }
 .option:hover{background:rgba(255,255,255,.14)}
 .small{font-size:13px;opacity:.7}
-.timer{font-size:30px;text-align:center;letter-spacing:2px;margin:14px 0}
+.timer{font-size:30px;text-align:center;margin:14px 0}
 .order{
   background:rgba(255,255,255,.08);
   border-radius:14px;
   padding:14px;
   margin-top:12px;
 }
-.row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.row{display:flex;justify-content:space-between;gap:12px}
 .badge{
   font-size:12px;
-  opacity:.9;
   padding:6px 10px;
   border-radius:999px;
   background:rgba(255,255,255,.12);
@@ -75,150 +74,185 @@ hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:12px 0}
 <body>
 <div class="card">
 
-<!-- ГОСТЬ -->
-<div class="screen" id="s0">
-  <h1>Прежде чем мы начнём.</h1>
-  <p>
-    Здесь не подбирают вкус.<br><br>
-    Здесь фиксируют момент.<br><br>
-    То, что вы получите,<br>
-    не существует заранее.
-  </p>
-  <button class="btn" onclick="go('q1')">Продолжить</button>
-</div>
+  <!-- ПРИВЕТСТВИЕ -->
+  <div class="screen" id="s0">
+    <h1>Прежде чем мы начнём.</h1>
+    <p>
+      Здесь не выбирают вкус.<br><br>
+      Здесь фиксируют момент.<br><br>
+      То, что вы получите,<br>
+      не существует заранее.
+    </p>
+    <button class="btn" onclick="go('q1')">Продолжить</button>
+  </div>
 
-<div class="screen" id="q1">
-  <h1>Не думайте долго.</h1>
-  <p>К какому цвету тянется рука сейчас?</p>
-  <div class="option" onclick="pick(1,'Коричневый')">🟤 Коричневый</div>
-  <div class="option" onclick="pick(1,'Зелёный')">🟢 Зелёный</div>
-  <div class="option" onclick="pick(1,'Синий')">🔵 Синий</div>
-  <div class="option" onclick="pick(1,'Фиолетовый')">🟣 Фиолетовый</div>
-  <div class="option" onclick="pick(1,'Белый')">⚪ Белый</div>
-</div>
+  <!-- ВОПРОСЫ -->
+  <div class="screen" id="q1">
+    <h1>Цвет.</h1>
+    <div class="option" onclick="pick(1,'Синий')">🔵 Синий</div>
+    <div class="option" onclick="pick(1,'Коричневый')">🟤 Коричневый</div>
+    <div class="option" onclick="pick(1,'Зелёный')">🟢 Зелёный</div>
+  </div>
 
-<div class="screen" id="q2">
-  <h1>Ощущение.</h1>
-  <div class="option" onclick="pick(2,'Сухо')">Сухо</div>
-  <div class="option" onclick="pick(2,'Мягко')">Мягко</div>
-  <div class="option" onclick="pick(2,'Плотно')">Плотно</div>
-  <div class="option" onclick="pick(2,'Пусто')">Пусто</div>
-</div>
+  <div class="screen" id="q2">
+    <h1>Ощущение.</h1>
+    <div class="option" onclick="pick(2,'Мягко')">Мягко</div>
+    <div class="option" onclick="pick(2,'Плотно')">Плотно</div>
+  </div>
 
-<div class="screen" id="q3">
-  <h1>Если сделать паузу.</h1>
-  <div class="option" onclick="pick(3,'Орех')">Орех</div>
-  <div class="option" onclick="pick(3,'Фрукт')">Фрукт</div>
-  <div class="option" onclick="pick(3,'Хлеб')">Хлеб</div>
-  <div class="option" onclick="pick(3,'Ничего')">Ничего</div>
-</div>
+  <div class="screen" id="q3">
+    <h1>Пауза.</h1>
+    <div class="option" onclick="pick(3,'Орех')">Орех</div>
+    <div class="option" onclick="pick(3,'Хлеб')">Хлеб</div>
+  </div>
 
-<div class="screen" id="q4">
-  <h1>Скорость.</h1>
-  <div class="option" onclick="pick(4,'Медленно')">Медленно</div>
-  <div class="option" onclick="pick(4,'Рывками')">Рывками</div>
-  <div class="option" onclick="pick(4,'Ровно')">Ровно</div>
-  <div class="option" onclick="pick(4,'Не чувствуя времени')">Не чувствуя времени</div>
-</div>
+  <div class="screen" id="q4">
+    <h1>Скорость.</h1>
+    <div class="option" onclick="pick(4,'Ровно')">Ровно</div>
+    <div class="option" onclick="pick(4,'Медленно')">Медленно</div>
+  </div>
 
-<div class="screen" id="q5">
-  <h1>Пространство.</h1>
-  <div class="option" onclick="pick(5,'Полумрак')">Полумрак</div>
-  <div class="option" onclick="pick(5,'Яркий свет')">Яркий свет</div>
-  <div class="option" onclick="pick(5,'Тень')">Тень</div>
-  <div class="option" onclick="pick(5,'Ничего')">Ничего</div>
-</div>
+  <div class="screen" id="q5">
+    <h1>Пространство.</h1>
+    <div class="option" onclick="pick(5,'Полумрак')">Полумрак</div>
+    <div class="option" onclick="pick(5,'Тень')">Тень</div>
+  </div>
 
-<div class="screen" id="q6">
-  <h1>Этот момент —</h1>
-  <div class="option" onclick="pick(6,'Начало')">Начало</div>
-  <div class="option" onclick="pick(6,'Продолжение')">Продолжение</div>
-  <div class="option" onclick="pick(6,'Завершение')">Завершение</div>
-</div>
+  <div class="screen" id="q6">
+    <h1>Момент.</h1>
+    <div class="option" onclick="pick(6,'Начало')">Начало</div>
+    <div class="option" onclick="pick(6,'Продолжение')">Продолжение</div>
+  </div>
 
-<div class="screen" id="waiting">
-  <h1>Заказ принят.</h1>
-  <div class="timer" id="guestTimer">25:00</div>
-  <p class="small" id="guestHint"></p>
-</div>
+  <!-- ОЖИДАНИЕ -->
+  <div class="screen" id="waiting">
+    <h1>Заказ принят.</h1>
+    <div class="timer" id="timer">25:00</div>
+    <p class="small" id="hint"></p>
+  </div>
 
-<!-- МАСТЕР -->
-<div class="screen" id="master">
-  <h1>Заказы</h1>
-  <div id="orders"></div>
-  <button class="btn" onclick="refreshOrders(true)">Обновить</button>
-</div>
+  <!-- МАСТЕР -->
+  <div class="screen" id="master">
+    <h1>Заказы</h1>
+    <div id="orders"></div>
+    <button class="btn" onclick="refreshOrders()">Обновить</button>
+  </div>
 
 </div>
 
 <script>
+/* ==== НАСТРОЙКИ ==== */
 const MASTER_ID = 1292778768;
-const DURATION_MS = 25 * 60 * 1000;
-const BACKEND_BASE = "https://hookah-mix-bot-56x5.onrender.com";
+const BACKEND = "https://hookah-mix-bot-56x5.onrender.com";
+const DURATION = 25 * 60 * 1000;
 
+/* ==== TELEGRAM ==== */
 const tg = window.Telegram?.WebApp;
-const tgUser = tg?.initDataUnsafe?.user;
-const isMaster = tgUser?.id === MASTER_ID;
+const user = tg?.initDataUnsafe?.user;
+const isMaster = user && user.id === MASTER_ID;
 
-const answers = {};
-let guestOrderStart = null;
-let guestTimerInt = null;
+/* ==== СОСТОЯНИЕ ==== */
+let answers = {};
+let startTime = null;
+let timerInt = null;
 
+/* ==== НАВИГАЦИЯ ==== */
 function go(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById(id)?.classList.add("active");
+  tg?.expand();
 }
 
+/* ==== СБРОС ГОСТЯ ==== */
 function resetGuestState(){
-  for (const k in answers) delete answers[k];
-  guestOrderStart = null;
-  if (guestTimerInt) clearInterval(guestTimerInt);
+  answers = {};
+  startTime = null;
+  if (timerInt) clearInterval(timerInt);
 }
 
-function pick(step,val){
-  answers[step]=val;
+/* ==== ОТВЕТ ==== */
+function pick(step,value){
+  answers[step]=value;
   if(step<6) go("q"+(step+1));
   else placeOrder();
 }
 
+/* ==== ЗАКАЗ ==== */
 async function placeOrder(){
-  guestOrderStart=Date.now();
+  startTime = Date.now();
   go("waiting");
-  startGuestTimer();
-  await fetch(BACKEND_BASE+"/order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-    id:Date.now(),
-    start:guestOrderStart,
-    duration_ms:DURATION_MS,
-    guest:{id:tgUser?.id,name:tgUser?.first_name,username:tgUser?.username},
-    answers:{
-      color:answers[1],mouthfeel:answers[2],pause:answers[3],
-      speed:answers[4],space:answers[5],moment:answers[6]
-    }
-  })});
+  startTimer();
+
+  const order = {
+    id: startTime,
+    start: startTime,
+    guest: {
+      name: user?.first_name || "Гость",
+      username: user?.username || null
+    },
+    answers
+  };
+
+  try{
+    await fetch(BACKEND+"/order",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify(order)
+    });
+    document.getElementById("hint").textContent="Принято.";
+  }catch{
+    document.getElementById("hint").textContent="Связь недоступна.";
+  }
 }
 
-function startGuestTimer(){
-  const el=document.getElementById("guestTimer");
-  guestTimerInt=setInterval(()=>{
-    const diff=(guestOrderStart+DURATION_MS)-Date.now();
-    if(diff<=0){el.textContent="Готово";return;}
-    el.textContent=`${Math.floor(diff/60000)}:${String(Math.floor(diff%60000/1000)).padStart(2,"0")}`;
+/* ==== ТАЙМЕР ==== */
+function startTimer(){
+  const el=document.getElementById("timer");
+  timerInt=setInterval(()=>{
+    const d=startTime+DURATION-Date.now();
+    if(d<=0){el.textContent="Готово";return;}
+    const m=Math.floor(d/60000);
+    const s=Math.floor(d%60000/1000);
+    el.textContent=`${m}:${String(s).padStart(2,"0")}`;
   },1000);
 }
 
-window.onload=()=>{
-  tg?.expand();
-  if(isMaster) go("master");
-  else{ resetGuestState(); go("s0"); }
-};
+/* ==== МАСТЕР ==== */
+async function refreshOrders(){
+  const r=await fetch(BACKEND+"/orders");
+  const j=await r.json();
+  const box=document.getElementById("orders");
+  box.innerHTML="";
+  j.orders.forEach(o=>{
+    box.innerHTML+=`
+      <div class="order">
+        <b>${o.guest.name}</b><br>
+        ${Object.values(o.answers).join(" · ")}
+      </div>`;
+  });
+}
 
-tg?.onEvent("viewportChanged",()=>{
-  if(!isMaster && !document.querySelector(".screen.active")){
+/* ==== СТАРТ ==== */
+window.onload=()=>{
+  if(isMaster){
+    go("master");
+    refreshOrders();
+  }else{
     resetGuestState();
     go("s0");
   }
+};
+
+/* ==== ВАЖНО: возврат из свернутого ==== */
+tg?.onEvent("viewportChanged",()=>{
+  if(!isMaster){
+    const active=document.querySelector(".screen.active");
+    if(!active){
+      resetGuestState();
+      go("s0");
+    }
+  }
 });
 </script>
-
 </body>
 </html>
