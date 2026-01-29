@@ -29,7 +29,6 @@ body {
   padding: 22px;
   backdrop-filter: blur(10px);
   box-shadow: 0 20px 60px rgba(0,0,0,.45);
-  animation: fade .4s ease;
 }
 
 h1 { margin: 0 0 12px; font-size: 24px; }
@@ -63,9 +62,17 @@ p { opacity: .85; line-height: 1.5; }
   background: rgba(255,255,255,0.14);
 }
 
-@keyframes fade {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+.timer {
+  font-size: 32px;
+  margin: 16px 0;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.master {
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: .9;
 }
 </style>
 </head>
@@ -77,25 +84,17 @@ p { opacity: .85; line-height: 1.5; }
 <div class="screen active" id="s0">
   <h1>Прежде чем мы начнём.</h1>
   <p>
-    Здесь не подбирают вкус.<br><br>
     Здесь фиксируют момент.<br><br>
     То, что вы получите,<br>
-    не существует заранее<br>
-    и не будет повторено позже.
+    не существует заранее.
   </p>
   <button class="btn" onclick="go(1)">Продолжить</button>
 </div>
 
-<!-- ВОПРОС 1 -->
+<!-- ВОПРОСЫ -->
 <div class="screen" id="s1">
   <h1>Не думайте долго.</h1>
-  <p>
-    Если убрать форму<br>
-    и убрать смысл —<br><br>
-    к какому цвету<br>
-    тянется рука сейчас?
-  </p>
-
+  <p>К какому цвету тянется рука?</p>
   <div class="option" onclick="answer(1,'Коричневый')">🟤 Коричневый</div>
   <div class="option" onclick="answer(1,'Зелёный')">🟢 Зелёный</div>
   <div class="option" onclick="answer(1,'Синий')">🔵 Синий</div>
@@ -103,107 +102,119 @@ p { opacity: .85; line-height: 1.5; }
   <div class="option" onclick="answer(1,'Белый')">⚪ Белый</div>
 </div>
 
-<!-- ВОПРОС 2 -->
 <div class="screen" id="s2">
   <h1>Ощущение.</h1>
-  <p>
-    Не вкус.<br>
-    Не запах.<br><br>
-    Ощущение во рту<br>
-    в эту секунду.
-  </p>
-
+  <p>Во рту сейчас —</p>
   <div class="option" onclick="answer(2,'Сухо')">Сухо</div>
   <div class="option" onclick="answer(2,'Мягко')">Мягко</div>
   <div class="option" onclick="answer(2,'Плотно')">Плотно</div>
   <div class="option" onclick="answer(2,'Пусто')">Пусто</div>
 </div>
 
-<!-- ВОПРОС 3 -->
 <div class="screen" id="s3">
-  <h1>Если сделать паузу.</h1>
-  <p>
-    Не перекусить.<br><br>
-    Просто сделать паузу.
-  </p>
-
+  <h1>Если пауза.</h1>
   <div class="option" onclick="answer(3,'Орех')">Орех</div>
   <div class="option" onclick="answer(3,'Фрукт')">Фрукт</div>
   <div class="option" onclick="answer(3,'Хлеб')">Хлеб</div>
   <div class="option" onclick="answer(3,'Ничего')">Ничего</div>
 </div>
 
-<!-- ВОПРОС 4 -->
 <div class="screen" id="s4">
   <h1>Скорость.</h1>
-  <p>
-    Это время<br>
-    хочется прожить —
-  </p>
-
   <div class="option" onclick="answer(4,'Медленно')">Медленно</div>
   <div class="option" onclick="answer(4,'Рывками')">Рывками</div>
   <div class="option" onclick="answer(4,'Ровно')">Ровно</div>
-  <div class="option" onclick="answer(4,'Без времени')">Не чувствуя времени</div>
+  <div class="option" onclick="answer(4,'Без времени')">Без времени</div>
 </div>
 
-<!-- ВОПРОС 5 -->
 <div class="screen" id="s5">
   <h1>Пространство.</h1>
-  <p>
-    Если закрыть глаза,<br>
-    вокруг сейчас —
-  </p>
-
   <div class="option" onclick="answer(5,'Полумрак')">Полумрак</div>
   <div class="option" onclick="answer(5,'Яркий свет')">Яркий свет</div>
   <div class="option" onclick="answer(5,'Тень')">Тень</div>
   <div class="option" onclick="answer(5,'Ничего')">Ничего</div>
 </div>
 
-<!-- ВОПРОС 6 -->
 <div class="screen" id="s6">
   <h1>Этот момент —</h1>
-  <p>
-    не про планы<br>
-    и не про цели.
-  </p>
-
-  <div class="option" onclick="answer(6,'Начало')">Начало</div>
-  <div class="option" onclick="answer(6,'Продолжение')">Продолжение</div>
-  <div class="option" onclick="answer(6,'Завершение')">Завершение</div>
+  <div class="option" onclick="finish('Начало')">Начало</div>
+  <div class="option" onclick="finish('Продолжение')">Продолжение</div>
+  <div class="option" onclick="finish('Завершение')">Завершение</div>
 </div>
 
-<!-- ФИНАЛ -->
+<!-- ГОСТЬ -->
 <div class="screen" id="s7">
-  <h1>Достаточно.</h1>
+  <h1 id="orderTitle">Заказ принят.</h1>
   <p>
-    Я услышал больше,<br>
-    чем вы сказали.<br><br>
-    Решение будет принято<br>
-    вне этого экрана.
+    Кальян уже готовится.<br>
+    Этот процесс нельзя ускорить.
   </p>
+  <div class="timer" id="timer">25:00</div>
   <p style="font-size:13px;opacity:.6">
-    Сегодняшний кальян<br>
-    не нуждается в описании.
+    Ориентировочное время ожидания.
   </p>
+</div>
+
+<!-- МАСТЕР -->
+<div class="screen" id="master">
+  <h1>Экран мастера</h1>
+  <div class="master" id="masterData"></div>
 </div>
 
 </div>
 
 <script>
 const answers = {};
+let endTime = null;
+let timerInt = null;
 
 function go(n) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('s' + n).classList.add('active');
-  if (window.Telegram?.WebApp)
-    Telegram.WebApp.HapticFeedback.impactOccurred("light");
+  document.getElementById('s' + n)?.classList.add('active');
 }
 
-function answer(step, value) {
-  answers[step] = value;
-  go(step + 1);
+function answer(q, val) {
+  answers[q] = val;
+  go(q + 1);
+}
+
+function finish(val) {
+  answers[6] = val;
+  endTime = Date.now() + 25 * 60 * 1000;
+  go(7);
+  startTimer();
+}
+
+function startTimer() {
+  timerInt = setInterval(() => {
+    const diff = endTime - Date.now();
+    if (diff <= 0) {
+      document.getElementById('timer').textContent = "Готово";
+      clearInterval(timerInt);
+    } else {
+      const m = Math.floor(diff / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('timer').textContent =
+        `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+  }, 1000);
+}
+
+// долгий тап — экран мастера
+let pressTimer;
+document.getElementById('orderTitle').addEventListener('touchstart', () => {
+  pressTimer = setTimeout(showMaster, 3000);
+});
+document.getElementById('orderTitle').addEventListener('touchend', () => {
+  clearTimeout(pressTimer);
+});
+
+function showMaster() {
+  go('master');
+  const list = Object.entries(answers)
+    .map(([k,v]) => `<div>${k}: ${v}</div>`)
+    .join('');
+  document.getElementById('masterData').innerHTML = list;
 }
 </script>
 
