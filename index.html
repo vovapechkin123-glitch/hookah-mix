@@ -22,7 +22,7 @@ body {
 }
 
 .card {
-  width: min(520px, 100%);
+  width: min(560px, 100%);
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 18px;
@@ -58,53 +58,45 @@ p { opacity: .85; line-height: 1.5; }
   cursor: pointer;
 }
 
-.option:hover {
-  background: rgba(255,255,255,0.14);
+.option:hover { background: rgba(255,255,255,0.14); }
+
+.timer { font-size: 28px; margin: 14px 0; text-align: center; }
+
+.order {
+  border-radius: 14px;
+  background: rgba(255,255,255,0.08);
+  padding: 14px;
+  margin-top: 14px;
 }
 
-.timer {
-  font-size: 32px;
-  margin: 16px 0;
-  text-align: center;
-  letter-spacing: 2px;
-}
-
-.master {
-  font-size: 14px;
-  line-height: 1.6;
-  opacity: .9;
-}
+.small { font-size: 13px; opacity: .7; }
 </style>
 </head>
 
 <body>
 <div class="card">
 
-<!-- ЭКРАН 0 -->
 <div class="screen active" id="s0">
   <h1>Прежде чем мы начнём.</h1>
   <p>
     Здесь фиксируют момент.<br><br>
-    То, что вы получите,<br>
-    не существует заранее.
+    Вы не выбираете вкус.<br>
+    Вы обозначаете состояние.
   </p>
   <button class="btn" onclick="go(1)">Продолжить</button>
 </div>
 
-<!-- ВОПРОСЫ -->
 <div class="screen" id="s1">
-  <h1>Не думайте долго.</h1>
-  <p>К какому цвету тянется рука?</p>
+  <h1>Цвет.</h1>
+  <div class="option" onclick="answer(1,'Синий')">🔵 Синий</div>
   <div class="option" onclick="answer(1,'Коричневый')">🟤 Коричневый</div>
   <div class="option" onclick="answer(1,'Зелёный')">🟢 Зелёный</div>
-  <div class="option" onclick="answer(1,'Синий')">🔵 Синий</div>
   <div class="option" onclick="answer(1,'Фиолетовый')">🟣 Фиолетовый</div>
   <div class="option" onclick="answer(1,'Белый')">⚪ Белый</div>
 </div>
 
 <div class="screen" id="s2">
   <h1>Ощущение.</h1>
-  <p>Во рту сейчас —</p>
   <div class="option" onclick="answer(2,'Сухо')">Сухо</div>
   <div class="option" onclick="answer(2,'Мягко')">Мягко</div>
   <div class="option" onclick="answer(2,'Плотно')">Плотно</div>
@@ -112,7 +104,7 @@ p { opacity: .85; line-height: 1.5; }
 </div>
 
 <div class="screen" id="s3">
-  <h1>Если пауза.</h1>
+  <h1>Пауза.</h1>
   <div class="option" onclick="answer(3,'Орех')">Орех</div>
   <div class="option" onclick="answer(3,'Фрукт')">Фрукт</div>
   <div class="option" onclick="answer(3,'Хлеб')">Хлеб</div>
@@ -122,16 +114,16 @@ p { opacity: .85; line-height: 1.5; }
 <div class="screen" id="s4">
   <h1>Скорость.</h1>
   <div class="option" onclick="answer(4,'Медленно')">Медленно</div>
-  <div class="option" onclick="answer(4,'Рывками')">Рывками</div>
   <div class="option" onclick="answer(4,'Ровно')">Ровно</div>
+  <div class="option" onclick="answer(4,'Рывками')">Рывками</div>
   <div class="option" onclick="answer(4,'Без времени')">Без времени</div>
 </div>
 
 <div class="screen" id="s5">
-  <h1>Пространство.</h1>
+  <h1>Свет.</h1>
   <div class="option" onclick="answer(5,'Полумрак')">Полумрак</div>
-  <div class="option" onclick="answer(5,'Яркий свет')">Яркий свет</div>
   <div class="option" onclick="answer(5,'Тень')">Тень</div>
+  <div class="option" onclick="answer(5,'Яркий')">Яркий</div>
   <div class="option" onclick="answer(5,'Ничего')">Ничего</div>
 </div>
 
@@ -142,47 +134,35 @@ p { opacity: .85; line-height: 1.5; }
   <div class="option" onclick="finish('Завершение')">Завершение</div>
 </div>
 
-<!-- ГОСТЬ -->
 <div class="screen" id="s7">
-  <h1 id="orderTitle">Заказ принят.</h1>
-  <p>
-    Кальян уже готовится.<br>
-    Этот процесс нельзя ускорить.
-  </p>
-  <div class="timer" id="timer">25:00</div>
-  <p style="font-size:13px;opacity:.6">
-    Ориентировочное время ожидания.
-  </p>
-
-  <!-- кнопка видна ТОЛЬКО мастеру -->
-  <button class="btn secondary" id="openMasterBtn" style="display:none" onclick="openMaster()">
-    Открыть экран мастера
-  </button>
+  <h1>Заказ принят.</h1>
+  <p>Кальян уже готовится.</p>
+  <div class="timer" id="guestTimer">25:00</div>
+  <p class="small">Время ориентировочное.</p>
+  <button class="btn" id="masterBtn" style="display:none" onclick="openMaster()">Кабинет мастера</button>
 </div>
 
-<!-- МАСТЕР -->
 <div class="screen" id="master">
-  <h1>Экран мастера</h1>
-  <div class="master" id="masterData"></div>
-  <button class="btn secondary" onclick="go(7)">Назад</button>
+  <h1>Заказы</h1>
+  <div id="orders"></div>
+  <button class="btn" onclick="go(7)">Назад</button>
 </div>
 
 </div>
 
 <script>
-/* ===== НАСТРОЙКА ===== */
 const MASTER_ID = 1292778768;
-/* ==================== */
+const DURATION = 25 * 60 * 1000;
 
-const answers = {};
-let endTime = null;
-let timerInt = null;
-let isMaster = false;
+const tgUser = Telegram.WebApp?.initDataUnsafe?.user;
+const isMaster = tgUser && tgUser.id === MASTER_ID;
+const guestName = tgUser?.first_name || "Гость";
 
-// определяем роль
-if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
-  const uid = Telegram.WebApp.initDataUnsafe.user.id;
-  isMaster = uid === MASTER_ID;
+let answers = {};
+let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+function saveOrders() {
+  localStorage.setItem("orders", JSON.stringify(orders));
 }
 
 function go(n) {
@@ -190,42 +170,51 @@ function go(n) {
   document.getElementById(n === 'master' ? 'master' : 's' + n).classList.add('active');
 }
 
-function answer(q, val) {
-  answers[q] = val;
+function answer(q, v) {
+  answers[q] = v;
   go(q + 1);
 }
 
-function finish(val) {
-  answers[6] = val;
-  endTime = Date.now() + 25 * 60 * 1000;
+function finish(moment) {
+  answers[6] = moment;
+  const order = {
+    id: Date.now(),
+    guest: guestName,
+    answers: {...answers},
+    start: Date.now(),
+    status: "Готовится"
+  };
+  orders.push(order);
+  saveOrders();
   go(7);
-  startTimer();
-
-  if (isMaster) {
-    document.getElementById('openMasterBtn').style.display = 'block';
-  }
+  startGuestTimer(order.start);
+  if (isMaster) document.getElementById("masterBtn").style.display = "block";
 }
 
-function startTimer() {
-  timerInt = setInterval(() => {
-    const diff = endTime - Date.now();
-    if (diff <= 0) {
-      document.getElementById('timer').textContent = "Готово";
-      clearInterval(timerInt);
-    } else {
-      const m = Math.floor(diff / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      document.getElementById('timer').textContent =
-        `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
+function startGuestTimer(start) {
+  setInterval(() => {
+    const diff = start + DURATION - Date.now();
+    document.getElementById("guestTimer").textContent =
+      diff <= 0 ? "Готово" :
+      `${String(Math.floor(diff/60000)).padStart(2,'0')}:${String(Math.floor(diff%60000/1000)).padStart(2,'0')}`;
   }, 1000);
 }
 
 function openMaster() {
-  const list = Object.entries(answers)
-    .map(([k,v]) => `<div>${k}: ${v}</div>`)
-    .join('');
-  document.getElementById('masterData').innerHTML = list;
+  const box = document.getElementById("orders");
+  box.innerHTML = "";
+  orders.forEach(o => {
+    const diff = o.start + DURATION - Date.now();
+    const time = diff <= 0 ? "Готово" :
+      `${Math.floor(diff/60000)}:${String(Math.floor(diff%60000/1000)).padStart(2,'0')}`;
+    box.innerHTML += `
+      <div class="order">
+        <b>${o.guest}</b> · ${o.status}<br>
+        <span class="small">Осталось: ${time}</span><br><br>
+        ${Object.values(o.answers).join(" · ")}
+      </div>
+    `;
+  });
   go('master');
 }
 </script>
