@@ -8,6 +8,7 @@
 
 <style>
 :root { color-scheme: dark; }
+
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
@@ -19,6 +20,7 @@ body{
   justify-content:center;
   padding:24px;
 }
+
 .card{
   width:min(600px,100%);
   background:rgba(255,255,255,.06);
@@ -28,13 +30,16 @@ body{
   backdrop-filter: blur(10px);
   box-shadow:0 20px 60px rgba(0,0,0,.45);
 }
+
 .screen{display:none}
 .screen.active{display:block}
+
 h1{margin:0 0 12px;font-size:24px}
 p{opacity:.85;line-height:1.5;margin:0 0 10px}
+
 .btn{
   width:100%;
-  margin-top:14px;
+  margin-top:16px;
   padding:14px;
   border-radius:14px;
   border:0;
@@ -44,10 +49,15 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   background:linear-gradient(90deg,#ff7a18,#ff3d77);
   color:#fff;
 }
+
 .btn.secondary{
-  background:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.14);
 }
+
 .btnRow{display:flex;gap:10px;margin-top:12px}
+.btnRow .btn{margin-top:0;width:100%}
+
 .option{
   padding:14px;
   border-radius:14px;
@@ -56,39 +66,60 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   cursor:pointer;
 }
 .option:hover{background:rgba(255,255,255,.14)}
+
 .small{font-size:13px;opacity:.7}
-.timer{font-size:30px;text-align:center;letter-spacing:2px;margin:14px 0}
+
+.timer{
+  font-size:30px;
+  text-align:center;
+  letter-spacing:2px;
+  margin:14px 0
+}
+
 .order{
   background:rgba(255,255,255,.08);
   border-radius:14px;
   padding:14px;
   margin-top:12px;
 }
-.row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:center
+}
+
 .badge{
   font-size:12px;
   padding:6px 10px;
   border-radius:999px;
-  background:rgba(255,255,255,.14);
+  background:rgba(255,255,255,.12);
 }
-.badge.good{background:rgba(0,255,140,.18)}
-.badge.warn{background:rgba(255,160,0,.18)}
-.badge.done{background:rgba(255,255,255,.2)}
-hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:12px 0}
+.badge.warn{background:rgba(255,140,0,.15)}
+.badge.good{background:rgba(0,255,140,.15)}
+.badge.done{background:rgba(255,255,255,.15)}
+
+hr{
+  border:0;
+  border-top:1px solid rgba(255,255,255,.12);
+  margin:12px 0
+}
 </style>
 </head>
 
 <body>
 <div class="card">
 
-<!-- ================= ГОСТ ================= -->
-
+<!-- ГОСТ -->
 <div class="screen" id="s0">
   <h1>Прежде чем мы начнём.</h1>
   <p>
     Здесь не подбирают вкус.<br><br>
     Здесь фиксируют момент.<br><br>
-    То, что вы получите,<br>не существует заранее.
+    То, что вы получите,<br>
+    не существует заранее.
   </p>
   <button class="btn" onclick="go('q1')">Продолжить</button>
 </div>
@@ -105,6 +136,7 @@ hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:12px 0}
 
 <div class="screen" id="q2">
   <h1>Ощущение.</h1>
+  <p>Не вкус. Не запах. Ощущение во рту —</p>
   <div class="option" onclick="pick(2,'Сухо')">Сухо</div>
   <div class="option" onclick="pick(2,'Мягко')">Мягко</div>
   <div class="option" onclick="pick(2,'Плотно')">Плотно</div>
@@ -112,7 +144,8 @@ hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:12px 0}
 </div>
 
 <div class="screen" id="q3">
-  <h1>Пауза.</h1>
+  <h1>Если сделать паузу.</h1>
+  <p>Не перекусить. Просто паузу.</p>
   <div class="option" onclick="pick(3,'Орех')">Орех</div>
   <div class="option" onclick="pick(3,'Фрукт')">Фрукт</div>
   <div class="option" onclick="pick(3,'Хлеб')">Хлеб</div>
@@ -121,22 +154,25 @@ hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:12px 0}
 
 <div class="screen" id="q4">
   <h1>Скорость.</h1>
+  <p>Это время хочется прожить —</p>
   <div class="option" onclick="pick(4,'Медленно')">Медленно</div>
   <div class="option" onclick="pick(4,'Рывками')">Рывками</div>
   <div class="option" onclick="pick(4,'Ровно')">Ровно</div>
-  <div class="option" onclick="pick(4,'Вне времени')">Вне времени</div>
+  <div class="option" onclick="pick(4,'Не чувствуя времени')">Не чувствуя времени</div>
 </div>
 
 <div class="screen" id="q5">
   <h1>Пространство.</h1>
+  <p>Если закрыть глаза, вокруг сейчас —</p>
   <div class="option" onclick="pick(5,'Полумрак')">Полумрак</div>
-  <div class="option" onclick="pick(5,'Свет')">Свет</div>
+  <div class="option" onclick="pick(5,'Яркий свет')">Яркий свет</div>
   <div class="option" onclick="pick(5,'Тень')">Тень</div>
-  <div class="option" onclick="pick(5,'Пустота')">Пустота</div>
+  <div class="option" onclick="pick(5,'Ничего')">Ничего</div>
 </div>
 
 <div class="screen" id="q6">
   <h1>Этот момент —</h1>
+  <p>не про планы и не про цели.</p>
   <div class="option" onclick="pick(6,'Начало')">Начало</div>
   <div class="option" onclick="pick(6,'Продолжение')">Продолжение</div>
   <div class="option" onclick="pick(6,'Завершение')">Завершение</div>
@@ -144,8 +180,9 @@ hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:12px 0}
 
 <div class="screen" id="waiting">
   <h1 id="waitTitle">Заказ принят.</h1>
-  <p id="waitText">Кальян готовится.</p>
+  <p id="waitText">Кальян уже готовится. Этот процесс нельзя ускорить.</p>
   <div class="timer" id="guestTimer">25:00</div>
+  <p class="small" id="guestHint"></p>
 </div>
 
 <div class="screen" id="epilogue">
@@ -153,12 +190,10 @@ hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:12px 0}
   <p>именно для этого момента.<br><br>Дальше — без интерфейса.</p>
 </div>
 
-<!-- ================= МАСТЕР ================= -->
-
 <div class="screen" id="master">
   <div class="row">
-    <h1>Заказы</h1>
-    <span class="badge" id="masterStatus">онлайн</span>
+    <h1 style="margin:0">Заказы</h1>
+    <span class="badge" id="masterStatus">…</span>
   </div>
   <div id="orders"></div>
 </div>
@@ -166,140 +201,104 @@ hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:12px 0}
 </div>
 
 <script>
-/* ===== CONFIG ===== */
 const MASTER_ID = 1292778768;
-const DURATION_MS = 25 * 60 * 1000;
 const BACKEND_BASE = "https://hookah-mix-bot-56x5.onrender.com";
-/* ================= */
+const DURATION_MS = 25*60*1000;
 
 const tg = Telegram.WebApp;
-const user = tg?.initDataUnsafe?.user;
+const user = tg.initDataUnsafe.user;
 const isMaster = user && user.id === MASTER_ID;
 
 let answers = {};
 let guestOrderId = null;
 let guestOrderStart = null;
-let timerInt = null;
-let pollInt = null;
+let guestTimer = null;
+let statusPoll = null;
 
-/* ===== UI ===== */
 function go(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id)?.classList.add('active');
-  tg?.expand();
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id)?.classList.add("active");
 }
 
-/* ===== Guest ===== */
 function pick(step,val){
   answers[step]=val;
-  if(step<6) go('q'+(step+1));
+  if(step<6) go("q"+(step+1));
   else placeOrder();
 }
 
 async function placeOrder(){
-  const uid = Date.now()+"_"+Math.random().toString(36).slice(2,8);
-  guestOrderId = uid;
+  const id = crypto.randomUUID();
+  guestOrderId = id;
   guestOrderStart = Date.now();
-  localStorage.setItem('orderId',uid);
 
   const order={
-    id:uid,
-    start:guestOrderStart,
-    duration_ms:DURATION_MS,
+    id,
+    start: guestOrderStart,
     status:"accepted",
-    guest:{name:user?.first_name||"Гость",username:user?.username},
-    answers:{
-      color:answers[1],mouthfeel:answers[2],pause:answers[3],
-      speed:answers[4],space:answers[5],moment:answers[6]
-    }
+    guest:{ name:user.first_name, username:user.username },
+    answers
   };
 
-  go('waiting');
+  go("waiting");
   startTimer();
-  pollInt=setInterval(pollStatus,2500);
 
-  await fetch(`${BACKEND_BASE}/order`,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(order)
-  });
+  await fetch(BACKEND_BASE+"/order",{method:"POST",headers:{'Content-Type':'application/json'},body:JSON.stringify(order)});
+  statusPoll=setInterval(pollStatus,2500);
 }
 
 function startTimer(){
-  const el=document.getElementById("guestTimer");
-  timerInt=setInterval(()=>{
-    const d=guestOrderStart+DURATION_MS-Date.now();
-    if(d<=0){el.textContent="Готово";return;}
-    const m=Math.floor(d/60000);
-    const s=Math.floor((d%60000)/1000);
-    el.textContent=`${m}:${String(s).padStart(2,"0")}`;
+  guestTimer=setInterval(()=>{
+    const d=(guestOrderStart+DURATION_MS)-Date.now();
+    if(d<=0)return guestTimer.textContent="Готово";
+    guestTimer.textContent=`${Math.floor(d/60000)}:${String(Math.floor(d%60000/1000)).padStart(2,"0")}`;
   },1000);
 }
 
 async function pollStatus(){
-  const r=await fetch(`${BACKEND_BASE}/orders`);
-  const data=await r.json();
-  const o=data.orders.find(x=>x.id===guestOrderId);
+  const r=await fetch(BACKEND_BASE+"/orders");
+  const {orders}=await r.json();
+  const o=orders.find(o=>o.id===guestOrderId);
   if(!o)return;
-
   if(o.status==="in_progress"){
-    document.getElementById("waitTitle").textContent="Процесс начался.";
-    document.getElementById("waitText").textContent="Финал формируется.";
+    waitTitle.textContent="Процесс начался.";
+    waitText.textContent="Финал формируется.";
   }
   if(o.status==="finished"){
-    clearInterval(timerInt);
-    clearInterval(pollInt);
+    clearInterval(statusPoll);
+    clearInterval(guestTimer);
     go("epilogue");
   }
 }
 
-/* ===== Master ===== */
-async function setOrderStatus(id,status){
-  await fetch(`${BACKEND_BASE}/order/${id}/status`,{
-    method:"PATCH",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({status})
+async function refreshOrders(){
+  const r=await fetch(BACKEND_BASE+"/orders");
+  const {orders}=await r.json();
+  ordersBox=ordersDiv=document.getElementById("orders");
+  ordersBox.innerHTML="";
+  orders.forEach(o=>{
+    ordersBox.innerHTML+=`
+      <div class="order">
+        <b>${o.guest.name}</b>
+        <div class="btnRow">
+          <button class="btn secondary" onclick="setStatus('${o.id}','in_progress')">Начать</button>
+          <button class="btn" onclick="setStatus('${o.id}','finished')">Завершить</button>
+        </div>
+      </div>`;
   });
+}
+
+async function setStatus(id,status){
+  await fetch(BACKEND_BASE+"/order/"+id+"/status",{method:"PATCH",headers:{'Content-Type':'application/json'},body:JSON.stringify({status})});
   refreshOrders();
 }
 
-async function refreshOrders(){
-  const r=await fetch(`${BACKEND_BASE}/orders`);
-  const data=await r.json();
-  const box=document.getElementById("orders");
-  box.innerHTML="";
-  data.orders.forEach(o=>{
-    box.innerHTML+=`
-    <div class="order">
-      <div class="row">
-        <b>${o.guest.name}</b>
-        <span class="badge">${o.status}</span>
-      </div>
-      <div class="btnRow">
-        <button class="btn secondary" onclick="setOrderStatus('${o.id}','in_progress')">Начать</button>
-        <button class="btn" onclick="setOrderStatus('${o.id}','finished')">Завершить</button>
-      </div>
-    </div>`;
-  });
-}
-
-/* ===== START ===== */
-document.addEventListener("DOMContentLoaded",()=>{
-  tg.ready();
+window.onload=()=>{
   if(isMaster){
     go("master");
     refreshOrders();
     setInterval(refreshOrders,3000);
-  }else{
-    const saved=localStorage.getItem("orderId");
-    if(saved){
-      guestOrderId=saved;
-      go("waiting");
-      pollInt=setInterval(pollStatus,2500);
-    }else go("s0");
-  }
-});
+  } else go("s0");
+};
 </script>
-
 </body>
 </html>
