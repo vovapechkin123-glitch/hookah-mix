@@ -22,12 +22,12 @@ body{
 }
 
 .card{
-  width:min(600px,100%);
+  width:min(640px,100%);
   background:rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.12);
-  border-radius:18px;
+  border-radius:20px;
   padding:22px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   box-shadow:0 20px 60px rgba(0,0,0,.45);
 }
 
@@ -36,6 +36,16 @@ body{
 
 h1{margin:0 0 12px;font-size:24px}
 p{opacity:.85;line-height:1.5;margin:0 0 10px}
+
+.option{
+  padding:14px;
+  border-radius:14px;
+  background:rgba(255,255,255,.08);
+  margin-top:10px;
+  cursor:pointer;
+  transition:.2s;
+}
+.option:hover{background:rgba(255,255,255,.14)}
 
 .btn{
   width:100%;
@@ -51,494 +61,269 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
 }
 
 .btn.secondary{
-  background:rgba(255,255,255,.10);
-  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.18);
 }
 
-.btnRow{
-  display:flex;
-  gap:10px;
-  margin-top:12px;
-}
-.btnRow .btn{margin-top:0;width:100%}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
 
-.option{
-  padding:14px;
-  border-radius:14px;
-  background:rgba(255,255,255,.08);
-  margin-top:10px;
-  cursor:pointer;
-}
-.option:hover{background:rgba(255,255,255,.14)}
-
-.small{font-size:13px;opacity:.7}
-
-.timer{
-  font-size:30px;
-  text-align:center;
-  letter-spacing:2px;
-  margin:14px 0
-}
+.timer{font-size:30px;text-align:center;margin:14px 0}
 
 .order{
   background:rgba(255,255,255,.08);
-  border-radius:14px;
+  border-radius:16px;
   padding:14px;
-  margin-top:12px;
+  margin-top:14px;
+  animation:fade .25s ease;
 }
 
-.row{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  flex-wrap:wrap;
-  align-items:center
+@keyframes fade{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:none}
 }
 
 .badge{
   font-size:12px;
   padding:6px 10px;
   border-radius:999px;
-  background:rgba(255,255,255,.12);
 }
-.badge.warn{background:rgba(255,140,0,.15)}
-.badge.good{background:rgba(0,255,140,.15)}
-.badge.done{background:rgba(255,255,255,.15)}
+.badge.accepted{background:rgba(255,160,60,.18)}
+.badge.in_progress{background:rgba(0,255,140,.18)}
+.badge.finished{background:rgba(255,255,255,.16)}
 
-hr{
-  border:0;
-  border-top:1px solid rgba(255,255,255,.12);
-  margin:12px 0
+.small{font-size:13px;opacity:.7}
+
+select{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.18);
+  color:#fff;
+  padding:8px 12px;
+  border-radius:12px;
 }
+
+hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:12px 0}
 </style>
 </head>
 
 <body>
 <div class="card">
 
-  <!-- ===== ГОСТ ===== -->
+<!-- ===== ГОСТ ===== -->
+<div class="screen" id="s0">
+  <h1>Прежде чем мы начнём.</h1>
+  <p>
+    Здесь не подбирают вкус.<br><br>
+    Здесь фиксируют момент.<br><br>
+    То, что вы получите,<br>
+    не существует заранее.
+  </p>
+  <button class="btn" onclick="go('q1')">Продолжить</button>
+</div>
 
-  <div class="screen" id="s0">
-    <h1>Прежде чем мы начнём.</h1>
-    <p>
-      Здесь не подбирают вкус.<br><br>
-      Здесь фиксируют момент.<br><br>
-      То, что вы получите,<br>
-      не существует заранее.
-    </p>
-    <button class="btn" onclick="go('q1')">Продолжить</button>
+<div class="screen" id="q1">
+  <h1>Не думайте долго.</h1>
+  <p>К какому цвету тянется рука сейчас?</p>
+  <div class="option" onclick="pick(1,'Коричневый')">🟤 Коричневый</div>
+  <div class="option" onclick="pick(1,'Зелёный')">🟢 Зелёный</div>
+  <div class="option" onclick="pick(1,'Синий')">🔵 Синий</div>
+  <div class="option" onclick="pick(1,'Фиолетовый')">🟣 Фиолетовый</div>
+  <div class="option" onclick="pick(1,'Белый')">⚪ Белый</div>
+</div>
+
+<div class="screen" id="q2">
+  <h1>Ощущение.</h1>
+  <p>Не вкус. Не запах.</p>
+  <div class="option" onclick="pick(2,'Сухо')">Сухо</div>
+  <div class="option" onclick="pick(2,'Мягко')">Мягко</div>
+  <div class="option" onclick="pick(2,'Плотно')">Плотно</div>
+  <div class="option" onclick="pick(2,'Пусто')">Пусто</div>
+</div>
+
+<div class="screen" id="q3">
+  <h1>Если сделать паузу.</h1>
+  <div class="option" onclick="pick(3,'Орех')">Орех</div>
+  <div class="option" onclick="pick(3,'Фрукт')">Фрукт</div>
+  <div class="option" onclick="pick(3,'Хлеб')">Хлеб</div>
+  <div class="option" onclick="pick(3,'Ничего')">Ничего</div>
+</div>
+
+<div class="screen" id="q4">
+  <h1>Скорость.</h1>
+  <div class="option" onclick="pick(4,'Медленно')">Медленно</div>
+  <div class="option" onclick="pick(4,'Рывками')">Рывками</div>
+  <div class="option" onclick="pick(4,'Ровно')">Ровно</div>
+</div>
+
+<div class="screen" id="q5">
+  <h1>Пространство.</h1>
+  <div class="option" onclick="pick(5,'Полумрак')">Полумрак</div>
+  <div class="option" onclick="pick(5,'Яркий свет')">Яркий свет</div>
+  <div class="option" onclick="pick(5,'Тень')">Тень</div>
+</div>
+
+<div class="screen" id="q6">
+  <h1>Этот момент —</h1>
+  <div class="option" onclick="pick(6,'Начало')">Начало</div>
+  <div class="option" onclick="pick(6,'Продолжение')">Продолжение</div>
+  <div class="option" onclick="pick(6,'Завершение')">Завершение</div>
+</div>
+
+<div class="screen" id="waiting">
+  <h1 id="waitTitle">Заказ принят.</h1>
+  <p id="waitText">Процесс уже запущен.</p>
+  <div class="timer" id="guestTimer">25:00</div>
+</div>
+
+<div class="screen" id="epilogue">
+  <h1>Это было сделано</h1>
+  <p>именно для этого момента.<br><br>Дальше — без интерфейса.</p>
+</div>
+
+<!-- ===== МАСТЕР ===== -->
+<div class="screen" id="master">
+  <div class="row">
+    <h1>Заказы</h1>
+    <select id="filter" onchange="applyFilter()">
+      <option value="all">Все</option>
+      <option value="accepted">Готовятся</option>
+      <option value="in_progress">В процессе</option>
+      <option value="finished">Завершённые</option>
+    </select>
   </div>
-
-  <div class="screen" id="q1">
-    <h1>Не думайте долго.</h1>
-    <p>К какому цвету тянется рука сейчас?</p>
-    <div class="option" onclick="pick(1,'Коричневый')">🟤 Коричневый</div>
-    <div class="option" onclick="pick(1,'Зелёный')">🟢 Зелёный</div>
-    <div class="option" onclick="pick(1,'Синий')">🔵 Синий</div>
-    <div class="option" onclick="pick(1,'Фиолетовый')">🟣 Фиолетовый</div>
-    <div class="option" onclick="pick(1,'Белый')">⚪ Белый</div>
-  </div>
-
-  <div class="screen" id="q2">
-    <h1>Ощущение.</h1>
-    <p>Не вкус. Не запах. Ощущение во рту —</p>
-    <div class="option" onclick="pick(2,'Сухо')">Сухо</div>
-    <div class="option" onclick="pick(2,'Мягко')">Мягко</div>
-    <div class="option" onclick="pick(2,'Плотно')">Плотно</div>
-    <div class="option" onclick="pick(2,'Пусто')">Пусто</div>
-  </div>
-
-  <div class="screen" id="q3">
-    <h1>Если сделать паузу.</h1>
-    <p>Не перекусить. Просто паузу.</p>
-    <div class="option" onclick="pick(3,'Орех')">Орех</div>
-    <div class="option" onclick="pick(3,'Фрукт')">Фрукт</div>
-    <div class="option" onclick="pick(3,'Хлеб')">Хлеб</div>
-    <div class="option" onclick="pick(3,'Ничего')">Ничего</div>
-  </div>
-
-  <div class="screen" id="q4">
-    <h1>Скорость.</h1>
-    <p>Это время хочется прожить —</p>
-    <div class="option" onclick="pick(4,'Медленно')">Медленно</div>
-    <div class="option" onclick="pick(4,'Рывками')">Рывками</div>
-    <div class="option" onclick="pick(4,'Ровно')">Ровно</div>
-    <div class="option" onclick="pick(4,'Не чувствуя времени')">Не чувствуя времени</div>
-  </div>
-
-  <div class="screen" id="q5">
-    <h1>Пространство.</h1>
-    <p>Если закрыть глаза, вокруг сейчас —</p>
-    <div class="option" onclick="pick(5,'Полумрак')">Полумрак</div>
-    <div class="option" onclick="pick(5,'Яркий свет')">Яркий свет</div>
-    <div class="option" onclick="pick(5,'Тень')">Тень</div>
-    <div class="option" onclick="pick(5,'Ничего')">Ничего</div>
-  </div>
-
-  <div class="screen" id="q6">
-    <h1>Этот момент —</h1>
-    <p>не про планы и не про цели.</p>
-    <div class="option" onclick="pick(6,'Начало')">Начало</div>
-    <div class="option" onclick="pick(6,'Продолжение')">Продолжение</div>
-    <div class="option" onclick="pick(6,'Завершение')">Завершение</div>
-  </div>
-
-  <div class="screen" id="waiting">
-    <h1 id="waitTitle">Заказ принят.</h1>
-    <p id="waitText">Кальян уже готовится. Этот процесс нельзя ускорить.</p>
-    <div class="timer" id="guestTimer">25:00</div>
-    <p class="small" id="guestHint"></p>
-  </div>
-
-  <div class="screen" id="epilogue">
-    <h1>Это было сделано</h1>
-    <p>
-      именно для этого момента.<br><br>
-      Дальше — без интерфейса.
-    </p>
-  </div>
-
-  <!-- ===== МАСТЕР ===== -->
-
-  <div class="screen" id="master">
-    <div class="row">
-      <h1 style="margin:0">Заказы</h1>
-      <span class="badge" id="masterStatus">…</span>
-    </div>
-    <div id="orders"></div>
-    <hr>
-    <button class="btn" onclick="refreshOrders(true)">Обновить</button>
-  </div>
+  <div id="orders"></div>
+</div>
 
 </div>
 
 <script>
-/* ====== НАСТРОЙКИ ====== */
 const MASTER_ID = 1292778768;
-const DURATION_MS = 25 * 60 * 1000;
-const BACKEND_BASE = "https://hookah-mix-bot-56x5.onrender.com"; // Render
-/* ======================= */
+const BACKEND = "https://hookah-mix-bot-56x5.onrender.com";
+const DURATION = 25*60*1000;
 
-const tg = window.Telegram?.WebApp;
-const tgUser = tg?.initDataUnsafe?.user;
-const isMaster = !!(tgUser && tgUser.id === MASTER_ID);
+const tg = Telegram.WebApp;
+const user = tg.initDataUnsafe.user;
+const isMaster = user?.id === MASTER_ID;
 
-const guest = {
-  id: tgUser?.id ?? null,
-  name: tgUser?.first_name ?? "Гость",
-  username: tgUser?.username ?? null
-};
-
-const answers = {};
-let guestOrderStart = null;
+let answers = {};
 let guestOrderId = null;
-let guestTimerInt = null;
-let masterPollInt = null;
-let guestStatusPollInt = null;
-
-const LS_ORDER_ID = "hm_last_order_id";
-const LS_ORDER_START = "hm_last_order_start";
-
-function haptic(){ try{ tg?.HapticFeedback?.impactOccurred("light"); }catch{} }
+let timerInt = null;
+let ordersCache = [];
 
 function go(id){
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  const el = document.getElementById(id);
-  if (el) el.classList.add("active");
-  haptic();
-  try{ tg?.expand(); }catch{}
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-function hasActiveScreen(){
-  return !!document.querySelector(".screen.active");
+function pick(step,val){
+  answers[step]=val;
+  if(step<6) go('q'+(step+1));
+  else placeOrder();
 }
 
-function resetGuestState(){
-  Object.keys(answers).forEach(k => delete answers[k]);
-
-  if (guestTimerInt){ clearInterval(guestTimerInt); guestTimerInt = null; }
-  if (guestStatusPollInt){ clearInterval(guestStatusPollInt); guestStatusPollInt = null; }
-
-  guestOrderStart = null;
-  guestOrderId = null;
-
-  localStorage.removeItem(LS_ORDER_ID);
-  localStorage.removeItem(LS_ORDER_START);
-
-  const hint = document.getElementById("guestHint");
-  if (hint) hint.textContent = "";
-
-  const t = document.getElementById("guestTimer");
-  if (t) t.textContent = "25:00";
-
-  const wt = document.getElementById("waitTitle");
-  const wp = document.getElementById("waitText");
-  if (wt) wt.textContent = "Заказ принят.";
-  if (wp) wp.textContent = "Кальян уже готовится. Этот процесс нельзя ускорить.";
-}
-
-/* ====== Гость: ответы ====== */
-function pick(step, value){
-  answers[step] = value;
-  if (step === 1) return go("q2");
-  if (step === 2) return go("q3");
-  if (step === 3) return go("q4");
-  if (step === 4) return go("q5");
-  if (step === 5) return go("q6");
-  if (step === 6) return placeOrder();
-}
-
-/* ====== Создать заказ ====== */
 async function placeOrder(){
-  const now = Date.now();
-  const uid = `${now}_${Math.random().toString(36).slice(2,8)}`;
-
-  guestOrderStart = now;
-  guestOrderId = uid;
-
-  // сохраняем, чтобы polling не терялся
-  localStorage.setItem(LS_ORDER_ID, guestOrderId);
-  localStorage.setItem(LS_ORDER_START, String(guestOrderStart));
+  const id = Date.now();
+  guestOrderId = id;
 
   const order = {
-    id: uid,
-    start: now,
-    duration_ms: DURATION_MS,
-    status: "accepted",
-    guest,
-    answers: {
-      color: answers[1],
-      mouthfeel: answers[2],
-      pause: answers[3],
-      speed: answers[4],
-      space: answers[5],
-      moment: answers[6]
-    }
+    id,
+    start:id,
+    status:"accepted",
+    guest:{name:user.first_name, username:user.username},
+    answers
   };
 
-  go("waiting");
-  startGuestTimer();
+  go('waiting');
+  startTimer(id);
 
-  try{
-    const r = await fetch(`${BACKEND_BASE}/order`, {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify(order)
-    });
-    if(!r.ok) throw new Error("bad_status");
-    document.getElementById("guestHint").textContent = "Принято.";
-  }catch(e){
-    document.getElementById("guestHint").textContent =
-      "Заказ принят локально. Связь с залом недоступна.";
+  await fetch(BACKEND+'/order',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(order)
+  });
+
+  setInterval(checkMyStatus,2500);
+}
+
+function startTimer(start){
+  timerInt=setInterval(()=>{
+    const diff=start+DURATION-Date.now();
+    if(diff<=0){document.getElementById('guestTimer').textContent='Готово';return;}
+    const m=Math.floor(diff/60000);
+    const s=Math.floor(diff%60000/1000);
+    document.getElementById('guestTimer').textContent=`${m}:${String(s).padStart(2,'0')}`;
+  },1000);
+}
+
+async function checkMyStatus(){
+  const r=await fetch(BACKEND+'/orders?limit=200');
+  const data=await r.json();
+  const me=data.orders.find(o=>o.id===guestOrderId);
+  if(!me) return;
+  if(me.status==='in_progress'){
+    waitTitle.textContent='Процесс начался.';
+    waitText.textContent='Финал формируется.';
   }
-
-  startGuestPolling();
+  if(me.status==='finished'){
+    clearInterval(timerInt);
+    go('epilogue');
+  }
 }
 
-/* ====== Таймер гостя ====== */
-function startGuestTimer(){
-  if (guestTimerInt) clearInterval(guestTimerInt);
-  const el = document.getElementById("guestTimer");
-
-  guestTimerInt = setInterval(() => {
-    if (!guestOrderStart) return;
-    const diff = (guestOrderStart + DURATION_MS) - Date.now();
-    if (diff <= 0){ el.textContent = "Готово"; return; }
-    const m = Math.floor(diff / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
-    el.textContent = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-  }, 1000);
+function applyFilter(){
+  renderOrders(ordersCache);
 }
 
-/* ====== Polling гостя ====== */
-function startGuestPolling(){
-  if (guestStatusPollInt) clearInterval(guestStatusPollInt);
-  guestStatusPollInt = setInterval(pollMyOrderStatus, 2500);
-  pollMyOrderStatus();
-}
-
-async function pollMyOrderStatus(){
-  if (!guestOrderId) return;
-
-  try{
-    const r = await fetch(`${BACKEND_BASE}/orders?limit=200`);
-    if (!r.ok) return;
-    const data = await r.json();
-    const list = Array.isArray(data.orders) ? data.orders : [];
-    const mine = list.find(o => String(o.id) === String(guestOrderId));
-    if (!mine) return;
-
-    if (mine.status === "in_progress"){
-      const wt = document.getElementById("waitTitle");
-      const wp = document.getElementById("waitText");
-      if (wt) wt.textContent = "Процесс начался.";
-      if (wp) wp.textContent = "Финал формируется. Не вмешивайтесь.";
-    }
-
-    if (mine.status === "finished"){
-      if (guestTimerInt){ clearInterval(guestTimerInt); guestTimerInt = null; }
-      if (guestStatusPollInt){ clearInterval(guestStatusPollInt); guestStatusPollInt = null; }
-      localStorage.removeItem(LS_ORDER_ID);
-      localStorage.removeItem(LS_ORDER_START);
-      go("epilogue");
-    }
-  }catch(e){}
-}
-
-/* ====== Мастер ====== */
-function fmtRemaining(start){
-  const diff = (Number(start) + DURATION_MS) - Date.now();
-  if (diff <= 0) return { text:"Готово", done:true };
-  const m = Math.floor(diff / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-  return { text:`${m}:${String(s).padStart(2,"0")}`, done:false };
-}
-
-function statusLabel(status){
-  if (status === "finished") return { text:"Завершено", cls:"done" };
-  if (status === "in_progress") return { text:"Процесс", cls:"good" };
-  return { text:"Готовится", cls:"warn" };
-}
-
-async function setOrderStatus(id, status){
-  try{
-    await fetch(`${BACKEND_BASE}/order/${encodeURIComponent(id)}/status`, {
-      method:"PATCH",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ status })
-    });
-  }catch(e){}
-  refreshOrders();
+async function refreshOrders(){
+  const r=await fetch(BACKEND+'/orders?limit=100');
+  const data=await r.json();
+  ordersCache=data.orders;
+  renderOrders(ordersCache);
 }
 
 function renderOrders(list){
-  const box = document.getElementById("orders");
-  box.innerHTML = "";
-
-  if (!list.length){
-    box.innerHTML = `<p class="small">Нет активных заказов.</p>`;
-    return;
-  }
-
-  list.sort((a,b) => Number(b.start) - Number(a.start));
-
-  for (const o of list){
-    const rem = fmtRemaining(o.start);
-    const a = o.answers || {};
-    const who = o.guest?.name || "Гость";
-    const uname = o.guest?.username ? `@${o.guest.username}` : "";
-    const st = statusLabel(o.status);
-
-    let buttonsHTML = "";
-    if (o.status !== "finished"){
-      buttonsHTML = `
-        <div class="btnRow">
-          <button class="btn secondary" onclick="setOrderStatus('${String(o.id).replace(/'/g,"\\'")}', 'in_progress')">
-            Начать
-          </button>
-          <button class="btn" onclick="setOrderStatus('${String(o.id).replace(/'/g,"\\'")}', 'finished')">
-            Завершить
-          </button>
-        </div>
-      `;
-    } else {
-      buttonsHTML = `<div class="small">Статус зафиксирован.</div>`;
-    }
-
-    box.innerHTML += `
-      <div class="order">
-        <div class="row">
-          <div><b>${who}</b> <span class="small">${uname}</span></div>
-          <span class="badge ${st.cls}">${st.text}</span>
-        </div>
-
-        <div class="small">Осталось: ${rem.text}</div>
-        <hr>
-
-        <div class="small">
-          Цвет: <b>${a.color ?? "—"}</b><br>
-          Ощущение: <b>${a.mouthfeel ?? "—"}</b><br>
-          Пауза: <b>${a.pause ?? "—"}</b><br>
-          Скорость: <b>${a.speed ?? "—"}</b><br>
-          Пространство: <b>${a.space ?? "—"}</b><br>
-          Момент: <b>${a.moment ?? "—"}</b>
-        </div>
-
-        ${buttonsHTML}
+  const f=document.getElementById('filter').value;
+  const box=document.getElementById('orders');
+  box.innerHTML='';
+  list.filter(o=>{
+    if(f==='all') return true;
+    return o.status===f;
+  }).forEach(o=>{
+    const el=document.createElement('div');
+    el.className='order';
+    el.innerHTML=`
+      <div class="row">
+        <b>${o.guest.name}</b>
+        <span class="badge ${o.status}">${o.status}</span>
       </div>
+      <div class="small">${Object.values(o.answers).join(' · ')}</div>
+      <hr>
+      ${o.status!=='finished'?`
+        <button class="btn secondary" onclick="setStatus(${o.id},'in_progress')">Начать</button>
+        <button class="btn" onclick="setStatus(${o.id},'finished')">Завершить</button>
+      `:''}
     `;
-  }
+    box.appendChild(el);
+  });
 }
 
-async function refreshOrders(forceToast=false){
-  const badge = document.getElementById("masterStatus");
-  badge.textContent = "обновление…";
-
-  try{
-    const r = await fetch(`${BACKEND_BASE}/orders?limit=200`);
-    if (!r.ok) throw new Error("bad_status");
-    const data = await r.json();
-    renderOrders(Array.isArray(data.orders) ? data.orders : []);
-    badge.textContent = "онлайн";
-    if (forceToast) haptic();
-  }catch(e){
-    badge.textContent = "нет связи";
-    renderOrders([]);
-  }
+async function setStatus(id,status){
+  await fetch(`${BACKEND}/order/${id}/status`,{
+    method:'PATCH',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({status})
+  });
+  refreshOrders();
 }
 
-/* ====== ЕДИНЫЙ СТАРТ ====== */
-function startApp(){
-  if (isMaster){
-    go("master");
+window.onload=()=>{
+  if(isMaster){
+    go('master');
     refreshOrders();
-    if (masterPollInt) clearInterval(masterPollInt);
-    masterPollInt = setInterval(refreshOrders, 3000);
-    return;
+    setInterval(refreshOrders,3000);
+  }else{
+    go('s0');
   }
-
-  // если есть незавершённый заказ в localStorage — возвращаем гостя в ожидание
-  const savedId = localStorage.getItem(LS_ORDER_ID);
-  const savedStart = Number(localStorage.getItem(LS_ORDER_START) || 0);
-
-  if (savedId && savedStart){
-    guestOrderId = savedId;
-    guestOrderStart = savedStart;
-    go("waiting");
-    startGuestTimer();
-    startGuestPolling();
-    return;
-  }
-
-  // обычный старт гостя
-  if (!hasActiveScreen()){
-    resetGuestState();
-    go("s0");
-  } else {
-    const activeId = document.querySelector(".screen.active")?.id;
-    if (activeId === "master"){
-      resetGuestState();
-      go("s0");
-    }
-  }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  try{ tg?.ready(); tg?.expand(); }catch{}
-  startApp();
-
-  try{
-    tg?.onEvent("viewportChanged", () => startApp());
-    tg?.onEvent("visibilityChanged", () => startApp());
-    tg?.onEvent("backButtonClicked", () => {
-      if (!isMaster){
-        resetGuestState();
-        go("s0");
-      }
-    });
-  }catch{}
-});
+};
 </script>
-
 </body>
 </html>
