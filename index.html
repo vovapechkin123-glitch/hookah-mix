@@ -271,19 +271,32 @@ async function pollStatus(){
 }
 
 async function refreshOrders(){
-  const r=await fetch(BACKEND_BASE+"/orders");
-  const {orders}=await r.json();
-  ordersBox=ordersDiv=document.getElementById("orders");
-  ordersBox.innerHTML="";
-  orders.forEach(o=>{
-    ordersBox.innerHTML+=`
+  const r = await fetch(BACKEND_BASE + "/orders");
+  const data = await r.json();
+
+  const ordersBox = document.getElementById("orders");
+  ordersBox.innerHTML = "";
+
+  data.orders.forEach(o => {
+    ordersBox.innerHTML += `
       <div class="order">
-        <b>${o.guest.name}</b>
-        <div class="btnRow">
-          <button class="btn secondary" onclick="setStatus('${o.id}','in_progress')">Начать</button>
-          <button class="btn" onclick="setStatus('${o.id}','finished')">Завершить</button>
+        <div class="row">
+          <b>${o.guest.name}</b>
+          <span class="badge">${o.status}</span>
         </div>
-      </div>`;
+
+        <div class="btnRow">
+          <button class="btn secondary"
+            onclick="setStatus('${o.id}','in_progress')">
+            Начать процесс
+          </button>
+          <button class="btn"
+            onclick="setStatus('${o.id}','finished')">
+            Завершить
+          </button>
+        </div>
+      </div>
+    `;
   });
 }
 
