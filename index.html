@@ -32,7 +32,7 @@ body {
   animation: fade .4s ease;
 }
 
-h1 { margin: 0 0 12px; font-size: 26px; }
+h1 { margin: 0 0 12px; font-size: 24px; }
 p { opacity: .85; line-height: 1.5; }
 
 .screen { display: none; }
@@ -40,7 +40,7 @@ p { opacity: .85; line-height: 1.5; }
 
 .btn {
   width: 100%;
-  margin-top: 16px;
+  margin-top: 18px;
   padding: 14px;
   border-radius: 14px;
   border: 0;
@@ -51,38 +51,16 @@ p { opacity: .85; line-height: 1.5; }
   color: #fff;
 }
 
-.btn.secondary {
-  background: rgba(255,255,255,0.1);
-}
-
-.no-item {
-  padding: 12px 14px;
-  border-radius: 12px;
-  margin: 8px 0;
+.option {
+  padding: 14px;
+  border-radius: 14px;
   background: rgba(255,255,255,0.08);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.no-item input {
-  accent-color: #ff7a18;
-  transform: scale(1.2);
-}
-
-.no-input {
-  width: 100%;
   margin-top: 10px;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.15);
-  background: rgba(0,0,0,0.3);
-  color: #fff;
+  cursor: pointer;
 }
 
-.no-input::placeholder {
-  color: rgba(255,255,255,0.5);
+.option:hover {
+  background: rgba(255,255,255,0.14);
 }
 
 @keyframes fade {
@@ -99,101 +77,122 @@ p { opacity: .85; line-height: 1.5; }
 <div class="screen active" id="s0">
   <h1>Прежде чем мы начнём.</h1>
   <p>
-    Здесь не подбирают вкус.<br>
-    Здесь определяют момент.<br><br>
-    Кальян, который вы получите сегодня,<br>
-    не существует заранее.
+    Здесь не подбирают вкус.<br><br>
+    Здесь фиксируют момент.<br><br>
+    То, что вы получите,<br>
+    не существует заранее<br>
+    и не будет повторено позже.
   </p>
-  <button class="btn" onclick="go(0.5)">Продолжить</button>
+  <button class="btn" onclick="go(1)">Продолжить</button>
 </div>
 
-<!-- ЭКРАН 0.5 -->
-<div class="screen" id="s0.5">
-  <h1>Краткий курс.</h1>
+<!-- ВОПРОС 1 -->
+<div class="screen" id="s1">
+  <h1>Не думайте долго.</h1>
   <p>
-    Все вкусы совместимы.<br><br>
-    Не потому что они подходят друг другу —<br>
-    а потому что сегодня у них есть причина быть вместе.<br><br>
-    Вы не узнаете состав.<br>
-    Вы узнаете результат.
+    Если убрать форму<br>
+    и убрать смысл —<br><br>
+    к какому цвету<br>
+    тянется рука сейчас?
+  </p>
+
+  <div class="option" onclick="answer(1,'Коричневый')">🟤 Коричневый</div>
+  <div class="option" onclick="answer(1,'Зелёный')">🟢 Зелёный</div>
+  <div class="option" onclick="answer(1,'Синий')">🔵 Синий</div>
+  <div class="option" onclick="answer(1,'Фиолетовый')">🟣 Фиолетовый</div>
+  <div class="option" onclick="answer(1,'Белый')">⚪ Белый</div>
+</div>
+
+<!-- ВОПРОС 2 -->
+<div class="screen" id="s2">
+  <h1>Ощущение.</h1>
+  <p>
+    Не вкус.<br>
+    Не запах.<br><br>
+    Ощущение во рту<br>
+    в эту секунду.
+  </p>
+
+  <div class="option" onclick="answer(2,'Сухо')">Сухо</div>
+  <div class="option" onclick="answer(2,'Мягко')">Мягко</div>
+  <div class="option" onclick="answer(2,'Плотно')">Плотно</div>
+  <div class="option" onclick="answer(2,'Пусто')">Пусто</div>
+</div>
+
+<!-- ВОПРОС 3 -->
+<div class="screen" id="s3">
+  <h1>Если сделать паузу.</h1>
+  <p>
+    Не перекусить.<br><br>
+    Просто сделать паузу.
+  </p>
+
+  <div class="option" onclick="answer(3,'Орех')">Орех</div>
+  <div class="option" onclick="answer(3,'Фрукт')">Фрукт</div>
+  <div class="option" onclick="answer(3,'Хлеб')">Хлеб</div>
+  <div class="option" onclick="answer(3,'Ничего')">Ничего</div>
+</div>
+
+<!-- ВОПРОС 4 -->
+<div class="screen" id="s4">
+  <h1>Скорость.</h1>
+  <p>
+    Это время<br>
+    хочется прожить —
+  </p>
+
+  <div class="option" onclick="answer(4,'Медленно')">Медленно</div>
+  <div class="option" onclick="answer(4,'Рывками')">Рывками</div>
+  <div class="option" onclick="answer(4,'Ровно')">Ровно</div>
+  <div class="option" onclick="answer(4,'Без времени')">Не чувствуя времени</div>
+</div>
+
+<!-- ВОПРОС 5 -->
+<div class="screen" id="s5">
+  <h1>Пространство.</h1>
+  <p>
+    Если закрыть глаза,<br>
+    вокруг сейчас —
+  </p>
+
+  <div class="option" onclick="answer(5,'Полумрак')">Полумрак</div>
+  <div class="option" onclick="answer(5,'Яркий свет')">Яркий свет</div>
+  <div class="option" onclick="answer(5,'Тень')">Тень</div>
+  <div class="option" onclick="answer(5,'Ничего')">Ничего</div>
+</div>
+
+<!-- ВОПРОС 6 -->
+<div class="screen" id="s6">
+  <h1>Этот момент —</h1>
+  <p>
+    не про планы<br>
+    и не про цели.
+  </p>
+
+  <div class="option" onclick="answer(6,'Начало')">Начало</div>
+  <div class="option" onclick="answer(6,'Продолжение')">Продолжение</div>
+  <div class="option" onclick="answer(6,'Завершение')">Завершение</div>
+</div>
+
+<!-- ФИНАЛ -->
+<div class="screen" id="s7">
+  <h1>Достаточно.</h1>
+  <p>
+    Я услышал больше,<br>
+    чем вы сказали.<br><br>
+    Решение будет принято<br>
+    вне этого экрана.
   </p>
   <p style="font-size:13px;opacity:.6">
-    Это не эксперимент.<br>
-    Это подача.
+    Сегодняшний кальян<br>
+    не нуждается в описании.
   </p>
-  <button class="btn" onclick="go(1)">Я понял</button>
-</div>
-
-<!-- ЭКРАН 1 -->
-<div class="screen" id="s1">
-  <h1>Вечер начинается.</h1>
-  <p>
-    Я приготовлю для вас кальян,<br>
-    соответствующий этому моменту.<br><br>
-    Вы не выбираете вкус.<br>
-    Вы можете обозначить только границы.
-  </p>
-  <button class="btn" onclick="go(2)">Продолжить</button>
-</div>
-
-<!-- ЭКРАН 2 -->
-<div class="screen" id="s2">
-  <h1>Скажите «нет».</h1>
-  <p>Не желания. Только исключения.</p>
-
-  <label class="no-item"><input type="checkbox" value="Сладкое"> Сладкое</label>
-  <label class="no-item"><input type="checkbox" value="Свежесть"> Свежесть / холод</label>
-  <label class="no-item"><input type="checkbox" value="Десерт"> Десертные ноты</label>
-  <label class="no-item"><input type="checkbox" value="Фрукты"> Яркие фрукты</label>
-  <label class="no-item"><input type="checkbox" value="Пряности"> Пряности</label>
-
-  <input class="no-input" type="text"
-    placeholder="Например: без мяты, не кисло"
-    oninput="state.customNo = this.value">
-
-  <button class="btn" onclick="saveNo()">Принять</button>
-  <button class="btn secondary" onclick="go(1)">Назад</button>
-</div>
-
-<!-- ЭКРАН 3 -->
-<div class="screen" id="s3">
-  <h1>…</h1>
-  <p id="pauseText">Я услышал.</p>
-</div>
-
-<!-- ЭКРАН 4 -->
-<div class="screen" id="s4">
-  <h1 id="courseTitle"></h1>
-  <p>
-    Вкус, который не стремится понравиться.<br>
-    Он существует только в этом моменте.
-  </p>
-  <p style="font-size:13px;opacity:.6">Рецепт не фиксируется.</p>
-  <button class="btn" onclick="go(5)">Далее</button>
-</div>
-
-<!-- ЭКРАН 5 -->
-<div class="screen" id="s5">
-  <h1>Если вы хотите вернуться —</h1>
-  <p>произнесите это.</p>
-
-  <input class="no-input" type="text"
-    placeholder="тот же самый"
-    onkeydown="checkSame(event)">
-
-  <p id="masterReply" style="margin-top:12px;opacity:.85"></p>
-
-  <button class="btn secondary" onclick="go(4)">Назад</button>
 </div>
 
 </div>
 
 <script>
-const state = {
-  exclusions: [],
-  customNo: '',
-  course: Math.floor(Math.random() * 9) + 1
-};
+const answers = {};
 
 function go(n) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -202,43 +201,9 @@ function go(n) {
     Telegram.WebApp.HapticFeedback.impactOccurred("light");
 }
 
-function saveNo() {
-  state.exclusions = [...document.querySelectorAll('#s2 input:checked')]
-    .map(i => i.value);
-  go(3);
-  pauseSequence();
-}
-
-function pauseSequence() {
-  const texts = ["Я услышал.", "Этого достаточно.", "Решение принято."];
-  let i = 0;
-  const el = document.getElementById('pauseText');
-  const t = setInterval(() => {
-    el.textContent = texts[i++];
-    if (i === texts.length) {
-      clearInterval(t);
-      setTimeout(showResult, 800);
-    }
-  }, 900);
-}
-
-function showResult() {
-  document.getElementById('courseTitle').textContent =
-    "Подача " + toRoman(state.course);
-  go(4);
-}
-
-function checkSame(e) {
-  if (e.key === "Enter") {
-    document.getElementById('masterReply').innerHTML =
-      "Если вам захочется «тот же самый» —<br>значит, вы пропустили главное.<br><br><em>Я не повторяю. Я продолжаю.</em>";
-    e.target.disabled = true;
-  }
-}
-
-function toRoman(n) {
-  const r = ["","I","II","III","IV","V","VI","VII","VIII","IX","X"];
-  return r[n] || n;
+function answer(step, value) {
+  answers[step] = value;
+  go(step + 1);
 }
 </script>
 
