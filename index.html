@@ -153,24 +153,41 @@ p { opacity: .85; line-height: 1.5; }
   <p style="font-size:13px;opacity:.6">
     Ориентировочное время ожидания.
   </p>
+
+  <!-- кнопка видна ТОЛЬКО мастеру -->
+  <button class="btn secondary" id="openMasterBtn" style="display:none" onclick="openMaster()">
+    Открыть экран мастера
+  </button>
 </div>
 
 <!-- МАСТЕР -->
 <div class="screen" id="master">
   <h1>Экран мастера</h1>
   <div class="master" id="masterData"></div>
+  <button class="btn secondary" onclick="go(7)">Назад</button>
 </div>
 
 </div>
 
 <script>
+/* ===== НАСТРОЙКА ===== */
+const MASTER_ID = 1292778768;
+/* ==================== */
+
 const answers = {};
 let endTime = null;
 let timerInt = null;
+let isMaster = false;
+
+// определяем роль
+if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+  const uid = Telegram.WebApp.initDataUnsafe.user.id;
+  isMaster = uid === MASTER_ID;
+}
 
 function go(n) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('s' + n)?.classList.add('active');
+  document.getElementById(n === 'master' ? 'master' : 's' + n).classList.add('active');
 }
 
 function answer(q, val) {
@@ -183,6 +200,10 @@ function finish(val) {
   endTime = Date.now() + 25 * 60 * 1000;
   go(7);
   startTimer();
+
+  if (isMaster) {
+    document.getElementById('openMasterBtn').style.display = 'block';
+  }
 }
 
 function startTimer() {
@@ -200,24 +221,14 @@ function startTimer() {
   }, 1000);
 }
 
-// долгий тап — экран мастера
-let pressTimer;
-document.getElementById('orderTitle').addEventListener('touchstart', () => {
-  pressTimer = setTimeout(showMaster, 3000);
-});
-document.getElementById('orderTitle').addEventListener('touchend', () => {
-  clearTimeout(pressTimer);
-});
-
-function showMaster() {
-  go('master');
+function openMaster() {
   const list = Object.entries(answers)
     .map(([k,v]) => `<div>${k}: ${v}</div>`)
     .join('');
   document.getElementById('masterData').innerHTML = list;
+  go('master');
 }
 </script>
 
 </body>
-  
 </html>
