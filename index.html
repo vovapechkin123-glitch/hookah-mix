@@ -46,13 +46,15 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   font-size:16px;
   font-weight:700;
   cursor:pointer;
-  background:linear-gradient(90deg,#ff7a18,#ff3d77);
-  color:#fff;
-}
-
-.btn.secondary{
   background:rgba(255,255,255,.10);
   border:1px solid rgba(255,255,255,.14);
+  color:#fff;
+}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.btn.primary{
+  background:rgba(237,230,214,.12);
+  border:1px solid rgba(237,230,214,.22);
 }
 
 .btnRow{
@@ -68,8 +70,13 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   background:rgba(255,255,255,.08);
   margin-top:10px;
   cursor:pointer;
+  border:1px solid rgba(255,255,255,.10);
 }
 .option:hover{background:rgba(255,255,255,.14)}
+.option.selected{
+  background:rgba(237,230,214,.12);
+  border:1px solid rgba(237,230,214,.28);
+}
 
 .small{font-size:13px;opacity:.7}
 
@@ -85,14 +92,21 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   border-radius:14px;
   padding:14px;
   margin-top:12px;
+  border:1px solid rgba(255,255,255,.10);
 }
 
-.row{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  flex-wrap:wrap;
-  align-items:center
+hr{
+  border:0;
+  border-top:1px solid rgba(255,255,255,.12);
+  margin:12px 0
+}
+
+.fadeIn{
+  animation:fadeIn .18s ease-out;
+}
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(6px)}
+  to{opacity:1; transform:translateY(0)}
 }
 
 .badge{
@@ -100,265 +114,620 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   padding:6px 10px;
   border-radius:999px;
   background:rgba(255,255,255,.12);
+  display:inline-block;
 }
-.badge.warn{background:rgba(255,140,0,.15)}
 .badge.good{background:rgba(0,255,140,.15)}
+.badge.warn{background:rgba(255,140,0,.15)}
 .badge.done{background:rgba(255,255,255,.15)}
-
-hr{
-  border:0;
-  border-top:1px solid rgba(255,255,255,.12);
-  margin:12px 0
-}
 </style>
 </head>
 
 <body>
 <div class="card">
 
-<!-- ===== ГОСТ: СТАРТ ===== -->
-
+<!-- ===== ПРОЛОГ ===== -->
 <div class="screen" id="s0">
   <h1>Прежде чем мы начнём.</h1>
   <p>
-    Здесь не подбирают вкус.<br><br>
+    Здесь не выбирают вкус.<br><br>
     Здесь фиксируют момент.<br><br>
     То, что вы получите,<br>
     не существует заранее.
   </p>
-  <button class="btn" onclick="go('q1')">Продолжить</button>
+
+  <button class="btn primary" onclick="go('door')">Продолжить</button>
+  <button class="btn" id="btnHistory" style="display:none" onclick="showHistory()">Ваши моменты</button>
 </div>
 
-<!-- ===== ГОСТ: ВОПРОСЫ ===== -->
-
-<div class="screen" id="q1">
-  <h1>Не думайте долго.</h1>
-  <p>К какому цвету тянется рука сейчас?</p>
-  <div class="option" onclick="pick(1,'Коричневый')">🟤 Коричневый</div>
-  <div class="option" onclick="pick(1,'Зелёный')">🟢 Зелёный</div>
-  <div class="option" onclick="pick(1,'Синий')">🔵 Синий</div>
-  <div class="option" onclick="pick(1,'Фиолетовый')">🟣 Фиолетовый</div>
-  <div class="option" onclick="pick(1,'Белый')">⚪ Белый</div>
+<!-- ===== ДВЕРЬ (ГЕО) ===== -->
+<div class="screen" id="door">
+  <h1>Дверь открывается только внутри.</h1>
+  <p id="doorText">
+    Мы не готовим это снаружи.<br><br>
+    Разрешите местоположение.<br>
+    Один раз.
+  </p>
+  <button class="btn primary" id="btnDoor" onclick="doorCheck()">Открыть дверь</button>
+  <button class="btn" onclick="go('s0')">Назад</button>
 </div>
 
-<div class="screen" id="q2">
-  <h1>Ощущение.</h1>
-  <p>Не вкус. Не запах. Ощущение во рту —</p>
-  <div class="option" onclick="pick(2,'Сухо')">Сухо</div>
-  <div class="option" onclick="pick(2,'Мягко')">Мягко</div>
-  <div class="option" onclick="pick(2,'Плотно')">Плотно</div>
-  <div class="option" onclick="pick(2,'Пусто')">Пусто</div>
+<!-- ===== СНАРУЖИ ===== -->
+<div class="screen" id="outside">
+  <h1>Снаружи это не готовят.</h1>
+  <p id="outsideText">Вы слишком далеко.</p>
+  <div class="btnRow">
+    <button class="btn primary" onclick="doorCheck()">Проверить снова</button>
+    <button class="btn" onclick="go('s0')">Вернуться</button>
+  </div>
 </div>
 
-<div class="screen" id="q3">
-  <h1>Если сделать паузу.</h1>
-  <p>Не перекусить. Просто паузу.</p>
-  <div class="option" onclick="pick(3,'Орех')">Орех</div>
-  <div class="option" onclick="pick(3,'Фрукт')">Фрукт</div>
-  <div class="option" onclick="pick(3,'Хлеб')">Хлеб</div>
-  <div class="option" onclick="pick(3,'Ничего')">Ничего</div>
+<!-- ===== БЕЗ ДОПУСКА ===== -->
+<div class="screen" id="no-permission">
+  <h1>Без допуска нельзя.</h1>
+  <p>
+    Это не просьба.<br>
+    Это правило.
+  </p>
+  <div class="btnRow">
+    <button class="btn primary" onclick="doorCheck()">Попробовать снова</button>
+    <button class="btn" onclick="go('s0')">Вернуться</button>
+  </div>
 </div>
 
-<div class="screen" id="q4">
-  <h1>Скорость.</h1>
-  <p>Это время хочется прожить —</p>
-  <div class="option" onclick="pick(4,'Медленно')">Медленно</div>
-  <div class="option" onclick="pick(4,'Рывками')">Рывками</div>
-  <div class="option" onclick="pick(4,'Ровно')">Ровно</div>
-  <div class="option" onclick="pick(4,'Не чувствуя времени')">Не чувствуя времени</div>
+<!-- ===== ОШИБКА ГЕО ===== -->
+<div class="screen" id="geo-error">
+  <h1>Устройство молчит.</h1>
+  <p>
+    Оно не отдаёт местоположение.<br>
+    Значит, сегодня — без этого.
+  </p>
+  <div class="btnRow">
+    <button class="btn primary" onclick="doorCheck()">Попробовать снова</button>
+    <button class="btn" onclick="go('s0')">Вернуться</button>
+  </div>
 </div>
 
-<div class="screen" id="q5">
-  <h1>Пространство.</h1>
-  <p>Если закрыть глаза, вокруг сейчас —</p>
-  <div class="option" onclick="pick(5,'Полумрак')">Полумрак</div>
-  <div class="option" onclick="pick(5,'Яркий свет')">Яркий свет</div>
-  <div class="option" onclick="pick(5,'Тень')">Тень</div>
-  <div class="option" onclick="pick(5,'Ничего')">Ничего</div>
+<!-- ===== КУРС (7 ВОПРОСОВ) ===== -->
+<div class="screen" id="course">
+  <h1 id="qTitle">…</h1>
+  <p id="qText">…</p>
+  <div id="qOptions"></div>
+  <div id="qFooter" style="margin-top:12px"></div>
 </div>
 
-<div class="screen" id="q6">
-  <h1>Этот момент —</h1>
-  <p>не про планы и не про цели.</p>
-  <div class="option" onclick="pick(6,'Начало')">Начало</div>
-  <div class="option" onclick="pick(6,'Продолжение')">Продолжение</div>
-  <div class="option" onclick="pick(6,'Завершение')">Завершение</div>
+<!-- ===== ПОДТВЕРЖДЕНИЕ ===== -->
+<div class="screen" id="confirm">
+  <h1>Я услышал.</h1>
+  <p>
+    Вы выбрали условия.<br>
+    Остальное — моя работа.
+  </p>
+  <button class="btn primary" id="btnConfirm" onclick="confirmMoment()">Подтвердить</button>
+  <button class="btn" onclick="backToLastQuestion()">Вернуться</button>
+  <p class="small" id="confirmHint" style="margin-top:10px"></p>
 </div>
 
-<!-- ===== ГОСТ: ОЖИДАНИЕ ===== -->
-
+<!-- ===== ОЖИДАНИЕ ===== -->
 <div class="screen" id="waiting">
-  <h1 id="waitTitle">Заказ принят.</h1>
-  <p id="waitText">Кальян уже готовится.</p>
+  <h1 id="waitTitle">Процесс начался.</h1>
+  <p id="waitText">Не торопите момент.</p>
   <div class="timer" id="guestTimer">25:00</div>
   <p class="small" id="guestHint"></p>
 </div>
 
-<!-- ===== ГОСТ: ЭПИЛОГ ===== -->
-
+<!-- ===== ЭПИЛОГ ===== -->
 <div class="screen" id="epilogue">
   <h1>Это было сделано</h1>
   <p>
     именно для этого момента.<br><br>
     Дальше — без интерфейса.
   </p>
+  <button class="btn primary" onclick="showHistory()">Вернуться</button>
 </div>
 
-<!-- ===== ГОСТ: ЛИЧНЫЙ КАБИНЕТ ===== -->
-
-<div class="screen" id="guest-dashboard">
-  <h1>Ваши кальяны</h1>
-  <div id="guestOrders"></div>
-  <button class="btn" onclick="resetGuestState(); go('q1')">Заказать ещё один</button>
-</div>
-
-<!-- ===== МАСТЕР ===== -->
-
-<div class="screen" id="master">
-  <div class="row">
-    <h1 style="margin:0">Заказы</h1>
-    <span class="badge" id="masterStatus">…</span>
-  </div>
-  <div id="orders"></div>
+<!-- ===== ИСТОРИЯ ===== -->
+<div class="screen" id="history">
+  <h1>Ваши моменты</h1>
+  <div id="historyList"></div>
+  <button class="btn primary" onclick="startNewMoment()">Создать новый момент</button>
 </div>
 
 </div>
 
 <script>
 /* ===== НАСТРОЙКИ ===== */
-const MASTER_ID = 1292778768;
-const DURATION_MS = 25 * 60 * 1000;
 const BACKEND_BASE = "https://hookah-mix-bot-56x5.onrender.com";
+const DURATION_MS = 25 * 60 * 1000;
 
-const tg = window.Telegram?.WebApp;
-const tgUser = tg?.initDataUnsafe?.user;
-const isMaster = tgUser && tgUser.id === MASTER_ID;
-
-const guest = {
-  id: tgUser?.id,
-  name: tgUser?.first_name || "Гость"
+/* Геозона */
+const VENUE = {
+  lat: 56.482717,
+  lng: 84.952422,
+  radius: 40
 };
 
-const LS_ORDER_IDS = "hm_orders_ids";
+/* LocalStorage keys */
+const LS_MOMENTS = "tm_moments";
+const LS_ACTIVE = "tm_active_moment";
 
-let answers = {};
+/* Telegram */
+const tg = window.Telegram?.WebApp;
+tg?.expand?.();
+
+const tgUser = tg?.initDataUnsafe?.user;
+const guest = {
+  id: tgUser?.id || null,
+  name: tgUser?.first_name || "Гость",
+  username: tgUser?.username || null
+};
+
 let guestTimerInt = null;
+
+/* ===== ВОПРОСЫ ===== */
+const QUESTIONS = [
+  {
+    id: "q1",
+    title: "Не думайте долго.",
+    text: "Что ближе прямо сейчас?",
+    type: "single",
+    options: ["Тепло","Холод","Тень","Свет"]
+  },
+  {
+    id: "q2",
+    title: "Близость.",
+    text: "Насколько близко подойти?",
+    type: "single",
+    options: ["На расстоянии","Ближе","Почти вплотную","Без шагов назад"]
+  },
+  {
+    id: "q3",
+    title: "Источник.",
+    text: "Откуда это должно прийти?",
+    type: "single",
+    options: ["Из земли","С веток","Из печи","Из дыма"]
+  },
+  {
+    id: "q4",
+    title: "Материал.",
+    text: "Если бы это можно было потрогать — оно было бы…",
+    type: "single",
+    options: ["Бархат","Стекло","Дерево","Камень"]
+  },
+  {
+    id: "q5",
+    title: "Касание.",
+    text: "Это должно коснуться вас как…",
+    type: "single",
+    options: ["Шерсть","Хлопок","Металл","Лёд"]
+  },
+  {
+    id: "q6",
+    title: "Сегодня нельзя.",
+    text: "Выберите то, что разрушит момент.",
+    type: "multi",
+    max: 3,
+    options: ["Детская сладость","Кислая агрессия","Парфюм","Компот","Медицинская свежесть","Тяжёлые специи"]
+  },
+  {
+    id: "q7",
+    title: "Контроль.",
+    text: "Сколько контроля вы оставляете себе?",
+    type: "single",
+    options: ["Весь","Почти весь","Меньше половины","Ничего"]
+  }
+];
+
+let currentQIndex = 0;
+let answers = {}; // {q1: "...", q6: ["...","..."]}
 
 /* ===== UI ===== */
 function go(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id)?.classList.add("active");
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active","fadeIn"));
+  const el = document.getElementById(id);
+  if(el){
+    el.classList.add("active","fadeIn");
+  }
 }
 
-/* ===== ГОСТ ===== */
-function pick(step,val){
-  answers[step]=val;
-  if(step<6) go("q"+(step+1));
-  else placeOrder();
+function haptic(type="light"){
+  try{
+    tg?.HapticFeedback?.impactOccurred?.(type);
+  }catch(e){}
 }
 
-async function placeOrder(){
-  const id = Date.now()+"_"+Math.random().toString(36).slice(2,6);
-  const order = {
-    id,
-    start:Date.now(),
-    status:"accepted",
-    guest,
-    answers
-  };
+/* ===== ХРАНИЛИЩЕ МОМЕНТОВ ===== */
+function loadMoments(){
+  try{
+    return JSON.parse(localStorage.getItem(LS_MOMENTS)||"[]");
+  }catch(e){
+    return [];
+  }
+}
 
-  const ids = JSON.parse(localStorage.getItem(LS_ORDER_IDS)||"[]");
-  ids.push(id);
-  localStorage.setItem(LS_ORDER_IDS,JSON.stringify(ids));
+function saveMoments(list){
+  localStorage.setItem(LS_MOMENTS, JSON.stringify(list));
+}
 
-  go("waiting");
-  startTimer(order.start);
+function getActiveMoment(){
+  try{
+    return JSON.parse(localStorage.getItem(LS_ACTIVE)||"null");
+  }catch(e){
+    return null;
+  }
+}
 
-  await fetch(`${BACKEND_BASE}/order`,{
+function setActiveMoment(m){
+  localStorage.setItem(LS_ACTIVE, JSON.stringify(m));
+}
+
+function clearActiveMoment(){
+  localStorage.removeItem(LS_ACTIVE);
+}
+
+/* ===== ЭПИТЕТЫ ===== */
+const EPITHET_ADJ = [
+  "Тёплая","Холодная","Тёмная","Светлая","Тихая","Резкая","Сухая",
+  "Мягкая","Плотная","Чистая","Строгая","Нервная","Тяжёлая","Лёгкая"
+];
+
+const EPITHET_NOUN = [
+  "Пауза","Точность","Тишина","Сцена","Линия","Грань","Комната",
+  "Ночь","Ясность","Тень","Привычка","Воля","Траектория","Память"
+];
+
+function lastEpithets(n=5){
+  const list = loadMoments();
+  return list.slice(-n).map(m=>m.epithet).filter(Boolean);
+}
+
+function generateEpithet(){
+  const recent = new Set(lastEpithets(5));
+  for(let i=0;i<30;i++){
+    const a = EPITHET_ADJ[Math.floor(Math.random()*EPITHET_ADJ.length)];
+    const b = EPITHET_NOUN[Math.floor(Math.random()*EPITHET_NOUN.length)];
+    const e = `${a} ${b}`;
+    if(!recent.has(e)) return e;
+  }
+  // fallback
+  return `${EPITHET_ADJ[0]} ${EPITHET_NOUN[0]}`;
+}
+
+/* ===== GEO ===== */
+function getGeolocation(){
+  return new Promise((resolve,reject)=>{
+    if(!navigator.geolocation){
+      reject({code:"not_supported"});
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        accuracy: pos.coords.accuracy
+      }),
+      err => reject(err),
+      { enableHighAccuracy:true, timeout:12000, maximumAge:0 }
+    );
+  });
+}
+
+async function apiGeoCheck(lat,lng){
+  const r = await fetch(`${BACKEND_BASE}/geo/check`,{
     method:"POST",
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(order)
+    body: JSON.stringify({
+      lat, lng,
+      venue: VENUE
+    })
   });
+  return r.json();
 }
 
+/* ===== ДВЕРЬ ===== */
+async function doorCheck(){
+  const btn = document.getElementById("btnDoor");
+  const txt = document.getElementById("doorText");
+  btn.disabled = true;
+  txt.innerHTML = "Секунду.<br>Мы проверяем, где вы.";
+
+  try{
+    const geo = await getGeolocation();
+    const data = await apiGeoCheck(geo.lat, geo.lng);
+
+    if(data?.ok && data.allowed){
+      haptic("medium");
+      startCourse();
+      return;
+    }
+
+    const dist = Math.round(data?.distanceMeters ?? 9999);
+    document.getElementById("outsideText").innerHTML =
+      `Вы слишком далеко.<br>Сейчас между нами примерно <b>${dist} м</b>.<br><br>Подойдите ближе. И попробуйте снова.`;
+    go("outside");
+  }catch(e){
+    if(e?.code === 1){
+      go("no-permission");
+    }else if(e?.code === "not_supported"){
+      go("geo-error");
+    }else{
+      go("geo-error");
+    }
+  }finally{
+    btn.disabled = false;
+    txt.innerHTML = `Мы не готовим это снаружи.<br><br>Разрешите местоположение.<br>Один раз.`;
+  }
+}
+
+/* ===== КУРС ===== */
+function startCourse(){
+  answers = {};
+  currentQIndex = 0;
+  renderQuestion();
+  go("course");
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[currentQIndex];
+  document.getElementById("qTitle").textContent = q.title;
+  document.getElementById("qText").textContent = q.text;
+
+  const box = document.getElementById("qOptions");
+  const footer = document.getElementById("qFooter");
+  box.innerHTML = "";
+  footer.innerHTML = "";
+
+  if(q.type === "single"){
+    q.options.forEach(opt=>{
+      const div = document.createElement("div");
+      div.className = "option";
+      div.textContent = opt;
+      div.onclick = () => {
+        haptic("light");
+        answers[q.id] = opt;
+
+        // маленький "Вы уверены?" только на q2 если самый жесткий вариант
+        if(q.id === "q2" && opt === "Без шагов назад"){
+          // микро-пауза, но без отдельного экрана
+          setTimeout(nextQuestion, 250);
+        }else{
+          nextQuestion();
+        }
+      };
+      box.appendChild(div);
+    });
+  }
+
+  if(q.type === "multi"){
+    const selected = new Set(answers[q.id] || []);
+    const max = q.max || 3;
+
+    q.options.forEach(opt=>{
+      const div = document.createElement("div");
+      div.className = "option" + (selected.has(opt) ? " selected" : "");
+      div.textContent = opt;
+
+      div.onclick = () => {
+        haptic("light");
+        if(selected.has(opt)){
+          selected.delete(opt);
+        }else{
+          if(selected.size >= max) return;
+          selected.add(opt);
+        }
+        answers[q.id] = Array.from(selected);
+        renderQuestion();
+      };
+
+      box.appendChild(div);
+    });
+
+    const count = document.createElement("div");
+    count.className = "small";
+    count.textContent = `Выбрано: ${selected.size}/${max}`;
+    footer.appendChild(count);
+
+    const btn = document.createElement("button");
+    btn.className = "btn primary";
+    btn.textContent = "Дальше";
+    btn.onclick = () => {
+      haptic("medium");
+      nextQuestion();
+    };
+    footer.appendChild(btn);
+  }
+}
+
+function nextQuestion(){
+  if(currentQIndex < QUESTIONS.length - 1){
+    currentQIndex++;
+    renderQuestion();
+  }else{
+    go("confirm");
+  }
+}
+
+function backToLastQuestion(){
+  // возвращаемся на последний вопрос
+  currentQIndex = QUESTIONS.length - 1;
+  renderQuestion();
+  go("course");
+}
+
+/* ===== ПОДТВЕРЖДЕНИЕ ===== */
+async function confirmMoment(){
+  const btn = document.getElementById("btnConfirm");
+  const hint = document.getElementById("confirmHint");
+  btn.disabled = true;
+  hint.textContent = "Проверяем допуск…";
+
+  try{
+    // повторная гео-проверка (по твоему решению B)
+    const geo = await getGeolocation();
+    const data = await apiGeoCheck(geo.lat, geo.lng);
+
+    if(!data?.ok || !data.allowed){
+      const dist = Math.round(data?.distanceMeters ?? 9999);
+      hint.innerHTML = `Сейчас вы слишком далеко: примерно <b>${dist} м</b>.`;
+      setTimeout(()=>go("outside"), 600);
+      return;
+    }
+
+    // создаём момент
+    const id = Date.now()+"_"+Math.random().toString(36).slice(2,6);
+    const epithet = generateEpithet();
+
+    const moment = {
+      id,
+      guest,
+      createdAt: Date.now(),
+      startAt: Date.now(),
+      endAt: Date.now() + DURATION_MS,
+      status: "active",
+      epithet,
+      answers,
+      venue: VENUE
+    };
+
+    // сохраняем локально
+    const list = loadMoments();
+    list.push({
+      id: moment.id,
+      createdAt: moment.createdAt,
+      status: "active",
+      epithet: moment.epithet
+    });
+    saveMoments(list);
+    setActiveMoment(moment);
+
+    // отправляем на backend (на будущее)
+    await fetch(`${BACKEND_BASE}/moment`,{
+      method:"POST",
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(moment)
+    });
+
+    haptic("heavy");
+    go("waiting");
+    startTimer(moment.startAt);
+
+  }catch(e){
+    hint.textContent = "Кухня молчит.";
+  }finally{
+    btn.disabled = false;
+    setTimeout(()=>{ hint.textContent=""; }, 2000);
+  }
+}
+
+/* ===== ОЖИДАНИЕ ===== */
 function startTimer(start){
   clearInterval(guestTimerInt);
-  guestTimerInt=setInterval(()=>{
-    const d=(start+DURATION_MS)-Date.now();
-    if(d<=0){document.getElementById("guestTimer").textContent="Готово";return;}
-    const m=Math.floor(d/60000);
-    const s=Math.floor((d%60000)/1000);
-    document.getElementById("guestTimer").textContent=`${m}:${String(s).padStart(2,"0")}`;
-  },1000);
+
+  const hint = document.getElementById("guestHint");
+  hint.textContent = "";
+
+  guestTimerInt = setInterval(()=>{
+    const d = (start + DURATION_MS) - Date.now();
+
+    if(d <= 0){
+      document.getElementById("guestTimer").textContent = "Готово";
+      finishActiveMoment();
+      clearInterval(guestTimerInt);
+      setTimeout(()=>go("epilogue"), 500);
+      return;
+    }
+
+    const m = Math.floor(d/60000);
+    const s = Math.floor((d%60000)/1000);
+    document.getElementById("guestTimer").textContent = `${m}:${String(s).padStart(2,"0")}`;
+
+    // кинематографичные подсказки
+    if(d < 3*60*1000) hint.textContent = "Скоро.";
+    else if(d < 10*60*1000) hint.textContent = "Вы почти там.";
+    else if(d < 20*60*1000) hint.textContent = "Сейчас всё решается.";
+    else hint.textContent = "";
+
+  }, 1000);
 }
 
-/* ===== ЛИЧНЫЙ КАБИНЕТ ГОСТЯ ===== */
-async function showGuestDashboard(){
-  const ids = JSON.parse(localStorage.getItem(LS_ORDER_IDS)||"[]");
-  if(!ids.length){ go("s0"); return; }
+function finishActiveMoment(){
+  const active = getActiveMoment();
+  if(!active) return;
 
-  const r = await fetch(`${BACKEND_BASE}/orders?limit=200`);
-  const data = await r.json();
+  // обновляем историю
+  const list = loadMoments();
+  const idx = list.findIndex(x => x.id === active.id);
+  if(idx !== -1){
+    list[idx].status = "done";
+    saveMoments(list);
+  }
 
-  const list = data.orders.filter(o=>ids.includes(o.id));
-  const box = document.getElementById("guestOrders");
-  box.innerHTML="";
-
-  if(!list.length){ go("s0"); return; }
-
-  list.sort((a,b)=>b.start-a.start);
-
-  list.forEach(o=>{
-    let text="Готовится";
-    if(o.status==="in_progress") text="Процесс запущен";
-    if(o.status==="finished") text="Этот момент уже случился";
-
-    box.innerHTML+=`
-      <div class="order">
-        <b>${text}</b><br>
-        <span class="small">${new Date(o.start).toLocaleTimeString()}</span>
-      </div>`;
-  });
-
-  go("guest-dashboard");
+  clearActiveMoment();
 }
 
-/* ===== МАСТЕР ===== */
-async function refreshOrders(){
-  const r = await fetch(`${BACKEND_BASE}/orders?limit=200`);
-  const data = await r.json();
-  const box=document.getElementById("orders");
-  box.innerHTML="";
-  data.orders.forEach(o=>{
-    box.innerHTML+=`
+/* ===== ИСТОРИЯ ===== */
+function showHistory(){
+  const list = loadMoments();
+  const box = document.getElementById("historyList");
+  box.innerHTML = "";
+
+  if(!list.length){
+    box.innerHTML = `<p class="small">Пока здесь пусто.</p>`;
+    go("history");
+    return;
+  }
+
+  // последние сверху
+  const sorted = [...list].sort((a,b)=>b.createdAt-a.createdAt);
+
+  sorted.forEach(m=>{
+    const status = m.status === "active"
+      ? `<span class="badge warn">В процессе</span>`
+      : `<span class="badge done">Завершено</span>`;
+
+    box.innerHTML += `
       <div class="order">
-        <b>${o.guest.name}</b>
-        <div class="btnRow">
-          <button class="btn secondary" onclick="setStatus('${o.id}','in_progress')">Начать</button>
-          <button class="btn" onclick="setStatus('${o.id}','finished')">Завершить</button>
+        <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+          <b>${m.epithet || "Момент"}</b>
+          ${status}
         </div>
-      </div>`;
+        <div class="small" style="margin-top:6px">${new Date(m.createdAt).toLocaleString()}</div>
+      </div>
+    `;
   });
+
+  go("history");
 }
 
-async function setStatus(id,status){
-  await fetch(`${BACKEND_BASE}/order/${id}/status`,{
-    method:"PATCH",
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({status})
-  });
-  refreshOrders();
+function startNewMoment(){
+  // если есть активный — не даём начать новый
+  const active = getActiveMoment();
+  if(active && Date.now() < active.endAt){
+    go("waiting");
+    startTimer(active.startAt);
+    return;
+  }
+  go("s0");
 }
 
 /* ===== START ===== */
-document.addEventListener("DOMContentLoaded",()=>{
-  if(isMaster){
-    go("master");
-    refreshOrders();
-    setInterval(refreshOrders,3000);
-  }else{
-    showGuestDashboard();
+document.addEventListener("DOMContentLoaded", ()=>{
+  // кнопка истории на прологе
+  const moments = loadMoments();
+  if(moments.length){
+    document.getElementById("btnHistory").style.display = "block";
   }
+
+  // если есть активный момент — сразу ожидание
+  const active = getActiveMoment();
+  if(active && Date.now() < active.endAt){
+    go("waiting");
+    startTimer(active.startAt);
+    return;
+  }else{
+    clearActiveMoment();
+  }
+
+  go("s0");
 });
 </script>
 
