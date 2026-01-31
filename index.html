@@ -95,12 +95,6 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   border:1px solid rgba(255,255,255,.10);
 }
 
-hr{
-  border:0;
-  border-top:1px solid rgba(255,255,255,.12);
-  margin:12px 0
-}
-
 .fadeIn{
   animation:fadeIn .18s ease-out;
 }
@@ -116,7 +110,6 @@ hr{
   background:rgba(255,255,255,.12);
   display:inline-block;
 }
-.badge.good{background:rgba(0,255,140,.15)}
 .badge.warn{background:rgba(255,140,0,.15)}
 .badge.done{background:rgba(255,255,255,.15)}
 </style>
@@ -151,7 +144,7 @@ hr{
   <button class="btn" onclick="go('s0')">Назад</button>
 </div>
 
-<!-- ===== СНАРУЖИ ===== -->
+<!-- ===== СНАРУЖИ / НЕТ СИГНАЛА ===== -->
 <div class="screen" id="outside">
   <h1>Снаружи это не готовят.</h1>
   <p id="outsideText">Вы слишком далеко.</p>
@@ -209,8 +202,8 @@ hr{
 
 <!-- ===== ОЖИДАНИЕ ===== -->
 <div class="screen" id="waiting">
-  <h1 id="waitTitle">Процесс начался.</h1>
-  <p id="waitText">Не торопите момент.</p>
+  <h1>Процесс начался.</h1>
+  <p>Не торопите момент.</p>
   <div class="timer" id="guestTimer">25:00</div>
   <p class="small" id="guestHint"></p>
 </div>
@@ -239,10 +232,10 @@ hr{
 const BACKEND_BASE = "https://hookah-mix-bot-56x5.onrender.com";
 const DURATION_MS = 25 * 60 * 1000;
 
-/* Геозона */
+/* Геозона (СЕЙЧАС: ДОМ ДЛЯ ТЕСТА) */
 const VENUE = {
-  lat: 56.482717,
-  lng: 84.952422,
+  lat: 56.519963,
+  lng: 84.933527,
   radius: 40
 };
 
@@ -388,26 +381,41 @@ function generateEpithet(){
     const e = `${a} ${b}`;
     if(!recent.has(e)) return e;
   }
-  // fallback
   return `${EPITHET_ADJ[0]} ${EPITHET_NOUN[0]}`;
 }
 
-/* ===== GEO ===== */
+/* ===== GEO (FIXED) ===== */
 function getGeolocation(){
   return new Promise((resolve,reject)=>{
     if(!navigator.geolocation){
-      reject({code:"not_supported"});
+      reject({ code: "not_supported" });
       return;
     }
-    navigator.geolocation.getCurrentPosition(
-      pos => resolve({
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-        accuracy: pos.coords.accuracy
-      }),
-      err => reject(err),
-      { enableHighAccuracy:true, timeout:12000, maximumAge:0 }
-    );
+
+    const tryGet = (opts) => new Promise((res, rej) => {
+      navigator.geolocation.getCurrentPosition(
+        pos => res({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          accuracy: pos.coords.accuracy
+        }),
+        err => rej(err),
+        opts
+      );
+    });
+
+    // 1) Пытаемся точно
+    tryGet({ enableHighAccuracy:true, timeout:20000, maximumAge:0 })
+      .then(resolve)
+      .catch(async (err)=>{
+        // 2) Фолбэк: менее точно (часто работает в Telegram WebView)
+        try{
+          const pos = await tryGet({ enableHighAccuracy:false, timeout:20000, maximumAge:60000 });
+          resolve(pos);
+        }catch(err2){
+          reject(err2 || err);
+        }
+      });
   });
 }
 
@@ -445,11 +453,24 @@ async function doorCheck(){
       `Вы слишком далеко.<br>Сейчас между нами примерно <b>${dist} м</b>.<br><br>Подойдите ближе. И попробуйте снова.`;
     go("outside");
   }catch(e){
+    // 1 = PERMISSION_DENIED
     if(e?.code === 1){
       go("no-permission");
-    }else if(e?.code === "not_supported"){
+    }
+    // 2 = POSITION_UNAVAILABLE
+    else if(e?.code === 2){
       go("geo-error");
-    }else{
+    }
+    // 3 = TIMEOUT
+    else if(e?.code === 3){
+      document.getElementById("outsideText").innerHTML =
+        `Мы не получили сигнал.<br>Попробуйте ещё раз.`;
+      go("outside");
+    }
+    else if(e?.code === "not_supported"){
+      go("geo-error");
+    }
+    else{
       go("geo-error");
     }
   }finally{
@@ -485,9 +506,7 @@ function renderQuestion(){
         haptic("light");
         answers[q.id] = opt;
 
-        // маленький "Вы уверены?" только на q2 если самый жесткий вариант
         if(q.id === "q2" && opt === "Без шагов назад"){
-          // микро-пауза, но без отдельного экрана
           setTimeout(nextQuestion, 250);
         }else{
           nextQuestion();
@@ -547,13 +566,12 @@ function nextQuestion(){
 }
 
 function backToLastQuestion(){
-  // возвращаемся на последний вопрос
   currentQIndex = QUESTIONS.length - 1;
   renderQuestion();
   go("course");
 }
 
-/* ===== ПОДТВЕРЖДЕНИЕ ===== */
+/* ===== ПОДТВЕРЖДЕНИЕ (FIXED) ===== */
 async function confirmMoment(){
   const btn = document.getElementById("btnConfirm");
   const hint = document.getElementById("confirmHint");
@@ -561,7 +579,6 @@ async function confirmMoment(){
   hint.textContent = "Проверяем допуск…";
 
   try{
-    // повторная гео-проверка (по твоему решению B)
     const geo = await getGeolocation();
     const data = await apiGeoCheck(geo.lat, geo.lng);
 
@@ -572,7 +589,6 @@ async function confirmMoment(){
       return;
     }
 
-    // создаём момент
     const id = Date.now()+"_"+Math.random().toString(36).slice(2,6);
     const epithet = generateEpithet();
 
@@ -588,7 +604,6 @@ async function confirmMoment(){
       venue: VENUE
     };
 
-    // сохраняем локально
     const list = loadMoments();
     list.push({
       id: moment.id,
@@ -599,7 +614,6 @@ async function confirmMoment(){
     saveMoments(list);
     setActiveMoment(moment);
 
-    // отправляем на backend (на будущее)
     await fetch(`${BACKEND_BASE}/moment`,{
       method:"POST",
       headers:{'Content-Type':'application/json'},
@@ -611,10 +625,15 @@ async function confirmMoment(){
     startTimer(moment.startAt);
 
   }catch(e){
-    hint.textContent = "Кухня молчит.";
+    if(e?.code === 1){
+      hint.textContent = "Нужен допуск.";
+      setTimeout(()=>go("no-permission"), 500);
+      return;
+    }
+    hint.textContent = "Мы не получили сигнал.";
   }finally{
     btn.disabled = false;
-    setTimeout(()=>{ hint.textContent=""; }, 2000);
+    setTimeout(()=>{ hint.textContent=""; }, 2500);
   }
 }
 
@@ -640,7 +659,6 @@ function startTimer(start){
     const s = Math.floor((d%60000)/1000);
     document.getElementById("guestTimer").textContent = `${m}:${String(s).padStart(2,"0")}`;
 
-    // кинематографичные подсказки
     if(d < 3*60*1000) hint.textContent = "Скоро.";
     else if(d < 10*60*1000) hint.textContent = "Вы почти там.";
     else if(d < 20*60*1000) hint.textContent = "Сейчас всё решается.";
@@ -653,7 +671,6 @@ function finishActiveMoment(){
   const active = getActiveMoment();
   if(!active) return;
 
-  // обновляем историю
   const list = loadMoments();
   const idx = list.findIndex(x => x.id === active.id);
   if(idx !== -1){
@@ -676,7 +693,6 @@ function showHistory(){
     return;
   }
 
-  // последние сверху
   const sorted = [...list].sort((a,b)=>b.createdAt-a.createdAt);
 
   sorted.forEach(m=>{
@@ -699,7 +715,6 @@ function showHistory(){
 }
 
 function startNewMoment(){
-  // если есть активный — не даём начать новый
   const active = getActiveMoment();
   if(active && Date.now() < active.endAt){
     go("waiting");
@@ -711,13 +726,11 @@ function startNewMoment(){
 
 /* ===== START ===== */
 document.addEventListener("DOMContentLoaded", ()=>{
-  // кнопка истории на прологе
   const moments = loadMoments();
   if(moments.length){
     document.getElementById("btnHistory").style.display = "block";
   }
 
-  // если есть активный момент — сразу ожидание
   const active = getActiveMoment();
   if(active && Date.now() < active.endAt){
     go("waiting");
