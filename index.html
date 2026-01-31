@@ -29,6 +29,59 @@ body{
   padding:22px;
   backdrop-filter: blur(10px);
   box-shadow:0 20px 60px rgba(0,0,0,.45);
+  position:relative;
+}
+
+/* ===== SOUND BUTTON (LOGO) ===== */
+.soundBtn{
+  position:absolute;
+  top:14px;
+  right:14px;
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  user-select:none;
+
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  backdrop-filter: blur(10px);
+
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+}
+
+.soundBtn:active{
+  transform: scale(.96);
+}
+
+.soundBtn .icon{
+  font-weight:900;
+  font-size:16px;
+  letter-spacing:.5px;
+  opacity:.85;
+}
+
+/* OFF state */
+.soundBtn.off{
+  background:rgba(255,255,255,.06);
+  border-color:rgba(255,255,255,.14);
+}
+.soundBtn.off .icon{
+  opacity:.55;
+}
+
+/* ON state (color) */
+.soundBtn.on{
+  background:linear-gradient(135deg, rgba(255,122,24,.95), rgba(255,61,119,.90));
+  border-color:rgba(255,255,255,.22);
+  box-shadow:0 12px 40px rgba(255,61,119,.18), 0 12px 40px rgba(255,122,24,.14);
+}
+.soundBtn.on .icon{
+  opacity:1;
 }
 
 .screen{display:none}
@@ -177,35 +230,19 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   display:block;
   text-align:center;
 }
-
-/* ===== SOUND TOGGLE ===== */
-.soundToggle{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-top:12px;
-  padding:12px 14px;
-  border-radius:14px;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.10);
-  cursor:pointer;
-}
-.soundToggle .label{
-  font-size:13px;
-  opacity:.75;
-  text-transform:uppercase;
-  letter-spacing:.6px;
-}
-.soundToggle .state{
-  font-size:13px;
-  opacity:.85;
-}
 </style>
 </head>
 
 <body>
 <div class="card">
+
+  <!-- SOUND BUTTON -->
+  <div class="soundBtn off" id="soundBtn" onclick="toggleMusic()" title="Мелодия">
+    <div class="icon">♪</div>
+  </div>
+
+  <!-- BACKGROUND MUSIC -->
+  <audio id="bgMusic" src="7441574b62bac5e.mp3" loop preload="auto"></audio>
 
 <!-- =========================
      WELCOME (ТОЛЬКО ДЛЯ НОВЫХ)
@@ -267,12 +304,6 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   </div>
 
   <button class="btn primary" id="cabMainBtn" onclick="cabinetMainAction()">…</button>
-
-  <!-- SOUND TOGGLE -->
-  <div class="soundToggle" onclick="toggleSound()">
-    <div class="label">Звук</div>
-    <div class="state" id="soundState">Выкл</div>
-  </div>
 
   <div class="cardBox" id="cabNowBox" style="display:none">
     <div class="row">
@@ -496,7 +527,7 @@ const VENUE = { lat: 56.519963, lng: 84.933527, radius: 40 };
 const LS_MOMENTS = "tm_moments";
 const LS_ACTIVE = "tm_active_moment";
 const LS_ARCHIVE_FILTER = "tm_archive_filter";
-const LS_SOUND = "tm_sound_enabled";
+const LS_MUSIC = "tm_music_enabled";
 
 /* Telegram */
 const tg = window.Telegram?.WebApp;
@@ -511,76 +542,67 @@ const guest = {
 
 let guestTimerInt = null;
 
-/* ===== SOUND (WebAudio) ===== */
-let audioCtx = null;
-let osc = null;
-let gainNode = null;
-
-function isSoundEnabled(){
-  return localStorage.getItem(LS_SOUND) === "1";
+/* ===== MUSIC ===== */
+function isMusicEnabled(){
+  return localStorage.getItem(LS_MUSIC) === "1";
 }
-function setSoundEnabled(v){
-  localStorage.setItem(LS_SOUND, v ? "1" : "0");
-  updateSoundUI();
+
+function setMusicEnabled(v){
+  localStorage.setItem(LS_MUSIC, v ? "1" : "0");
+  updateMusicUI();
 }
-function updateSoundUI(){
-  const el = document.getElementById("soundState");
-  if(!el) return;
-  el.textContent = isSoundEnabled() ? "Вкл" : "Выкл";
-}
-function startSound(){
-  if(osc) return;
 
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  osc = audioCtx.createOscillator();
-  gainNode = audioCtx.createGain();
+function updateMusicUI(){
+  const btn = document.getElementById("soundBtn");
+  if(!btn) return;
 
-  osc.type = "sine";
-  osc.frequency.value = 55;
-
-  gainNode.gain.value = 0.00001;
-
-  osc.connect(gainNode);
-  gainNode.connect(audioCtx.destination);
-
-  osc.start();
-
-  const now = audioCtx.currentTime;
-  gainNode.gain.setValueAtTime(0.00001, now);
-  gainNode.gain.linearRampToValueAtTime(0.02, now + 1.2);
-}
-function stopSound(){
-  try{
-    if(gainNode && audioCtx){
-      const now = audioCtx.currentTime;
-      gainNode.gain.cancelScheduledValues(now);
-      gainNode.gain.setValueAtTime(gainNode.gain.value, now);
-      gainNode.gain.linearRampToValueAtTime(0.00001, now + 0.4);
-    }
-
-    setTimeout(()=>{
-      try{ osc?.stop?.(); }catch(e){}
-      try{ osc?.disconnect?.(); }catch(e){}
-      try{ gainNode?.disconnect?.(); }catch(e){}
-      try{ audioCtx?.close?.(); }catch(e){}
-      osc = null;
-      gainNode = null;
-      audioCtx = null;
-    }, 450);
-  }catch(e){
-    osc = null;
-    gainNode = null;
-    audioCtx = null;
+  if(isMusicEnabled()){
+    btn.classList.remove("off");
+    btn.classList.add("on");
+  }else{
+    btn.classList.remove("on");
+    btn.classList.add("off");
   }
 }
-function toggleSound(){
+
+function getMusicEl(){
+  return document.getElementById("bgMusic");
+}
+
+function applyMusicDefaults(){
+  const a = getMusicEl();
+  if(!a) return;
+  a.volume = 0.30; // 30%
+}
+
+async function playMusic(){
+  const a = getMusicEl();
+  if(!a) return;
+
+  applyMusicDefaults();
+
+  try{
+    await a.play();
+  }catch(e){
+    // iPhone может блокировать до клика — это нормально
+  }
+}
+
+function pauseMusic(){
+  const a = getMusicEl();
+  if(!a) return;
+  try{ a.pause(); }catch(e){}
+}
+
+async function toggleMusic(){
   haptic("light");
-  if(isSoundEnabled()){
-    setSoundEnabled(false);
-    stopSound();
+
+  if(isMusicEnabled()){
+    setMusicEnabled(false);
+    pauseMusic();
   }else{
-    setSoundEnabled(true);
-    startSound(); // запуск по клику => iPhone ок
+    setMusicEnabled(true);
+    await playMusic();
   }
 }
 
@@ -808,8 +830,6 @@ function renderCabinet(){
       </div>
     `;
   });
-
-  updateSoundUI();
 }
 
 function cabinetMainAction(){
@@ -1216,7 +1236,15 @@ function finishActiveMoment(){
 
 /* ===== START ===== */
 document.addEventListener("DOMContentLoaded", ()=>{
-  updateSoundUI();
+  // init music UI
+  updateMusicUI();
+  applyMusicDefaults();
+
+  // если пользователь включал музыку ранее — пробуем играть
+  // (на iPhone может не запуститься без клика, но UI будет "ON")
+  if(isMusicEnabled()){
+    playMusic();
+  }
 
   // если активный момент есть — сразу в процесс
   const active = getActiveMoment();
