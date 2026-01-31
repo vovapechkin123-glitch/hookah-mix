@@ -1,0 +1,137 @@
+.cabHeader{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.cabName{
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:.2px;
+}
+
+.cabMeta{
+  margin-top:4px;
+  font-size:13px;
+  opacity:.7;
+}
+
+.headerRight{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.rankPill{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.12);
+  opacity:.9;
+}
+
+.soundInline{
+  width:34px;height:34px;border-radius:999px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  cursor:pointer;
+}
+.soundInline.off{opacity:.35}
+
+.panel{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  padding:14px;
+}
+
+.panelTitle{
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  opacity:.6;
+}
+
+.panelRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+  margin-top:8px;
+}
+
+.heroBtn{
+  width:100%;
+  margin-top:12px;
+  padding:14px;
+  border-radius:14px;
+  border:0;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+  background:linear-gradient(90deg,#ff7a18,#ff3d77);
+  color:#fff;
+}
+
+.splitButtons{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+.splitButtons .btn{margin-top:0}
+
+.momentCard{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  padding:14px;
+  margin-top:10px;
+}
+
+.momentTop{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+}
+
+.momentName{
+  font-size:16px;
+  font-weight:800;
+}
+
+.momentBadges{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.gridBadges{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+}
+
+.achTile{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  padding:12px;
+}
+.achTile.locked{
+  opacity:.35;
+  filter:saturate(.2);
+}
+
+.achTitle{
+  font-weight:800;
+}
+.achDesc{
+  font-size:12px;
+  opacity:.65;
+  margin-top:6px;
+}

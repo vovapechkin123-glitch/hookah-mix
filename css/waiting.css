@@ -1,0 +1,37 @@
+.timeSignWrap{
+  display:flex;
+  justify-content:center;
+  margin:14px 0 6px;
+}
+
+.timeSign{
+  width:86px;
+  height:86px;
+  border-radius:18px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 18px 50px rgba(0,0,0,.35);
+}
+
+.timeSign svg{
+  width:52px;height:52px;
+  opacity:.9;
+}
+
+.timeProgress{
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.10);
+  overflow:hidden;
+}
+
+.timeProgressFill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#ff7a18,#ff3d77);
+  transition:width .6s ease;
+}
