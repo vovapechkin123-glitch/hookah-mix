@@ -177,6 +177,30 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   display:block;
   text-align:center;
 }
+
+/* ===== SOUND TOGGLE ===== */
+.soundToggle{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-top:12px;
+  padding:12px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+  cursor:pointer;
+}
+.soundToggle .label{
+  font-size:13px;
+  opacity:.75;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+}
+.soundToggle .state{
+  font-size:13px;
+  opacity:.85;
+}
 </style>
 </head>
 
@@ -236,13 +260,19 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
 <div class="screen" id="cabinet">
   <div class="row">
     <div>
-      <h1 id="cabTitle" style="margin:0">…</h1>
+      <h1 style="margin:0" id="cabTitle">…</h1>
       <div class="small muted" id="cabSubtitle">…</div>
     </div>
     <span class="badge" id="cabRank">…</span>
   </div>
 
   <button class="btn primary" id="cabMainBtn" onclick="cabinetMainAction()">…</button>
+
+  <!-- SOUND TOGGLE -->
+  <div class="soundToggle" onclick="toggleSound()">
+    <div class="label">Звук</div>
+    <div class="state" id="soundState">Выкл</div>
+  </div>
 
   <div class="cardBox" id="cabNowBox" style="display:none">
     <div class="row">
@@ -259,7 +289,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   <div id="cabLastList"></div>
 
   <div class="btnRow">
-    <button class="btn" onclick="go('archive')">Архив</button>
+    <button class="btn" onclick="openArchive()">Архив</button>
     <button class="btn" onclick="go('s0')">Новый момент</button>
   </div>
 
@@ -322,7 +352,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
       Если вы хотите закрепить этот момент.
     </p>
 
-    <a class="btn primary linkBtn" href="https://netmonet.co/qr/192937/tip?o=6" target="_blank" onclick="tipClicked()">
+    <a class="btn primary linkBtn" id="tipLink" href="#" target="_blank" onclick="tipClicked()">
       Оставить жест
     </a>
 
@@ -466,6 +496,7 @@ const VENUE = { lat: 56.519963, lng: 84.933527, radius: 40 };
 const LS_MOMENTS = "tm_moments";
 const LS_ACTIVE = "tm_active_moment";
 const LS_ARCHIVE_FILTER = "tm_archive_filter";
+const LS_SOUND = "tm_sound_enabled";
 
 /* Telegram */
 const tg = window.Telegram?.WebApp;
@@ -479,6 +510,79 @@ const guest = {
 };
 
 let guestTimerInt = null;
+
+/* ===== SOUND (WebAudio) ===== */
+let audioCtx = null;
+let osc = null;
+let gainNode = null;
+
+function isSoundEnabled(){
+  return localStorage.getItem(LS_SOUND) === "1";
+}
+function setSoundEnabled(v){
+  localStorage.setItem(LS_SOUND, v ? "1" : "0");
+  updateSoundUI();
+}
+function updateSoundUI(){
+  const el = document.getElementById("soundState");
+  if(!el) return;
+  el.textContent = isSoundEnabled() ? "Вкл" : "Выкл";
+}
+function startSound(){
+  if(osc) return;
+
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  osc = audioCtx.createOscillator();
+  gainNode = audioCtx.createGain();
+
+  osc.type = "sine";
+  osc.frequency.value = 55;
+
+  gainNode.gain.value = 0.00001;
+
+  osc.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  osc.start();
+
+  const now = audioCtx.currentTime;
+  gainNode.gain.setValueAtTime(0.00001, now);
+  gainNode.gain.linearRampToValueAtTime(0.02, now + 1.2);
+}
+function stopSound(){
+  try{
+    if(gainNode && audioCtx){
+      const now = audioCtx.currentTime;
+      gainNode.gain.cancelScheduledValues(now);
+      gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+      gainNode.gain.linearRampToValueAtTime(0.00001, now + 0.4);
+    }
+
+    setTimeout(()=>{
+      try{ osc?.stop?.(); }catch(e){}
+      try{ osc?.disconnect?.(); }catch(e){}
+      try{ gainNode?.disconnect?.(); }catch(e){}
+      try{ audioCtx?.close?.(); }catch(e){}
+      osc = null;
+      gainNode = null;
+      audioCtx = null;
+    }, 450);
+  }catch(e){
+    osc = null;
+    gainNode = null;
+    audioCtx = null;
+  }
+}
+function toggleSound(){
+  haptic("light");
+  if(isSoundEnabled()){
+    setSoundEnabled(false);
+    stopSound();
+  }else{
+    setSoundEnabled(true);
+    startSound(); // запуск по клику => iPhone ок
+  }
+}
 
 /* ===== ВОПРОСЫ ===== */
 const QUESTIONS = [
@@ -639,30 +743,10 @@ function getAchievements(){
   const s = computeStats();
 
   return [
-    {
-      id:"first",
-      title:"Первый момент",
-      desc:"Вы вошли.",
-      unlocked: s.momentsCount >= 1
-    },
-    {
-      id:"return",
-      title:"Возвращение",
-      desc:"Вы вернулись.",
-      unlocked: s.momentsCount >= 3
-    },
-    {
-      id:"honesty",
-      title:"Честность",
-      desc:"Вы оценили три момента.",
-      unlocked: s.ratedCount >= 3
-    },
-    {
-      id:"gesture",
-      title:"Благодарность",
-      desc:"Вы оставили жест.",
-      unlocked: s.tipCount >= 1
-    }
+    { id:"first", title:"Первый момент", desc:"Вы вошли.", unlocked: s.momentsCount >= 1 },
+    { id:"return", title:"Возвращение", desc:"Вы вернулись.", unlocked: s.momentsCount >= 3 },
+    { id:"honesty", title:"Честность", desc:"Вы оценили три момента.", unlocked: s.ratedCount >= 3 },
+    { id:"gesture", title:"Благодарность", desc:"Вы оставили жест.", unlocked: s.tipCount >= 1 }
   ];
 }
 
@@ -676,11 +760,7 @@ function renderCabinet(){
   document.getElementById("cabRank").textContent = getRank(stats.momentsCount);
 
   const mainBtn = document.getElementById("cabMainBtn");
-  if(stats.hasActive){
-    mainBtn.textContent = "Вернуться к процессу";
-  }else{
-    mainBtn.textContent = "Создать новый момент";
-  }
+  mainBtn.textContent = stats.hasActive ? "Вернуться к процессу" : "Создать новый момент";
 
   const nowBox = document.getElementById("cabNowBox");
   nowBox.style.display = stats.hasActive ? "block" : "none";
@@ -728,6 +808,8 @@ function renderCabinet(){
       </div>
     `;
   });
+
+  updateSoundUI();
 }
 
 function cabinetMainAction(){
@@ -747,6 +829,11 @@ function resumeActiveMoment(){
 }
 
 /* ===== ARCHIVE ===== */
+function openArchive(){
+  renderArchive();
+  go("archive");
+}
+
 function setArchiveFilter(mode){
   setArchiveFilterValue(mode);
 
@@ -817,7 +904,8 @@ function openMoment(id){
   const status = m.status === "active" ? "В процессе" : "Завершено";
   document.getElementById("momentStatus").textContent = status;
 
-  // rating box
+  document.getElementById("tipLink").href = TIP_URL;
+
   const rateHint = document.getElementById("rateHint");
   const tipBox = document.getElementById("tipBox");
   const tipHint = document.getElementById("tipHint");
@@ -846,7 +934,6 @@ function rateMoment(value){
   const idx = list.findIndex(x => x.id === selectedMomentId);
   if(idx === -1) return;
 
-  // фиксируем оценку (не даём перезаписывать)
   if(list[idx].rating) return;
 
   list[idx].rating = value;
@@ -854,11 +941,9 @@ function rateMoment(value){
 
   haptic("medium");
 
-  // открыть жест
   document.getElementById("rateHint").textContent = `Зафиксировано: ${value}`;
   document.getElementById("tipBox").style.display = "block";
 
-  // обновить кабинет/архив на фоне
   renderCabinet();
   renderArchive();
 }
@@ -878,7 +963,6 @@ function tipClicked(){
   document.getElementById("tipHint").textContent = "Жест принят.";
   haptic("light");
 
-  // обновить ачивки
   renderCabinet();
 }
 
@@ -1132,6 +1216,8 @@ function finishActiveMoment(){
 
 /* ===== START ===== */
 document.addEventListener("DOMContentLoaded", ()=>{
+  updateSoundUI();
+
   // если активный момент есть — сразу в процесс
   const active = getActiveMoment();
   if(active && Date.now() < active.endAt){
@@ -1142,12 +1228,11 @@ document.addEventListener("DOMContentLoaded", ()=>{
     clearActiveMoment();
   }
 
-  // подготовим архив-фильтр UI
+  // фильтр архива
   const mode = getArchiveFilter();
   document.getElementById("fltAll").classList.toggle("active", mode === "all");
   document.getElementById("fltNoRate").classList.toggle("active", mode === "no_rate");
 
-  // старт по истории
   goHome();
 });
 </script>
