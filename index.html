@@ -140,7 +140,10 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
     Разрешите местоположение.<br>
     Один раз.
   </p>
+
   <button class="btn primary" id="btnDoor" onclick="doorCheck()">Открыть дверь</button>
+  <button class="btn" id="btnBot" onclick="openBot()">Передать координаты через Telegram</button>
+
   <button class="btn" onclick="go('s0')">Назад</button>
 </div>
 
@@ -176,8 +179,9 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   </p>
   <div class="btnRow">
     <button class="btn primary" onclick="doorCheck()">Попробовать снова</button>
-    <button class="btn" onclick="go('s0')">Вернуться</button>
+    <button class="btn" onclick="openBot()">Передать координаты через Telegram</button>
   </div>
+  <button class="btn" onclick="go('s0')">Вернуться</button>
 </div>
 
 <!-- ===== КУРС (7 ВОПРОСОВ) ===== -->
@@ -232,6 +236,8 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
 const BACKEND_BASE = "https://hookah-mix-bot-56x5.onrender.com";
 const DURATION_MS = 25 * 60 * 1000;
 
+const BOT_USERNAME = "@hookah_mixPanda_bot";
+
 /* Геозона (СЕЙЧАС: ДОМ ДЛЯ ТЕСТА) */
 const VENUE = {
   lat: 56.519963,
@@ -258,60 +264,17 @@ let guestTimerInt = null;
 
 /* ===== ВОПРОСЫ ===== */
 const QUESTIONS = [
-  {
-    id: "q1",
-    title: "Не думайте долго.",
-    text: "Что ближе прямо сейчас?",
-    type: "single",
-    options: ["Тепло","Холод","Тень","Свет"]
-  },
-  {
-    id: "q2",
-    title: "Близость.",
-    text: "Насколько близко подойти?",
-    type: "single",
-    options: ["На расстоянии","Ближе","Почти вплотную","Без шагов назад"]
-  },
-  {
-    id: "q3",
-    title: "Источник.",
-    text: "Откуда это должно прийти?",
-    type: "single",
-    options: ["Из земли","С веток","Из печи","Из дыма"]
-  },
-  {
-    id: "q4",
-    title: "Материал.",
-    text: "Если бы это можно было потрогать — оно было бы…",
-    type: "single",
-    options: ["Бархат","Стекло","Дерево","Камень"]
-  },
-  {
-    id: "q5",
-    title: "Касание.",
-    text: "Это должно коснуться вас как…",
-    type: "single",
-    options: ["Шерсть","Хлопок","Металл","Лёд"]
-  },
-  {
-    id: "q6",
-    title: "Сегодня нельзя.",
-    text: "Выберите то, что разрушит момент.",
-    type: "multi",
-    max: 3,
-    options: ["Детская сладость","Кислая агрессия","Парфюм","Компот","Медицинская свежесть","Тяжёлые специи"]
-  },
-  {
-    id: "q7",
-    title: "Контроль.",
-    text: "Сколько контроля вы оставляете себе?",
-    type: "single",
-    options: ["Весь","Почти весь","Меньше половины","Ничего"]
-  }
+  { id:"q1", title:"Не думайте долго.", text:"Что ближе прямо сейчас?", type:"single", options:["Тепло","Холод","Тень","Свет"] },
+  { id:"q2", title:"Близость.", text:"Насколько близко подойти?", type:"single", options:["На расстоянии","Ближе","Почти вплотную","Без шагов назад"] },
+  { id:"q3", title:"Источник.", text:"Откуда это должно прийти?", type:"single", options:["Из земли","С веток","Из печи","Из дыма"] },
+  { id:"q4", title:"Материал.", text:"Если бы это можно было потрогать — оно было бы…", type:"single", options:["Бархат","Стекло","Дерево","Камень"] },
+  { id:"q5", title:"Касание.", text:"Это должно коснуться вас как…", type:"single", options:["Шерсть","Хлопок","Металл","Лёд"] },
+  { id:"q6", title:"Сегодня нельзя.", text:"Выберите то, что разрушит момент.", type:"multi", max:3, options:["Детская сладость","Кислая агрессия","Парфюм","Компот","Медицинская свежесть","Тяжёлые специи"] },
+  { id:"q7", title:"Контроль.", text:"Сколько контроля вы оставляете себе?", type:"single", options:["Весь","Почти весь","Меньше половины","Ничего"] }
 ];
 
 let currentQIndex = 0;
-let answers = {}; // {q1: "...", q6: ["...","..."]}
+let answers = {};
 
 /* ===== UI ===== */
 function go(id){
@@ -323,56 +286,28 @@ function go(id){
 }
 
 function haptic(type="light"){
-  try{
-    tg?.HapticFeedback?.impactOccurred?.(type);
-  }catch(e){}
+  try{ tg?.HapticFeedback?.impactOccurred?.(type); }catch(e){}
 }
 
-/* ===== ХРАНИЛИЩЕ МОМЕНТОВ ===== */
+/* ===== ХРАНИЛИЩЕ ===== */
 function loadMoments(){
-  try{
-    return JSON.parse(localStorage.getItem(LS_MOMENTS)||"[]");
-  }catch(e){
-    return [];
-  }
+  try{ return JSON.parse(localStorage.getItem(LS_MOMENTS)||"[]"); }catch(e){ return []; }
 }
-
-function saveMoments(list){
-  localStorage.setItem(LS_MOMENTS, JSON.stringify(list));
-}
-
+function saveMoments(list){ localStorage.setItem(LS_MOMENTS, JSON.stringify(list)); }
 function getActiveMoment(){
-  try{
-    return JSON.parse(localStorage.getItem(LS_ACTIVE)||"null");
-  }catch(e){
-    return null;
-  }
+  try{ return JSON.parse(localStorage.getItem(LS_ACTIVE)||"null"); }catch(e){ return null; }
 }
-
-function setActiveMoment(m){
-  localStorage.setItem(LS_ACTIVE, JSON.stringify(m));
-}
-
-function clearActiveMoment(){
-  localStorage.removeItem(LS_ACTIVE);
-}
+function setActiveMoment(m){ localStorage.setItem(LS_ACTIVE, JSON.stringify(m)); }
+function clearActiveMoment(){ localStorage.removeItem(LS_ACTIVE); }
 
 /* ===== ЭПИТЕТЫ ===== */
-const EPITHET_ADJ = [
-  "Тёплая","Холодная","Тёмная","Светлая","Тихая","Резкая","Сухая",
-  "Мягкая","Плотная","Чистая","Строгая","Нервная","Тяжёлая","Лёгкая"
-];
-
-const EPITHET_NOUN = [
-  "Пауза","Точность","Тишина","Сцена","Линия","Грань","Комната",
-  "Ночь","Ясность","Тень","Привычка","Воля","Траектория","Память"
-];
+const EPITHET_ADJ = ["Тёплая","Холодная","Тёмная","Светлая","Тихая","Резкая","Сухая","Мягкая","Плотная","Чистая","Строгая","Нервная","Тяжёлая","Лёгкая"];
+const EPITHET_NOUN = ["Пауза","Точность","Тишина","Сцена","Линия","Грань","Комната","Ночь","Ясность","Тень","Привычка","Воля","Траектория","Память"];
 
 function lastEpithets(n=5){
   const list = loadMoments();
   return list.slice(-n).map(m=>m.epithet).filter(Boolean);
 }
-
 function generateEpithet(){
   const recent = new Set(lastEpithets(5));
   for(let i=0;i<30;i++){
@@ -384,7 +319,13 @@ function generateEpithet(){
   return `${EPITHET_ADJ[0]} ${EPITHET_NOUN[0]}`;
 }
 
-/* ===== GEO (FIXED) ===== */
+/* ===== BOT FALLBACK ===== */
+function openBot(){
+  // открываем бота, чтобы гость отправил геопозицию
+  tg?.openTelegramLink?.(`https://t.me/${BOT_USERNAME.replace("@","")}?start=geo`);
+}
+
+/* ===== GEO ===== */
 function getGeolocation(){
   return new Promise((resolve,reject)=>{
     if(!navigator.geolocation){
@@ -404,11 +345,9 @@ function getGeolocation(){
       );
     });
 
-    // 1) Пытаемся точно
     tryGet({ enableHighAccuracy:true, timeout:20000, maximumAge:0 })
       .then(resolve)
       .catch(async (err)=>{
-        // 2) Фолбэк: менее точно (часто работает в Telegram WebView)
         try{
           const pos = await tryGet({ enableHighAccuracy:false, timeout:20000, maximumAge:60000 });
           resolve(pos);
@@ -423,11 +362,14 @@ async function apiGeoCheck(lat,lng){
   const r = await fetch(`${BACKEND_BASE}/geo/check`,{
     method:"POST",
     headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({
-      lat, lng,
-      venue: VENUE
-    })
+    body: JSON.stringify({ lat, lng, venue: VENUE })
   });
+  return r.json();
+}
+
+async function apiGeoSession(){
+  if(!guest.id) return { ok:true, allowed:false };
+  const r = await fetch(`${BACKEND_BASE}/geo/session?userId=${guest.id}`);
   return r.json();
 }
 
@@ -439,6 +381,7 @@ async function doorCheck(){
   txt.innerHTML = "Секунду.<br>Мы проверяем, где вы.";
 
   try{
+    // 1) сначала пробуем WebView гео
     const geo = await getGeolocation();
     const data = await apiGeoCheck(geo.lat, geo.lng);
 
@@ -453,26 +396,20 @@ async function doorCheck(){
       `Вы слишком далеко.<br>Сейчас между нами примерно <b>${dist} м</b>.<br><br>Подойдите ближе. И попробуйте снова.`;
     go("outside");
   }catch(e){
-    // 1 = PERMISSION_DENIED
+    // Если WebView не отдаёт гео — пробуем сессию через бота
+    const s = await apiGeoSession();
+    if(s?.ok && s.allowed){
+      haptic("medium");
+      startCourse();
+      return;
+    }
+
+    // иначе показываем "молчит" и даём кнопку бота
     if(e?.code === 1){
       go("no-permission");
+      return;
     }
-    // 2 = POSITION_UNAVAILABLE
-    else if(e?.code === 2){
-      go("geo-error");
-    }
-    // 3 = TIMEOUT
-    else if(e?.code === 3){
-      document.getElementById("outsideText").innerHTML =
-        `Мы не получили сигнал.<br>Попробуйте ещё раз.`;
-      go("outside");
-    }
-    else if(e?.code === "not_supported"){
-      go("geo-error");
-    }
-    else{
-      go("geo-error");
-    }
+    go("geo-error");
   }finally{
     btn.disabled = false;
     txt.innerHTML = `Мы не готовим это снаружи.<br><br>Разрешите местоположение.<br>Один раз.`;
@@ -571,7 +508,7 @@ function backToLastQuestion(){
   go("course");
 }
 
-/* ===== ПОДТВЕРЖДЕНИЕ (FIXED) ===== */
+/* ===== ПОДТВЕРЖДЕНИЕ ===== */
 async function confirmMoment(){
   const btn = document.getElementById("btnConfirm");
   const hint = document.getElementById("confirmHint");
@@ -579,13 +516,22 @@ async function confirmMoment(){
   hint.textContent = "Проверяем допуск…";
 
   try{
-    const geo = await getGeolocation();
-    const data = await apiGeoCheck(geo.lat, geo.lng);
+    // 1) пробуем webview geo
+    let allowed = false;
 
-    if(!data?.ok || !data.allowed){
-      const dist = Math.round(data?.distanceMeters ?? 9999);
-      hint.innerHTML = `Сейчас вы слишком далеко: примерно <b>${dist} м</b>.`;
-      setTimeout(()=>go("outside"), 600);
+    try{
+      const geo = await getGeolocation();
+      const data = await apiGeoCheck(geo.lat, geo.lng);
+      allowed = !!(data?.ok && data.allowed);
+    }catch(e){
+      // 2) если webview молчит — пробуем сессию от бота
+      const s = await apiGeoSession();
+      allowed = !!(s?.ok && s.allowed);
+    }
+
+    if(!allowed){
+      hint.textContent = "Нужен допуск.";
+      setTimeout(()=>go("geo-error"), 500);
       return;
     }
 
@@ -625,12 +571,7 @@ async function confirmMoment(){
     startTimer(moment.startAt);
 
   }catch(e){
-    if(e?.code === 1){
-      hint.textContent = "Нужен допуск.";
-      setTimeout(()=>go("no-permission"), 500);
-      return;
-    }
-    hint.textContent = "Мы не получили сигнал.";
+    hint.textContent = "Кухня молчит.";
   }finally{
     btn.disabled = false;
     setTimeout(()=>{ hint.textContent=""; }, 2500);
