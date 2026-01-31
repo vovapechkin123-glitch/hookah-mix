@@ -26,8 +26,6 @@ function isMasterUser(user) {
 }
 
 function hookScreenRenders(tgUser) {
-  // при каждом go(...) можно вызывать нужный render
-  // мы сделаем простой watcher через MutationObserver
   const root = document.body;
 
   const renderByActive = async () => {
@@ -43,7 +41,6 @@ function hookScreenRenders(tgUser) {
   const obs = new MutationObserver(() => renderByActive());
   obs.observe(root, { attributes: true, subtree: true, attributeFilter: ["class"] });
 
-  // первый рендер
   renderByActive();
 }
 

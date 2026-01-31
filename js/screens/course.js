@@ -13,7 +13,7 @@ const QUESTIONS = [
   { title: "Пространство.", text: "Если закрыть глаза, вокруг сейчас —", options: ["Полумрак", "Яркий свет", "Тень", "Ничего"] },
   { title: "Этот момент —", text: "не про планы и не про цели.", options: ["Начало", "Продолжение", "Завершение"] },
 
-  // новые вопросы под твой “концепт”
+  // концептуальные
   { title: "Температура.", text: "Это должно быть —", options: ["Холод", "Тепло", "Без температуры", "Контраст"] },
   { title: "Тело.", text: "Это должно ощущаться —", options: ["Почти вплотную", "На расстоянии", "Воздушно", "Тяжело"] },
   { title: "Материал.", text: "Ближе к чему?", options: ["Бархат", "Металл", "Дерево", "Стекло"] },
@@ -28,6 +28,7 @@ const EPITHETS = [
   "Белый Шум",
   "Холодный Свет",
   "Тёплый Металл",
+  "Медный Пепел",
 ];
 
 function randomEpithet() {
@@ -35,23 +36,22 @@ function randomEpithet() {
 }
 
 export function initCourseScreen() {
-  // пролог
-  qs("#btnPrologueContinue")?.addEventListener("click", () => {
+  // welcome -> course
+  qs("#btnWelcomeStart")?.addEventListener("click", () => {
     answers = {};
     current = 0;
     go("course");
     renderQuestion();
   });
 
-  qs("#btnPrologueBack")?.addEventListener("click", () => go("cabinet"));
-
-  // confirm
-  qs("#btnConfirm")?.addEventListener("click", async () => {
-    await placeMoment();
-  });
-
-  qs("#btnConfirmBack")?.addEventListener("click", () => {
-    go("course");
+  // back
+  qs("#btnCourseBack")?.addEventListener("click", () => {
+    // если это первый вопрос — вернём в welcome
+    if (current <= 0) {
+      go("welcome");
+      return;
+    }
+    current = Math.max(0, current - 1);
     renderQuestion();
   });
 }
@@ -60,10 +60,10 @@ function renderQuestion() {
   const q = QUESTIONS[current];
   if (!q) return;
 
-  qs("#qTitle").textContent = q.title;
-  qs("#qText").textContent = q.text;
+  qs("#courseTitle").textContent = q.title;
+  qs("#courseText").textContent = q.text;
 
-  const box = qs("#qOptions");
+  const box = qs("#courseOptions");
   box.innerHTML = "";
 
   q.options.forEach(opt => {
@@ -73,21 +73,19 @@ function renderQuestion() {
     div.addEventListener("click", () => pick(opt));
     box.appendChild(div);
   });
-
-  qs("#qFooter").innerHTML = `<div class="small muted">Вопрос ${current + 1} из ${QUESTIONS.length}</div>`;
 }
 
-function pick(val) {
+async function pick(val) {
   answers[current + 1] = val;
-
   current++;
+
   if (current < QUESTIONS.length) {
     renderQuestion();
-  } else {
-    // в confirm
-    go("confirm");
-    qs("#confirmHint").textContent = "Время начнётся, когда кухня подтвердит.";
+    return;
   }
+
+  // конец -> создаём момент
+  await placeMoment();
 }
 
 async function placeMoment() {
@@ -116,7 +114,7 @@ async function placeMoment() {
   try {
     await api.createMoment(moment);
   } catch (e) {
-    console.error(e);
+    console.error("createMoment error:", e);
   }
 
   go("waiting");

@@ -6,13 +6,13 @@ export function initHomeScreen() {}
 export function routeGuestStart() {
   const ids = getGuestMomentIds();
 
-  // Если гость уже делал моменты -> сразу в кабинет
+  // если уже есть история — сразу кабинет
   if (ids.length) {
     go("cabinet");
     return;
   }
 
-  // Иначе — дверь
+  // если уже был допуск по гео — сразу в зал
   if (hasGeoAccessNow()) {
     go("soundGate");
     return;

@@ -6,18 +6,14 @@ export function initSoundGateScreen() {
   const gateWrap = qs("#gateWrap");
 
   async function enterHall() {
-    // важный момент: iOS разрешит play() только после user gesture
     await ensureMusicStartedByUserGesture();
 
-    // лёгкая анимация входа (без жести)
     if (gateWrap) gateWrap.classList.add("gateOut");
 
     setTimeout(() => {
       go("welcome");
-    }, 450);
+    }, 520);
   }
 
-  if (gateLogo) {
-    gateLogo.addEventListener("click", enterHall);
-  }
+  if (gateLogo) gateLogo.addEventListener("click", enterHall);
 }

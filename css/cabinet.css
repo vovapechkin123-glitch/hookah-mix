@@ -1,137 +1,125 @@
-.cabHeader{
+/* ===== CABINET ===== */
+
+.sectionTitle{
+  margin-top:14px;
+  font-size:13px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color: rgba(255,255,255,.55);
+}
+
+.panel{
+  background: rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  padding:14px;
+  margin-top:12px;
+}
+
+.panel.soft{
+  background: rgba(255,255,255,.05);
+}
+
+.profileTop{
   display:flex;
-  align-items:flex-start;
+  align-items:center;
   justify-content:space-between;
   gap:12px;
 }
 
-.cabName{
+.profileName{
   font-size:22px;
-  font-weight:800;
+  font-weight:900;
   letter-spacing:.2px;
 }
 
-.cabMeta{
-  margin-top:4px;
+.profileMeta{
+  color: rgba(255,255,255,.65);
   font-size:13px;
-  opacity:.7;
 }
 
-.headerRight{
+.momentCard{
+  background: rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  padding:14px;
+  margin-top:12px;
+}
+
+.momentTitleRow{
   display:flex;
+  justify-content:space-between;
   gap:10px;
-  align-items:center;
+  align-items:flex-start;
 }
 
-.rankPill{
+.momentTitle{
+  font-size:18px;
+  font-weight:900;
+}
+
+.momentTime{
+  font-size:12px;
+  color: rgba(255,255,255,.55);
+}
+
+.pill{
   font-size:12px;
   padding:6px 10px;
   border-radius:999px;
-  background:rgba(255,255,255,.10);
   border:1px solid rgba(255,255,255,.12);
-  opacity:.9;
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.75);
 }
 
-.soundInline{
-  width:34px;height:34px;border-radius:999px;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.12);
-  cursor:pointer;
-}
-.soundInline.off{opacity:.35}
-
-.panel{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:16px;
-  padding:14px;
+.pill.brass{
+  border-color: rgba(215,178,106,.28);
+  background: rgba(215,178,106,.08);
+  color: rgba(255,255,255,.86);
 }
 
-.panelTitle{
-  font-size:12px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  opacity:.6;
-}
-
-.panelRow{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:10px;
-  margin-top:8px;
-}
-
-.heroBtn{
-  width:100%;
-  margin-top:12px;
-  padding:14px;
-  border-radius:14px;
-  border:0;
-  font-size:16px;
-  font-weight:800;
-  cursor:pointer;
-  background:linear-gradient(90deg,#ff7a18,#ff3d77);
-  color:#fff;
-}
-
-.splitButtons{
-  display:flex;
-  gap:10px;
-  margin-top:12px;
-}
-.splitButtons .btn{margin-top:0}
-
-.momentCard{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:16px;
-  padding:14px;
-  margin-top:10px;
-}
-
-.momentTop{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  align-items:flex-start;
-}
-
-.momentName{
-  font-size:16px;
-  font-weight:800;
-}
-
-.momentBadges{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-  justify-content:flex-end;
-}
-
-.gridBadges{
+.actionsGrid{
   display:grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns:1fr 1fr;
   gap:10px;
+  margin-top:12px;
 }
 
-.achTile{
-  background:rgba(255,255,255,.06);
+.actionsGrid .btn{
+  margin-top:0;
+  padding:13px 14px;
+  font-size:15px;
+}
+
+.achGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+
+.achCard{
+  background: rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.10);
   border-radius:16px;
   padding:12px;
+  min-height:72px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
 }
-.achTile.locked{
-  opacity:.35;
-  filter:saturate(.2);
+
+.achCard.locked{
+  opacity:.45;
+  filter: grayscale(.4);
 }
 
 .achTitle{
-  font-weight:800;
+  font-weight:900;
+  margin-bottom:4px;
 }
+
 .achDesc{
   font-size:12px;
-  opacity:.65;
-  margin-top:6px;
+  color: rgba(255,255,255,.60);
 }

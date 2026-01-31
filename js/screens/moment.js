@@ -1,25 +1,18 @@
 import { api } from "../api.js";
 import { CONFIG } from "../config.js";
-import { go, qs, escapeHtml, formatDateTime } from "../ui.js";
+import { go, qs, escapeHtml } from "../ui.js";
 import { getGuestMomentIds } from "../storage.js";
 
-function ratingText(r) {
-  if (!r) return "";
-  if (r === "empty") return "Пусто";
-  if (r === "exact") return "Точно";
-  if (r === "strong") return "Сильно";
-  if (r === "perfect") return "Идеально";
-  return r;
-}
-
 export function initMomentScreen() {
-  const btnBackArchive = qs("#btnBackArchive");
-  if (btnBackArchive) btnBackArchive.addEventListener("click", () => go("archive"));
+  qs("#btnMomentBack")?.addEventListener("click", () => go("archive"));
 
-  qs("#btnRateEmpty")?.addEventListener("click", () => setRating("empty"));
-  qs("#btnRateExact")?.addEventListener("click", () => setRating("exact"));
-  qs("#btnRateStrong")?.addEventListener("click", () => setRating("strong"));
-  qs("#btnRatePerfect")?.addEventListener("click", () => setRating("perfect"));
+  qs("#rateBad")?.addEventListener("click", () => setRating("bad"));
+  qs("#rateOk")?.addEventListener("click", () => setRating("ok"));
+  qs("#ratePerfect")?.addEventListener("click", () => setRating("perfect"));
+
+  qs("#btnTip")?.addEventListener("click", () => {
+    window.open(CONFIG.TIP_URL, "_blank");
+  });
 }
 
 async function setRating(rating) {
@@ -28,18 +21,7 @@ async function setRating(rating) {
 
   try {
     await api.setMomentRating(id, rating);
-
-    // показываем жест
-    const tipBox = qs("#tipBox");
-    const tipLink = qs("#tipLink");
-    const tipHint = qs("#tipHint");
-    const rateHint = qs("#rateHint");
-
-    if (rateHint) rateHint.textContent = `Вы сказали: “${ratingText(rating)}”.`;
-
-    if (tipLink) tipLink.href = CONFIG.TIP_URL;
-    if (tipBox) tipBox.style.display = "block";
-    if (tipHint) tipHint.textContent = "Жест не обязателен. Но он закрепляет.";
+    alert("Запомнил.");
   } catch (e) {
     console.error(e);
   }
@@ -51,32 +33,29 @@ export async function renderMoment() {
 
   const titleEl = qs("#momentTitle");
   const timeEl = qs("#momentTime");
-  const statusEl = qs("#momentStatus");
-  const rateHint = qs("#rateHint");
-  const tipBox = qs("#tipBox");
+  const answersEl = qs("#momentAnswers");
 
   if (!id || !ids.includes(id)) {
     if (titleEl) titleEl.textContent = "Недоступно";
     if (timeEl) timeEl.textContent = "";
-    if (statusEl) statusEl.textContent = "…";
+    if (answersEl) answersEl.innerHTML = "";
     return;
   }
 
   try {
     const data = await api.getMoments(200);
-    const mine = (data.moments || []).find(m => m.id === id);
-    if (!mine) return;
+    const m = (data.moments || []).find(x => x.id === id);
+    if (!m) return;
 
-    if (titleEl) titleEl.textContent = mine.epithet || "Момент";
-    if (timeEl) timeEl.textContent = formatDateTime(mine.createdAt || mine.start || Date.now());
-    if (statusEl) statusEl.textContent = mine.status || "…";
+    if (titleEl) titleEl.textContent = m.epithet || "Момент";
+    if (timeEl) timeEl.textContent = new Date(m.createdAt || Date.now()).toLocaleString("ru-RU");
 
-    if (rateHint) {
-      rateHint.textContent = mine.rating ? `Вы сказали: “${ratingText(mine.rating)}”.` : "";
+    if (answersEl) {
+      answersEl.innerHTML = `<b>Условия</b><br><br>` +
+        Object.entries(m.answers || {}).map(([k, v]) => {
+          return `<div class="small">${escapeHtml(String(v))}</div>`;
+        }).join("");
     }
-
-    if (tipBox) tipBox.style.display = mine.rating ? "block" : "none";
-    qs("#tipLink")?.setAttribute("href", CONFIG.TIP_URL);
   } catch (e) {
     console.error(e);
   }
