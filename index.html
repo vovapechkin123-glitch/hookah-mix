@@ -35,11 +35,13 @@ body{
 .screen.active{display:block}
 
 h1{margin:0 0 12px;font-size:24px}
+h2{margin:14px 0 8px;font-size:14px;letter-spacing:.6px;text-transform:uppercase;opacity:.7}
+
 p{opacity:.85;line-height:1.5;margin:0 0 10px}
 
 .btn{
   width:100%;
-  margin-top:16px;
+  margin-top:14px;
   padding:14px;
   border-radius:14px;
   border:0;
@@ -79,6 +81,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
 }
 
 .small{font-size:13px;opacity:.7}
+.muted{opacity:.72}
 
 .timer{
   font-size:30px;
@@ -112,11 +115,67 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
 }
 .badge.warn{background:rgba(255,140,0,.15)}
 .badge.done{background:rgba(255,255,255,.15)}
+
+.listLine{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+  padding:8px 0;
+  border-top:1px solid rgba(255,255,255,.10);
+}
+.listLine:first-child{border-top:0}
 </style>
 </head>
 
 <body>
 <div class="card">
+
+<!-- ===== ЛИЧНЫЙ КАБИНЕТ (СТАРТ) ===== -->
+<div class="screen" id="dashboard">
+  <h1 id="dashTitle">Добро пожаловать.</h1>
+  <p>
+    <b>Это не заказ.</b><br>
+    <b>Это момент.</b>
+  </p>
+  <p class="small muted">25 минут. Один раз. Без повторов.</p>
+
+  <button class="btn primary" id="dashMainBtn" onclick="dashboardMainAction()">…</button>
+  <button class="btn" id="dashHistoryBtn" onclick="showHistory()">Открыть историю</button>
+
+  <h2>Процедура</h2>
+  <div class="listLine">
+    <div class="small">7 вопросов</div>
+    <div class="small muted">без объяснений</div>
+  </div>
+  <div class="listLine">
+    <div class="small">1 решение</div>
+    <div class="small muted">без выбора вкуса</div>
+  </div>
+  <div class="listLine">
+    <div class="small">1 исполнение</div>
+    <div class="small muted">без повторов</div>
+  </div>
+
+  <h2>Правила</h2>
+  <div class="listLine">
+    <div class="small">Дверь открывается только внутри</div>
+    <div class="small muted">гео-допуск</div>
+  </div>
+  <div class="listLine">
+    <div class="small">После подтверждения — назад нельзя</div>
+    <div class="small muted">строго</div>
+  </div>
+  <div class="listLine">
+    <div class="small">Уникальность не обсуждается</div>
+    <div class="small muted">всегда</div>
+  </div>
+
+  <p class="small muted" style="text-align:center;margin-top:16px">
+    Вы не выбираете вкус.<br>
+    Вы выбираете условия.
+  </p>
+</div>
 
 <!-- ===== ПРОЛОГ ===== -->
 <div class="screen" id="s0">
@@ -129,7 +188,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   </p>
 
   <button class="btn primary" onclick="go('door')">Продолжить</button>
-  <button class="btn" id="btnHistory" style="display:none" onclick="showHistory()">Ваши моменты</button>
+  <button class="btn" onclick="go('dashboard')">Назад</button>
 </div>
 
 <!-- ===== ДВЕРЬ (ГЕО) ===== -->
@@ -153,7 +212,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   <p id="outsideText">Вы слишком далеко.</p>
   <div class="btnRow">
     <button class="btn primary" onclick="doorCheck()">Проверить снова</button>
-    <button class="btn" onclick="go('s0')">Вернуться</button>
+    <button class="btn" onclick="go('dashboard')">Вернуться</button>
   </div>
 </div>
 
@@ -166,7 +225,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   </p>
   <div class="btnRow">
     <button class="btn primary" onclick="doorCheck()">Попробовать снова</button>
-    <button class="btn" onclick="go('s0')">Вернуться</button>
+    <button class="btn" onclick="go('dashboard')">Вернуться</button>
   </div>
 </div>
 
@@ -181,7 +240,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
     <button class="btn primary" onclick="doorCheck()">Попробовать снова</button>
     <button class="btn" onclick="openBot()">Передать координаты через Telegram</button>
   </div>
-  <button class="btn" onclick="go('s0')">Вернуться</button>
+  <button class="btn" onclick="go('dashboard')">Вернуться</button>
 </div>
 
 <!-- ===== КУРС (7 ВОПРОСОВ) ===== -->
@@ -227,6 +286,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   <h1>Ваши моменты</h1>
   <div id="historyList"></div>
   <button class="btn primary" onclick="startNewMoment()">Создать новый момент</button>
+  <button class="btn" onclick="go('dashboard')">Назад</button>
 </div>
 
 </div>
@@ -321,7 +381,6 @@ function generateEpithet(){
 
 /* ===== BOT FALLBACK ===== */
 function openBot(){
-  // открываем бота, чтобы гость отправил геопозицию
   tg?.openTelegramLink?.(`https://t.me/${BOT_USERNAME.replace("@","")}?start=geo`);
 }
 
@@ -381,7 +440,6 @@ async function doorCheck(){
   txt.innerHTML = "Секунду.<br>Мы проверяем, где вы.";
 
   try{
-    // 1) сначала пробуем WebView гео
     const geo = await getGeolocation();
     const data = await apiGeoCheck(geo.lat, geo.lng);
 
@@ -396,7 +454,6 @@ async function doorCheck(){
       `Вы слишком далеко.<br>Сейчас между нами примерно <b>${dist} м</b>.<br><br>Подойдите ближе. И попробуйте снова.`;
     go("outside");
   }catch(e){
-    // Если WebView не отдаёт гео — пробуем сессию через бота
     const s = await apiGeoSession();
     if(s?.ok && s.allowed){
       haptic("medium");
@@ -404,7 +461,6 @@ async function doorCheck(){
       return;
     }
 
-    // иначе показываем "молчит" и даём кнопку бота
     if(e?.code === 1){
       go("no-permission");
       return;
@@ -516,7 +572,6 @@ async function confirmMoment(){
   hint.textContent = "Проверяем допуск…";
 
   try{
-    // 1) пробуем webview geo
     let allowed = false;
 
     try{
@@ -524,7 +579,6 @@ async function confirmMoment(){
       const data = await apiGeoCheck(geo.lat, geo.lng);
       allowed = !!(data?.ok && data.allowed);
     }catch(e){
-      // 2) если webview молчит — пробуем сессию от бота
       const s = await apiGeoSession();
       allowed = !!(s?.ok && s.allowed);
     }
@@ -655,7 +709,8 @@ function showHistory(){
   go("history");
 }
 
-function startNewMoment(){
+/* ===== DASHBOARD LOGIC ===== */
+function dashboardMainAction(){
   const active = getActiveMoment();
   if(active && Date.now() < active.endAt){
     go("waiting");
@@ -665,13 +720,26 @@ function startNewMoment(){
   go("s0");
 }
 
-/* ===== START ===== */
-document.addEventListener("DOMContentLoaded", ()=>{
-  const moments = loadMoments();
-  if(moments.length){
-    document.getElementById("btnHistory").style.display = "block";
+function renderDashboard(){
+  const title = document.getElementById("dashTitle");
+  title.textContent = `Добро пожаловать, ${guest.name}.`;
+
+  const mainBtn = document.getElementById("dashMainBtn");
+  const active = getActiveMoment();
+
+  if(active && Date.now() < active.endAt){
+    mainBtn.textContent = "Вернуться к моменту";
+  }else{
+    mainBtn.textContent = "Создать момент";
   }
 
+  const moments = loadMoments();
+  const histBtn = document.getElementById("dashHistoryBtn");
+  histBtn.style.display = moments.length ? "block" : "none";
+}
+
+/* ===== START ===== */
+document.addEventListener("DOMContentLoaded", ()=>{
   const active = getActiveMoment();
   if(active && Date.now() < active.endAt){
     go("waiting");
@@ -681,7 +749,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
     clearActiveMoment();
   }
 
-  go("s0");
+  renderDashboard();
+  go("dashboard");
 });
 </script>
 
