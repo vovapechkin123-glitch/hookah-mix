@@ -22,7 +22,7 @@ body{
 }
 
 .card{
-  width:min(600px,100%);
+  width:min(620px,100%);
   background:rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.12);
   border-radius:18px;
@@ -90,7 +90,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   margin:14px 0
 }
 
-.order{
+.cardBox{
   background:rgba(255,255,255,.08);
   border-radius:14px;
   padding:14px;
@@ -115,6 +115,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
 }
 .badge.warn{background:rgba(255,140,0,.15)}
 .badge.done{background:rgba(255,255,255,.15)}
+.badge.good{background:rgba(0,255,140,.12)}
 
 .listLine{
   display:flex;
@@ -125,23 +126,73 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   border-top:1px solid rgba(255,255,255,.10);
 }
 .listLine:first-child{border-top:0}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:center
+}
+
+.pills{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.pill{
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.08);
+  cursor:pointer;
+  font-size:13px;
+  opacity:.9;
+}
+.pill.active{
+  background:rgba(237,230,214,.12);
+  border:1px solid rgba(237,230,214,.22);
+}
+
+.gridBadges{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+.ach{
+  border-radius:14px;
+  padding:12px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.06);
+}
+.ach.locked{opacity:.45}
+.ach .t{font-weight:800}
+.ach .d{font-size:12px;opacity:.75;margin-top:6px}
+
+.linkBtn{
+  text-decoration:none;
+  display:block;
+  text-align:center;
+}
 </style>
 </head>
 
 <body>
 <div class="card">
 
-<!-- ===== ЛИЧНЫЙ КАБИНЕТ (СТАРТ) ===== -->
-<div class="screen" id="dashboard">
-  <h1 id="dashTitle">Добро пожаловать.</h1>
+<!-- =========================
+     WELCOME (ТОЛЬКО ДЛЯ НОВЫХ)
+========================= -->
+<div class="screen" id="welcome">
+  <h1 id="welcomeTitle">Добро пожаловать.</h1>
   <p>
     <b>Это не заказ.</b><br>
     <b>Это момент.</b>
   </p>
   <p class="small muted">25 минут. Один раз. Без повторов.</p>
-
-  <button class="btn primary" id="dashMainBtn" onclick="dashboardMainAction()">…</button>
-  <button class="btn" id="dashHistoryBtn" onclick="showHistory()">Открыть историю</button>
 
   <h2>Процедура</h2>
   <div class="listLine">
@@ -171,13 +222,119 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
     <div class="small muted">всегда</div>
   </div>
 
+  <button class="btn primary" onclick="go('s0')">Создать момент</button>
+
   <p class="small muted" style="text-align:center;margin-top:16px">
     Вы не выбираете вкус.<br>
     Вы выбираете условия.
   </p>
 </div>
 
-<!-- ===== ПРОЛОГ ===== -->
+<!-- =========================
+     КАБИНЕТ (ДЛЯ ТЕХ, КТО УЖЕ БЫЛ)
+========================= -->
+<div class="screen" id="cabinet">
+  <div class="row">
+    <div>
+      <h1 id="cabTitle" style="margin:0">…</h1>
+      <div class="small muted" id="cabSubtitle">…</div>
+    </div>
+    <span class="badge" id="cabRank">…</span>
+  </div>
+
+  <button class="btn primary" id="cabMainBtn" onclick="cabinetMainAction()">…</button>
+
+  <div class="cardBox" id="cabNowBox" style="display:none">
+    <div class="row">
+      <b>Сейчас</b>
+      <span class="badge warn">В процессе</span>
+    </div>
+    <p class="small muted" style="margin-top:8px">
+      Процесс уже начался. Не вмешивайтесь.
+    </p>
+    <button class="btn" onclick="resumeActiveMoment()">Вернуться</button>
+  </div>
+
+  <h2>Последние моменты</h2>
+  <div id="cabLastList"></div>
+
+  <div class="btnRow">
+    <button class="btn" onclick="go('archive')">Архив</button>
+    <button class="btn" onclick="go('s0')">Новый момент</button>
+  </div>
+
+  <h2>Знаки</h2>
+  <div class="gridBadges" id="achGrid"></div>
+
+  <p class="small muted" style="text-align:center;margin-top:16px">
+    Вы возвращаетесь — значит, это работает.
+  </p>
+</div>
+
+<!-- =========================
+     АРХИВ
+========================= -->
+<div class="screen" id="archive">
+  <div class="row">
+    <h1 style="margin:0">Архив</h1>
+    <span class="badge" id="archiveCount">…</span>
+  </div>
+
+  <div class="pills">
+    <div class="pill active" id="fltAll" onclick="setArchiveFilter('all')">Все</div>
+    <div class="pill" id="fltNoRate" onclick="setArchiveFilter('no_rate')">Без оценки</div>
+  </div>
+
+  <div id="archiveList"></div>
+
+  <button class="btn" onclick="goHome()">В кабинет</button>
+</div>
+
+<!-- =========================
+     МОМЕНТ (ДЕТАЛИ + ОЦЕНКА + ЖЕСТ)
+========================= -->
+<div class="screen" id="moment">
+  <div class="row">
+    <h1 style="margin:0" id="momentTitle">…</h1>
+    <span class="badge" id="momentStatus">…</span>
+  </div>
+  <p class="small muted" id="momentTime">…</p>
+
+  <div class="cardBox" id="rateBox">
+    <b>Оценка</b>
+    <p class="small muted" style="margin-top:6px">Как это осталось в вас?</p>
+
+    <div class="btnRow">
+      <button class="btn" onclick="rateMoment('Пусто')">Пусто</button>
+      <button class="btn" onclick="rateMoment('Точно')">Точно</button>
+    </div>
+    <div class="btnRow">
+      <button class="btn" onclick="rateMoment('Сильно')">Сильно</button>
+      <button class="btn" onclick="rateMoment('Идеально')">Идеально</button>
+    </div>
+
+    <p class="small muted" id="rateHint" style="margin-top:10px"></p>
+  </div>
+
+  <div class="cardBox" id="tipBox" style="display:none">
+    <b>Жест</b>
+    <p class="small muted" style="margin-top:6px">
+      Если вы хотите закрепить этот момент.
+    </p>
+
+    <a class="btn primary linkBtn" href="https://netmonet.co/qr/192937/tip?o=6" target="_blank" onclick="tipClicked()">
+      Оставить жест
+    </a>
+
+    <p class="small muted" id="tipHint" style="margin-top:10px"></p>
+  </div>
+
+  <button class="btn" onclick="go('archive')">Назад</button>
+</div>
+
+<!-- =========================
+     ПРОЛОГ
+========================= -->
 <div class="screen" id="s0">
   <h1>Прежде чем мы начнём.</h1>
   <p>
@@ -188,10 +345,12 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   </p>
 
   <button class="btn primary" onclick="go('door')">Продолжить</button>
-  <button class="btn" onclick="go('dashboard')">Назад</button>
+  <button class="btn" onclick="goHome()">Назад</button>
 </div>
 
-<!-- ===== ДВЕРЬ (ГЕО) ===== -->
+<!-- =========================
+     ДВЕРЬ (ГЕО)
+========================= -->
 <div class="screen" id="door">
   <h1>Дверь открывается только внутри.</h1>
   <p id="doorText">
@@ -201,18 +360,18 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   </p>
 
   <button class="btn primary" id="btnDoor" onclick="doorCheck()">Открыть дверь</button>
-  <button class="btn" id="btnBot" onclick="openBot()">Передать координаты через Telegram</button>
+  <button class="btn" onclick="openBot()">Передать координаты через Telegram</button>
 
   <button class="btn" onclick="go('s0')">Назад</button>
 </div>
 
-<!-- ===== СНАРУЖИ / НЕТ СИГНАЛА ===== -->
+<!-- ===== СНАРУЖИ ===== -->
 <div class="screen" id="outside">
   <h1>Снаружи это не готовят.</h1>
   <p id="outsideText">Вы слишком далеко.</p>
   <div class="btnRow">
     <button class="btn primary" onclick="doorCheck()">Проверить снова</button>
-    <button class="btn" onclick="go('dashboard')">Вернуться</button>
+    <button class="btn" onclick="goHome()">Вернуться</button>
   </div>
 </div>
 
@@ -225,7 +384,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   </p>
   <div class="btnRow">
     <button class="btn primary" onclick="doorCheck()">Попробовать снова</button>
-    <button class="btn" onclick="go('dashboard')">Вернуться</button>
+    <button class="btn" onclick="goHome()">Вернуться</button>
   </div>
 </div>
 
@@ -240,10 +399,12 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
     <button class="btn primary" onclick="doorCheck()">Попробовать снова</button>
     <button class="btn" onclick="openBot()">Передать координаты через Telegram</button>
   </div>
-  <button class="btn" onclick="go('dashboard')">Вернуться</button>
+  <button class="btn" onclick="goHome()">Вернуться</button>
 </div>
 
-<!-- ===== КУРС (7 ВОПРОСОВ) ===== -->
+<!-- =========================
+     КУРС (7 ВОПРОСОВ)
+========================= -->
 <div class="screen" id="course">
   <h1 id="qTitle">…</h1>
   <p id="qText">…</p>
@@ -251,7 +412,9 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   <div id="qFooter" style="margin-top:12px"></div>
 </div>
 
-<!-- ===== ПОДТВЕРЖДЕНИЕ ===== -->
+<!-- =========================
+     ПОДТВЕРЖДЕНИЕ
+========================= -->
 <div class="screen" id="confirm">
   <h1>Я услышал.</h1>
   <p>
@@ -263,30 +426,27 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   <p class="small" id="confirmHint" style="margin-top:10px"></p>
 </div>
 
-<!-- ===== ОЖИДАНИЕ ===== -->
+<!-- =========================
+     ОЖИДАНИЕ
+========================= -->
 <div class="screen" id="waiting">
   <h1>Процесс начался.</h1>
   <p>Не торопите момент.</p>
   <div class="timer" id="guestTimer">25:00</div>
   <p class="small" id="guestHint"></p>
+  <button class="btn" onclick="goHome()">В кабинет</button>
 </div>
 
-<!-- ===== ЭПИЛОГ ===== -->
+<!-- =========================
+     ЭПИЛОГ
+========================= -->
 <div class="screen" id="epilogue">
   <h1>Это было сделано</h1>
   <p>
     именно для этого момента.<br><br>
     Дальше — без интерфейса.
   </p>
-  <button class="btn primary" onclick="showHistory()">Вернуться</button>
-</div>
-
-<!-- ===== ИСТОРИЯ ===== -->
-<div class="screen" id="history">
-  <h1>Ваши моменты</h1>
-  <div id="historyList"></div>
-  <button class="btn primary" onclick="startNewMoment()">Создать новый момент</button>
-  <button class="btn" onclick="go('dashboard')">Назад</button>
+  <button class="btn primary" onclick="goHome()">В кабинет</button>
 </div>
 
 </div>
@@ -297,17 +457,15 @@ const BACKEND_BASE = "https://hookah-mix-bot-56x5.onrender.com";
 const DURATION_MS = 25 * 60 * 1000;
 
 const BOT_USERNAME = "@hookah_mixPanda_bot";
+const TIP_URL = "https://netmonet.co/qr/192937/tip?o=6";
 
-/* Геозона (СЕЙЧАС: ДОМ ДЛЯ ТЕСТА) */
-const VENUE = {
-  lat: 56.519963,
-  lng: 84.933527,
-  radius: 40
-};
+/* Геозона (дом для теста) */
+const VENUE = { lat: 56.519963, lng: 84.933527, radius: 40 };
 
 /* LocalStorage keys */
 const LS_MOMENTS = "tm_moments";
 const LS_ACTIVE = "tm_active_moment";
+const LS_ARCHIVE_FILTER = "tm_archive_filter";
 
 /* Telegram */
 const tg = window.Telegram?.WebApp;
@@ -335,6 +493,7 @@ const QUESTIONS = [
 
 let currentQIndex = 0;
 let answers = {};
+let selectedMomentId = null;
 
 /* ===== UI ===== */
 function go(id){
@@ -349,18 +508,26 @@ function haptic(type="light"){
   try{ tg?.HapticFeedback?.impactOccurred?.(type); }catch(e){}
 }
 
-/* ===== ХРАНИЛИЩЕ ===== */
+/* ===== STORAGE ===== */
 function loadMoments(){
   try{ return JSON.parse(localStorage.getItem(LS_MOMENTS)||"[]"); }catch(e){ return []; }
 }
 function saveMoments(list){ localStorage.setItem(LS_MOMENTS, JSON.stringify(list)); }
+
 function getActiveMoment(){
   try{ return JSON.parse(localStorage.getItem(LS_ACTIVE)||"null"); }catch(e){ return null; }
 }
 function setActiveMoment(m){ localStorage.setItem(LS_ACTIVE, JSON.stringify(m)); }
 function clearActiveMoment(){ localStorage.removeItem(LS_ACTIVE); }
 
-/* ===== ЭПИТЕТЫ ===== */
+function getArchiveFilter(){
+  return localStorage.getItem(LS_ARCHIVE_FILTER) || "all";
+}
+function setArchiveFilterValue(v){
+  localStorage.setItem(LS_ARCHIVE_FILTER, v);
+}
+
+/* ===== EPITHETS ===== */
 const EPITHET_ADJ = ["Тёплая","Холодная","Тёмная","Светлая","Тихая","Резкая","Сухая","Мягкая","Плотная","Чистая","Строгая","Нервная","Тяжёлая","Лёгкая"];
 const EPITHET_NOUN = ["Пауза","Точность","Тишина","Сцена","Линия","Грань","Комната","Ночь","Ясность","Тень","Привычка","Воля","Траектория","Память"];
 
@@ -432,47 +599,290 @@ async function apiGeoSession(){
   return r.json();
 }
 
-/* ===== ДВЕРЬ ===== */
-async function doorCheck(){
-  const btn = document.getElementById("btnDoor");
-  const txt = document.getElementById("doorText");
-  btn.disabled = true;
-  txt.innerHTML = "Секунду.<br>Мы проверяем, где вы.";
-
-  try{
-    const geo = await getGeolocation();
-    const data = await apiGeoCheck(geo.lat, geo.lng);
-
-    if(data?.ok && data.allowed){
-      haptic("medium");
-      startCourse();
-      return;
-    }
-
-    const dist = Math.round(data?.distanceMeters ?? 9999);
-    document.getElementById("outsideText").innerHTML =
-      `Вы слишком далеко.<br>Сейчас между нами примерно <b>${dist} м</b>.<br><br>Подойдите ближе. И попробуйте снова.`;
-    go("outside");
-  }catch(e){
-    const s = await apiGeoSession();
-    if(s?.ok && s.allowed){
-      haptic("medium");
-      startCourse();
-      return;
-    }
-
-    if(e?.code === 1){
-      go("no-permission");
-      return;
-    }
-    go("geo-error");
-  }finally{
-    btn.disabled = false;
-    txt.innerHTML = `Мы не готовим это снаружи.<br><br>Разрешите местоположение.<br>Один раз.`;
+/* ===== HOME ROUTING ===== */
+function goHome(){
+  const list = loadMoments();
+  if(list.length === 0){
+    renderWelcome();
+    go("welcome");
+  }else{
+    renderCabinet();
+    go("cabinet");
   }
 }
 
-/* ===== КУРС ===== */
+function renderWelcome(){
+  document.getElementById("welcomeTitle").textContent = `Добро пожаловать, ${guest.name}.`;
+}
+
+/* ===== RANKS + ACHIEVEMENTS ===== */
+function getRank(momentsCount){
+  if(momentsCount <= 0) return "Незнакомец";
+  if(momentsCount <= 2) return "Гость";
+  if(momentsCount <= 4) return "Постоянный";
+  if(momentsCount <= 7) return "Посвящённый";
+  return "Свой";
+}
+
+function computeStats(){
+  const list = loadMoments();
+  const momentsCount = list.length;
+  const ratedCount = list.filter(m => !!m.rating).length;
+  const tipCount = list.filter(m => !!m.tipClickedAt).length;
+  const active = getActiveMoment();
+  const hasActive = active && Date.now() < active.endAt;
+
+  return { momentsCount, ratedCount, tipCount, hasActive };
+}
+
+function getAchievements(){
+  const s = computeStats();
+
+  return [
+    {
+      id:"first",
+      title:"Первый момент",
+      desc:"Вы вошли.",
+      unlocked: s.momentsCount >= 1
+    },
+    {
+      id:"return",
+      title:"Возвращение",
+      desc:"Вы вернулись.",
+      unlocked: s.momentsCount >= 3
+    },
+    {
+      id:"honesty",
+      title:"Честность",
+      desc:"Вы оценили три момента.",
+      unlocked: s.ratedCount >= 3
+    },
+    {
+      id:"gesture",
+      title:"Благодарность",
+      desc:"Вы оставили жест.",
+      unlocked: s.tipCount >= 1
+    }
+  ];
+}
+
+/* ===== CABINET ===== */
+function renderCabinet(){
+  const list = loadMoments();
+  const stats = computeStats();
+
+  document.getElementById("cabTitle").textContent = guest.name;
+  document.getElementById("cabSubtitle").textContent = `Сеансов: ${stats.momentsCount} · Оценок: ${stats.ratedCount}`;
+  document.getElementById("cabRank").textContent = getRank(stats.momentsCount);
+
+  const mainBtn = document.getElementById("cabMainBtn");
+  if(stats.hasActive){
+    mainBtn.textContent = "Вернуться к процессу";
+  }else{
+    mainBtn.textContent = "Создать новый момент";
+  }
+
+  const nowBox = document.getElementById("cabNowBox");
+  nowBox.style.display = stats.hasActive ? "block" : "none";
+
+  const last = [...list].sort((a,b)=>b.createdAt-a.createdAt).slice(0,3);
+  const box = document.getElementById("cabLastList");
+  box.innerHTML = "";
+
+  if(!last.length){
+    box.innerHTML = `<p class="small muted">Пока здесь пусто.</p>`;
+  }else{
+    last.forEach(m=>{
+      const st = m.status === "active"
+        ? `<span class="badge warn">В процессе</span>`
+        : `<span class="badge done">Завершено</span>`;
+
+      const rateText = m.rating
+        ? `<span class="badge good">${m.rating}</span>`
+        : `<span class="badge">Без оценки</span>`;
+
+      box.innerHTML += `
+        <div class="cardBox" style="margin-top:10px">
+          <div class="row">
+            <b>${m.epithet || "Момент"}</b>
+            ${st}
+          </div>
+          <div class="row" style="margin-top:8px">
+            <div class="small muted">${new Date(m.createdAt).toLocaleString()}</div>
+            ${rateText}
+          </div>
+          <button class="btn" onclick="openMoment('${m.id}')">Открыть</button>
+        </div>
+      `;
+    });
+  }
+
+  const ach = getAchievements();
+  const grid = document.getElementById("achGrid");
+  grid.innerHTML = "";
+  ach.forEach(a=>{
+    grid.innerHTML += `
+      <div class="ach ${a.unlocked ? "" : "locked"}">
+        <div class="t">${a.title}</div>
+        <div class="d">${a.desc}</div>
+      </div>
+    `;
+  });
+}
+
+function cabinetMainAction(){
+  const active = getActiveMoment();
+  if(active && Date.now() < active.endAt){
+    resumeActiveMoment();
+    return;
+  }
+  go("s0");
+}
+
+function resumeActiveMoment(){
+  const active = getActiveMoment();
+  if(!active) return;
+  go("waiting");
+  startTimer(active.startAt);
+}
+
+/* ===== ARCHIVE ===== */
+function setArchiveFilter(mode){
+  setArchiveFilterValue(mode);
+
+  document.getElementById("fltAll").classList.toggle("active", mode === "all");
+  document.getElementById("fltNoRate").classList.toggle("active", mode === "no_rate");
+
+  renderArchive();
+}
+
+function renderArchive(){
+  const list = [...loadMoments()].sort((a,b)=>b.createdAt-a.createdAt);
+  const mode = getArchiveFilter();
+
+  document.getElementById("archiveCount").textContent = `${list.length}`;
+
+  let filtered = list;
+  if(mode === "no_rate"){
+    filtered = list.filter(m => !m.rating);
+  }
+
+  const box = document.getElementById("archiveList");
+  box.innerHTML = "";
+
+  if(!filtered.length){
+    box.innerHTML = `<p class="small muted" style="margin-top:10px">Пусто.</p>`;
+    return;
+  }
+
+  filtered.forEach(m=>{
+    const st = m.status === "active"
+      ? `<span class="badge warn">В процессе</span>`
+      : `<span class="badge done">Завершено</span>`;
+
+    const rateText = m.rating
+      ? `<span class="badge good">${m.rating}</span>`
+      : `<span class="badge">Без оценки</span>`;
+
+    box.innerHTML += `
+      <div class="cardBox" style="margin-top:10px">
+        <div class="row">
+          <b>${m.epithet || "Момент"}</b>
+          ${st}
+        </div>
+        <div class="row" style="margin-top:8px">
+          <div class="small muted">${new Date(m.createdAt).toLocaleString()}</div>
+          ${rateText}
+        </div>
+        <button class="btn" onclick="openMoment('${m.id}')">Открыть</button>
+      </div>
+    `;
+  });
+}
+
+/* ===== MOMENT DETAILS ===== */
+function openMoment(id){
+  selectedMomentId = id;
+
+  const list = loadMoments();
+  const m = list.find(x => x.id === id);
+  if(!m){
+    go("archive");
+    return;
+  }
+
+  document.getElementById("momentTitle").textContent = m.epithet || "Момент";
+  document.getElementById("momentTime").textContent = new Date(m.createdAt).toLocaleString();
+
+  const status = m.status === "active" ? "В процессе" : "Завершено";
+  document.getElementById("momentStatus").textContent = status;
+
+  // rating box
+  const rateHint = document.getElementById("rateHint");
+  const tipBox = document.getElementById("tipBox");
+  const tipHint = document.getElementById("tipHint");
+
+  if(m.rating){
+    rateHint.textContent = `Зафиксировано: ${m.rating}`;
+    tipBox.style.display = "block";
+  }else{
+    rateHint.textContent = "";
+    tipBox.style.display = "none";
+  }
+
+  if(m.tipClickedAt){
+    tipHint.textContent = "Жест уже был оставлен.";
+  }else{
+    tipHint.textContent = "";
+  }
+
+  go("moment");
+}
+
+function rateMoment(value){
+  if(!selectedMomentId) return;
+
+  const list = loadMoments();
+  const idx = list.findIndex(x => x.id === selectedMomentId);
+  if(idx === -1) return;
+
+  // фиксируем оценку (не даём перезаписывать)
+  if(list[idx].rating) return;
+
+  list[idx].rating = value;
+  saveMoments(list);
+
+  haptic("medium");
+
+  // открыть жест
+  document.getElementById("rateHint").textContent = `Зафиксировано: ${value}`;
+  document.getElementById("tipBox").style.display = "block";
+
+  // обновить кабинет/архив на фоне
+  renderCabinet();
+  renderArchive();
+}
+
+function tipClicked(){
+  if(!selectedMomentId) return;
+
+  const list = loadMoments();
+  const idx = list.findIndex(x => x.id === selectedMomentId);
+  if(idx === -1) return;
+
+  if(!list[idx].tipClickedAt){
+    list[idx].tipClickedAt = Date.now();
+    saveMoments(list);
+  }
+
+  document.getElementById("tipHint").textContent = "Жест принят.";
+  haptic("light");
+
+  // обновить ачивки
+  renderCabinet();
+}
+
+/* ===== COURSE ===== */
 function startCourse(){
   answers = {};
   currentQIndex = 0;
@@ -564,7 +974,47 @@ function backToLastQuestion(){
   go("course");
 }
 
-/* ===== ПОДТВЕРЖДЕНИЕ ===== */
+/* ===== DOOR ===== */
+async function doorCheck(){
+  const btn = document.getElementById("btnDoor");
+  const txt = document.getElementById("doorText");
+  btn.disabled = true;
+  txt.innerHTML = "Секунду.<br>Мы проверяем, где вы.";
+
+  try{
+    const geo = await getGeolocation();
+    const data = await apiGeoCheck(geo.lat, geo.lng);
+
+    if(data?.ok && data.allowed){
+      haptic("medium");
+      startCourse();
+      return;
+    }
+
+    const dist = Math.round(data?.distanceMeters ?? 9999);
+    document.getElementById("outsideText").innerHTML =
+      `Вы слишком далеко.<br>Сейчас между нами примерно <b>${dist} м</b>.<br><br>Подойдите ближе. И попробуйте снова.`;
+    go("outside");
+  }catch(e){
+    const s = await apiGeoSession();
+    if(s?.ok && s.allowed){
+      haptic("medium");
+      startCourse();
+      return;
+    }
+
+    if(e?.code === 1){
+      go("no-permission");
+      return;
+    }
+    go("geo-error");
+  }finally{
+    btn.disabled = false;
+    txt.innerHTML = `Мы не готовим это снаружи.<br><br>Разрешите местоположение.<br>Один раз.`;
+  }
+}
+
+/* ===== CONFIRM ===== */
 async function confirmMoment(){
   const btn = document.getElementById("btnConfirm");
   const hint = document.getElementById("confirmHint");
@@ -609,7 +1059,9 @@ async function confirmMoment(){
       id: moment.id,
       createdAt: moment.createdAt,
       status: "active",
-      epithet: moment.epithet
+      epithet: moment.epithet,
+      rating: null,
+      tipClickedAt: null
     });
     saveMoments(list);
     setActiveMoment(moment);
@@ -632,7 +1084,7 @@ async function confirmMoment(){
   }
 }
 
-/* ===== ОЖИДАНИЕ ===== */
+/* ===== TIMER ===== */
 function startTimer(start){
   clearInterval(guestTimerInt);
 
@@ -674,72 +1126,13 @@ function finishActiveMoment(){
   }
 
   clearActiveMoment();
-}
-
-/* ===== ИСТОРИЯ ===== */
-function showHistory(){
-  const list = loadMoments();
-  const box = document.getElementById("historyList");
-  box.innerHTML = "";
-
-  if(!list.length){
-    box.innerHTML = `<p class="small">Пока здесь пусто.</p>`;
-    go("history");
-    return;
-  }
-
-  const sorted = [...list].sort((a,b)=>b.createdAt-a.createdAt);
-
-  sorted.forEach(m=>{
-    const status = m.status === "active"
-      ? `<span class="badge warn">В процессе</span>`
-      : `<span class="badge done">Завершено</span>`;
-
-    box.innerHTML += `
-      <div class="order">
-        <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
-          <b>${m.epithet || "Момент"}</b>
-          ${status}
-        </div>
-        <div class="small" style="margin-top:6px">${new Date(m.createdAt).toLocaleString()}</div>
-      </div>
-    `;
-  });
-
-  go("history");
-}
-
-/* ===== DASHBOARD LOGIC ===== */
-function dashboardMainAction(){
-  const active = getActiveMoment();
-  if(active && Date.now() < active.endAt){
-    go("waiting");
-    startTimer(active.startAt);
-    return;
-  }
-  go("s0");
-}
-
-function renderDashboard(){
-  const title = document.getElementById("dashTitle");
-  title.textContent = `Добро пожаловать, ${guest.name}.`;
-
-  const mainBtn = document.getElementById("dashMainBtn");
-  const active = getActiveMoment();
-
-  if(active && Date.now() < active.endAt){
-    mainBtn.textContent = "Вернуться к моменту";
-  }else{
-    mainBtn.textContent = "Создать момент";
-  }
-
-  const moments = loadMoments();
-  const histBtn = document.getElementById("dashHistoryBtn");
-  histBtn.style.display = moments.length ? "block" : "none";
+  renderCabinet();
+  renderArchive();
 }
 
 /* ===== START ===== */
 document.addEventListener("DOMContentLoaded", ()=>{
+  // если активный момент есть — сразу в процесс
   const active = getActiveMoment();
   if(active && Date.now() < active.endAt){
     go("waiting");
@@ -749,8 +1142,13 @@ document.addEventListener("DOMContentLoaded", ()=>{
     clearActiveMoment();
   }
 
-  renderDashboard();
-  go("dashboard");
+  // подготовим архив-фильтр UI
+  const mode = getArchiveFilter();
+  document.getElementById("fltAll").classList.toggle("active", mode === "all");
+  document.getElementById("fltNoRate").classList.toggle("active", mode === "no_rate");
+
+  // старт по истории
+  goHome();
 });
 </script>
 
