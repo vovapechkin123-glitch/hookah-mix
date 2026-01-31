@@ -288,85 +288,70 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   100%{ opacity:0; transform:translateY(12px); }
 }
 
-/* ===== HOURGLASS (ABSTRACT) ===== */
-.hourglassWrap{
+/* ===== RITUAL TIME SIGN (NEW) ===== */
+.timeSignWrap{
   display:flex;
   align-items:center;
   justify-content:center;
-  margin:16px 0 10px;
+  margin:16px 0 8px;
 }
-
-.hourglass{
-  width:84px;
-  height:120px;
-  border-radius:20px;
-  border:1px solid rgba(255,255,255,.18);
+.timeSign{
+  width:92px;
+  height:92px;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.14);
   background:rgba(255,255,255,.04);
   box-shadow:0 18px 60px rgba(0,0,0,.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
   position:relative;
   overflow:hidden;
 }
 
-.hgTop, .hgBottom{
+.timeSign::before{
+  content:"";
   position:absolute;
-  left:10px;
-  right:10px;
-  height:44px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.03);
+  inset:-30%;
+  background:linear-gradient(135deg,
+    rgba(255,122,24,.00),
+    rgba(255,122,24,.18),
+    rgba(255,61,119,.16),
+    rgba(255,61,119,.00)
+  );
+  transform:rotate(20deg);
+  animation: signGlow 5.2s ease-in-out infinite;
 }
 
-.hgTop{ top:10px; }
-.hgBottom{ bottom:10px; }
-
-.hgSandTop{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
-  height:70%;
-  background:linear-gradient(180deg, rgba(255,122,24,.85), rgba(255,61,119,.75));
-  border-radius:14px;
-  animation: sandTop 25s linear forwards;
+@keyframes signGlow{
+  0%{ transform:translateX(-18%) translateY(-10%) rotate(20deg); opacity:.35; }
+  50%{ transform:translateX(18%) translateY(10%) rotate(20deg); opacity:.75; }
+  100%{ transform:translateX(-18%) translateY(-10%) rotate(20deg); opacity:.35; }
 }
 
-.hgSandBottom{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
-  height:0%;
-  background:linear-gradient(180deg, rgba(255,61,119,.70), rgba(255,122,24,.75));
-  border-radius:14px;
-  animation: sandBottom 25s linear forwards;
+.timeSign svg{
+  width:56px;
+  height:56px;
+  opacity:.9;
+  z-index:1;
 }
 
-.hgStream{
-  position:absolute;
-  left:50%;
-  top:54px;
-  width:2px;
-  height:0px;
-  transform:translateX(-50%);
-  background:rgba(255,255,255,.45);
-  box-shadow:0 0 12px rgba(255,255,255,.25);
-  animation: stream 25s linear forwards;
+.timeProgress{
+  width:100%;
+  height:6px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+  overflow:hidden;
+  margin-top:10px;
 }
 
-@keyframes sandTop{
-  from{ height:70%; opacity:1; }
-  to{ height:0%; opacity:.7; }
-}
-@keyframes sandBottom{
-  from{ height:0%; opacity:.8; }
-  to{ height:70%; opacity:1; }
-}
-@keyframes stream{
-  0%{ height:0px; opacity:0; }
-  6%{ height:28px; opacity:1; }
-  94%{ height:28px; opacity:1; }
-  100%{ height:0px; opacity:0; }
+.timeProgressFill{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg, rgba(255,122,24,.90), rgba(255,61,119,.80));
+  transition: width 1s linear;
 }
 
 /* ===== MASTER LIST ===== */
@@ -653,19 +638,42 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
     <h1 id="waitTitle">Тишина.</h1>
     <p id="waitText">Кухня ещё не ответила.</p>
 
-    <div class="hourglassWrap">
-      <div class="hourglass" id="hourglass">
-        <div class="hgTop">
-          <div class="hgSandTop" id="hgSandTop" style="animation-duration:25s;"></div>
-        </div>
-        <div class="hgBottom">
-          <div class="hgSandBottom" id="hgSandBottom" style="animation-duration:25s;"></div>
-        </div>
-        <div class="hgStream" id="hgStream" style="animation-duration:25s;"></div>
+    <div class="timeSignWrap">
+      <div class="timeSign" id="timeSign">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path
+            d="M7 3h10M7 21h10"
+            stroke="rgba(255,255,255,.45)"
+            stroke-width="1.2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M9 5c0 3 3 4 3 7s-3 4-3 7"
+            stroke="rgba(255,255,255,.55)"
+            stroke-width="1.2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M15 5c0 3-3 4-3 7s3 4 3 7"
+            stroke="rgba(255,255,255,.55)"
+            stroke-width="1.2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M12 12v.01"
+            stroke="rgba(255,255,255,.85)"
+            stroke-width="2.2"
+            stroke-linecap="round"
+          />
+        </svg>
       </div>
     </div>
 
-    <p class="small muted" id="guestHint" style="text-align:center"></p>
+    <div class="timeProgress">
+      <div class="timeProgressFill" id="timeProgressFill"></div>
+    </div>
+
+    <p class="small muted" id="guestHint" style="text-align:center;margin-top:12px"></p>
     <button class="btn" onclick="goHome()">В кабинет</button>
   </div>
 
@@ -930,7 +938,7 @@ async function refreshMaster(){
       const badgeClass = statusBadgeClass(st);
 
       const acceptedAtText = m.acceptedAt
-        ? `<div class="masterSub">Старт песка: ${new Date(m.acceptedAt).toLocaleTimeString()}</div>`
+        ? `<div class="masterSub">Песок запущен: ${new Date(m.acceptedAt).toLocaleTimeString()}</div>`
         : `<div class="masterSub">Песок ещё не запущен.</div>`;
 
       box.innerHTML += `
@@ -1270,7 +1278,6 @@ async function confirmMoment(){
     const id = Date.now()+"_"+Math.random().toString(36).slice(2,6);
     const epithet = generateEpithet();
 
-    // локально фиксируем активный момент (но таймер не запускаем!)
     const localMoment = {
       id,
       createdAt: Date.now(),
@@ -1290,7 +1297,6 @@ async function confirmMoment(){
     saveMoments(list);
     setActiveMoment(localMoment);
 
-    // отправляем на сервер момент
     await fetch(`${BACKEND_BASE}/moment`,{
       method:"POST",
       headers:{'Content-Type':'application/json'},
@@ -1318,24 +1324,11 @@ async function confirmMoment(){
 }
 
 /* ===== WAITING LOGIC (SERVER-DRIVEN) ===== */
-function resetHourglassAnimations(){
-  const top = document.getElementById("hgSandTop");
-  const bottom = document.getElementById("hgSandBottom");
-  const stream = document.getElementById("hgStream");
-
-  // перезапуск CSS-анимаций
-  [top,bottom,stream].forEach(el=>{
-    if(!el) return;
-    el.style.animation = "none";
-    void el.offsetHeight;
-    el.style.animation = "";
-  });
-
-  // duration 25s * 60 = 1500s
-  const seconds = DURATION_MS / 1000;
-  if(top) top.style.animationDuration = seconds + "s";
-  if(bottom) bottom.style.animationDuration = seconds + "s";
-  if(stream) stream.style.animationDuration = seconds + "s";
+function setProgressFill(pct){
+  const el = document.getElementById("timeProgressFill");
+  if(!el) return;
+  const v = Math.max(0, Math.min(100, pct));
+  el.style.width = v + "%";
 }
 
 async function fetchServerMoment(id){
@@ -1350,8 +1343,7 @@ async function startWaitingLoop(){
   document.getElementById("waitTitle").textContent = "Тишина.";
   document.getElementById("waitText").textContent = "Кухня ещё не ответила.";
   document.getElementById("guestHint").textContent = "Песок не запущен.";
-
-  resetHourglassAnimations();
+  setProgressFill(0);
 
   guestTimerInt = setInterval(async ()=>{
     const active = getActiveMoment();
@@ -1365,20 +1357,23 @@ async function startWaitingLoop(){
     try{
       m = await fetchServerMoment(active.id);
     }catch(e){
-      // если сервер недоступен — просто ждём
       return;
     }
 
     if(!m) return;
 
-    // Если мастер нажал "Кухня услышала" -> acceptedAt появился
     if(m.acceptedAt){
       const start = Number(m.acceptedAt);
       const end = start + DURATION_MS;
-      const d = end - Date.now();
+      const now = Date.now();
+      const d = end - now;
 
       document.getElementById("waitTitle").textContent = "Процесс начался.";
       document.getElementById("waitText").textContent = "Не торопите момент.";
+
+      const passed = now - start;
+      const pct = (passed / DURATION_MS) * 100;
+      setProgressFill(pct);
 
       if(d <= 0){
         document.getElementById("guestHint").textContent = "Готово.";
@@ -1388,20 +1383,12 @@ async function startWaitingLoop(){
         return;
       }
 
-      // подсказки вместо таймера
       if(d < 3*60*1000) document.getElementById("guestHint").textContent = "Скоро.";
       else if(d < 10*60*1000) document.getElementById("guestHint").textContent = "Вы почти там.";
       else if(d < 20*60*1000) document.getElementById("guestHint").textContent = "Сейчас всё решается.";
       else document.getElementById("guestHint").textContent = "Песок идёт.";
-
-      // если acceptedAt появился только что — запускаем песочные часы заново
-      if(!active.acceptedAtLocal){
-        active.acceptedAtLocal = start;
-        setActiveMoment(active);
-        resetHourglassAnimations();
-      }
     }
-  }, 2000);
+  }, 1000);
 }
 
 function finishActiveMoment(){
