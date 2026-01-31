@@ -32,13 +32,64 @@ body{
   position:relative;
 }
 
-/* ===== SOUND BUTTON (LOGO) ===== */
+/* ===== FLOATING SOUND BUTTON (FOR MOST SCREENS) ===== */
 .soundBtn{
   position:absolute;
   top:14px;
   right:14px;
-  width:42px;
-  height:42px;
+  width:40px;
+  height:40px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  user-select:none;
+  z-index:10;
+
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  backdrop-filter: blur(10px);
+
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease, opacity .12s ease;
+}
+
+.soundBtn:active{
+  transform: scale(.96);
+}
+
+.soundBtn .icon{
+  font-weight:900;
+  font-size:15px;
+  opacity:.85;
+}
+
+/* OFF state */
+.soundBtn.off{
+  opacity:.55;
+  background:rgba(255,255,255,.05);
+  border-color:rgba(255,255,255,.12);
+}
+.soundBtn.off .icon{
+  opacity:.65;
+}
+
+/* ON state */
+.soundBtn.on{
+  opacity:1;
+  background:linear-gradient(135deg, rgba(255,122,24,.95), rgba(255,61,119,.90));
+  border-color:rgba(255,255,255,.22);
+  box-shadow:0 12px 40px rgba(255,61,119,.16), 0 12px 40px rgba(255,122,24,.12);
+}
+.soundBtn.on .icon{
+  opacity:1;
+}
+
+/* ===== INLINE SOUND BUTTON (FOR CABINET HEADER) ===== */
+.soundInline{
+  width:34px;
+  height:34px;
   border-radius:999px;
   display:flex;
   align-items:center;
@@ -48,41 +99,34 @@ body{
 
   background:rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.14);
-  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
   backdrop-filter: blur(10px);
 
-  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease, opacity .12s ease;
 }
 
-.soundBtn:active{
-  transform: scale(.96);
-}
+.soundInline:active{ transform: scale(.96); }
 
-.soundBtn .icon{
+.soundInline .icon{
   font-weight:900;
-  font-size:16px;
-  letter-spacing:.5px;
+  font-size:14px;
   opacity:.85;
 }
 
-/* OFF state */
-.soundBtn.off{
-  background:rgba(255,255,255,.06);
-  border-color:rgba(255,255,255,.14);
-}
-.soundBtn.off .icon{
+.soundInline.off{
   opacity:.55;
+  background:rgba(255,255,255,.05);
+  border-color:rgba(255,255,255,.12);
 }
+.soundInline.off .icon{ opacity:.65; }
 
-/* ON state (color) */
-.soundBtn.on{
+.soundInline.on{
+  opacity:1;
   background:linear-gradient(135deg, rgba(255,122,24,.95), rgba(255,61,119,.90));
   border-color:rgba(255,255,255,.22);
-  box-shadow:0 12px 40px rgba(255,61,119,.18), 0 12px 40px rgba(255,122,24,.14);
+  box-shadow:0 10px 28px rgba(255,61,119,.14), 0 10px 28px rgba(255,122,24,.10);
 }
-.soundBtn.on .icon{
-  opacity:1;
-}
+.soundInline.on .icon{ opacity:1; }
 
 .screen{display:none}
 .screen.active{display:block}
@@ -188,6 +232,12 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   align-items:center
 }
 
+.headerRight{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
 .pills{
   display:flex;
   gap:8px;
@@ -236,8 +286,8 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
 <body>
 <div class="card">
 
-  <!-- SOUND BUTTON -->
-  <div class="soundBtn off" id="soundBtn" onclick="toggleMusic()" title="Мелодия">
+  <!-- FLOATING SOUND BUTTON (DEFAULT) -->
+  <div class="soundBtn off" id="soundBtnFloating" onclick="toggleMusic()" title="Мелодия">
     <div class="icon">♪</div>
   </div>
 
@@ -300,7 +350,14 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
       <h1 style="margin:0" id="cabTitle">…</h1>
       <div class="small muted" id="cabSubtitle">…</div>
     </div>
-    <span class="badge" id="cabRank">…</span>
+
+    <div class="headerRight">
+      <span class="badge" id="cabRank">…</span>
+      <!-- INLINE SOUND BUTTON -->
+      <div class="soundInline off" id="soundBtnInline" onclick="toggleMusic()" title="Мелодия">
+        <div class="icon">♪</div>
+      </div>
+    </div>
   </div>
 
   <button class="btn primary" id="cabMainBtn" onclick="cabinetMainAction()">…</button>
@@ -553,15 +610,18 @@ function setMusicEnabled(v){
 }
 
 function updateMusicUI(){
-  const btn = document.getElementById("soundBtn");
-  if(!btn) return;
+  const f = document.getElementById("soundBtnFloating");
+  const i = document.getElementById("soundBtnInline");
 
-  if(isMusicEnabled()){
-    btn.classList.remove("off");
-    btn.classList.add("on");
-  }else{
-    btn.classList.remove("on");
-    btn.classList.add("off");
+  const on = isMusicEnabled();
+
+  if(f){
+    f.classList.toggle("on", on);
+    f.classList.toggle("off", !on);
+  }
+  if(i){
+    i.classList.toggle("on", on);
+    i.classList.toggle("off", !on);
   }
 }
 
@@ -1236,17 +1296,13 @@ function finishActiveMoment(){
 
 /* ===== START ===== */
 document.addEventListener("DOMContentLoaded", ()=>{
-  // init music UI
   updateMusicUI();
   applyMusicDefaults();
 
-  // если пользователь включал музыку ранее — пробуем играть
-  // (на iPhone может не запуститься без клика, но UI будет "ON")
   if(isMusicEnabled()){
     playMusic();
   }
 
-  // если активный момент есть — сразу в процесс
   const active = getActiveMoment();
   if(active && Date.now() < active.endAt){
     go("waiting");
@@ -1256,7 +1312,6 @@ document.addEventListener("DOMContentLoaded", ()=>{
     clearActiveMoment();
   }
 
-  // фильтр архива
   const mode = getArchiveFilter();
   document.getElementById("fltAll").classList.toggle("active", mode === "all");
   document.getElementById("fltNoRate").classList.toggle("active", mode === "no_rate");
