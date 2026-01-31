@@ -1,243 +1,1320 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>THE MENU</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>THE MENU</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  color-scheme: dark;
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="./css/base.css">
-  <link rel="stylesheet" href="./css/cabinet.css">
-  <link rel="stylesheet" href="./css/course.css">
-  <link rel="stylesheet" href="./css/waiting.css">
-  <link rel="stylesheet" href="./css/master.css">
+  --bg0:#05050a;
+  --bg1:#0a0a12;
+  --bg2:#141422;
+
+  --card: rgba(255,255,255,.055);
+  --card2: rgba(255,255,255,.075);
+  --stroke: rgba(255,255,255,.10);
+
+  --text:#ffffff;
+  --muted: rgba(255,255,255,.70);
+  --soft: rgba(255,255,255,.55);
+
+  /* медный акцент */
+  --accent1:#d7b26a;
+  --accent2:#b9813a;
+  --danger:#ff3d77;
+
+  --radius:18px;
+  --radius2:22px;
+  --shadow: 0 20px 60px rgba(0,0,0,.55);
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+
+  background:
+    radial-gradient(1200px 900px at 30% 20%, rgba(215,178,106,.08) 0%, rgba(20,20,34,.0) 55%),
+    radial-gradient(900px 700px at 80% 30%, rgba(185,129,58,.10) 0%, rgba(10,10,18,.0) 60%),
+    radial-gradient(1200px 800px at 40% 90%, rgba(215,178,106,.05) 0%, rgba(5,5,10,0) 60%),
+    linear-gradient(180deg, var(--bg2), var(--bg0));
+}
+
+.card{
+  width:min(760px,100%);
+  background: var(--card);
+  border:1px solid var(--stroke);
+  border-radius: var(--radius2);
+  padding:22px;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+  position:relative;
+}
+
+.screen{ display:none; }
+.screen.active{ display:block; }
+
+h1{
+  margin:0 0 10px;
+  font-size:24px;
+  letter-spacing:.2px;
+}
+
+p{
+  margin:0 0 10px;
+  opacity:.88;
+  line-height:1.55;
+}
+
+.small{
+  font-size:13px;
+  color:var(--soft);
+}
+
+hr{
+  border:0;
+  border-top:1px solid rgba(255,255,255,.10);
+  margin:14px 0;
+}
+
+.btn{
+  width:100%;
+  margin-top:14px;
+  padding:14px 16px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.12);
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+  color:var(--text);
+  background: rgba(255,255,255,.08);
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+
+.btn:hover{
+  background: rgba(255,255,255,.11);
+  border-color: rgba(255,255,255,.16);
+}
+
+.btn:active{
+  transform: translateY(1px) scale(.99);
+}
+
+.btn.primary{
+  border:1px solid rgba(215,178,106,.35);
+  background: linear-gradient(180deg, rgba(215,178,106,.22), rgba(185,129,58,.10));
+  box-shadow: 0 14px 40px rgba(185,129,58,.10);
+}
+
+.btn.primary:hover{
+  background: linear-gradient(180deg, rgba(215,178,106,.28), rgba(185,129,58,.14));
+}
+
+.btn.danger{
+  border:1px solid rgba(255,61,119,.35);
+  background: rgba(255,61,119,.10);
+}
+
+.btnRow{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+.btnRow .btn{ margin-top:0; width:100%; }
+
+.option{
+  padding:14px 14px;
+  border-radius:16px;
+  background: rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+  margin-top:10px;
+  cursor:pointer;
+  transition: background .12s ease, transform .12s ease, border-color .12s ease;
+  position:relative;
+  overflow:hidden;
+}
+.option::after{
+  content:"";
+  position:absolute;
+  inset:-40px;
+  background: radial-gradient(circle at 20% 30%, rgba(215,178,106,.14), transparent 55%);
+  opacity:.0;
+  transition: opacity .14s ease;
+}
+.option:hover::after{ opacity:1; }
+.option:hover{
+  background: rgba(255,255,255,.10);
+  border-color: rgba(215,178,106,.22);
+}
+.option:active{ transform: translateY(1px); }
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.badge{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  background: rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.80);
+}
+.badge.good{
+  background: rgba(215,178,106,.10);
+  border-color: rgba(215,178,106,.22);
+  color: rgba(255,255,255,.88);
+}
+.badge.warn{
+  background: rgba(215,178,106,.06);
+  border-color: rgba(215,178,106,.14);
+}
+
+.glowLine{
+  height:1px;
+  width:100%;
+  background: linear-gradient(90deg, transparent, rgba(215,178,106,.35), transparent);
+  opacity:.55;
+  margin:12px 0;
+}
+
+/* Floating sound button */
+.soundFloating{
+  position:absolute;
+  top:14px;
+  right:14px;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  opacity:.85;
+  transition: transform .12s ease, opacity .12s ease, border-color .12s ease;
+  z-index:5;
+}
+.soundFloating:hover{
+  opacity:1;
+  border-color: rgba(215,178,106,.25);
+}
+.soundFloating:active{ transform: translateY(1px); }
+.soundFloating.on{
+  border-color: rgba(215,178,106,.35);
+  box-shadow: 0 0 0 4px rgba(215,178,106,.08);
+}
+.soundFloating.off{ opacity:.55; }
+
+/* Sound Gate */
+.gateWrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:420px;
+  gap:16px;
+  transition: all .55s ease;
+}
+.gateLogo{
+  width:94px;
+  height:94px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  user-select:none;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(215,178,106,.95), rgba(185,129,58,.80));
+  box-shadow:
+    0 22px 70px rgba(185,129,58,.18),
+    0 0 0 1px rgba(255,255,255,.06) inset;
+}
+.gateLogo .ic{
+  font-size:34px;
+  font-weight:900;
+  transform: translateY(-1px);
+  filter: drop-shadow(0 6px 20px rgba(0,0,0,.35));
+}
+.gatePulse{ animation: gatePulse 2.8s ease-in-out infinite; }
+@keyframes gatePulse{ 0%,100%{ transform: scale(1); } 50%{ transform: scale(1.06); } }
+.gateOut{ opacity:0; transform: translateY(10px) scale(.985); }
+
+/* Cabinet */
+.sectionTitle{
+  margin-top:14px;
+  font-size:13px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color: rgba(255,255,255,.55);
+}
+.panel{
+  background: rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  padding:14px;
+  margin-top:12px;
+}
+.panel.soft{ background: rgba(255,255,255,.05); }
+
+.profileTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.profileName{
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:.2px;
+}
+.profileMeta{
+  color: rgba(255,255,255,.65);
+  font-size:13px;
+}
+
+.momentCard{
+  background: rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  padding:14px;
+  margin-top:12px;
+}
+.momentTitleRow{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+}
+.momentTitle{
+  font-size:18px;
+  font-weight:900;
+}
+.momentTime{
+  font-size:12px;
+  color: rgba(255,255,255,.55);
+}
+.pill{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.75);
+}
+.pill.brass{
+  border-color: rgba(215,178,106,.28);
+  background: rgba(215,178,106,.08);
+  color: rgba(255,255,255,.86);
+}
+
+.actionsGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+.actionsGrid .btn{ margin-top:0; padding:13px 14px; font-size:15px; }
+
+.achGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+.achCard{
+  background: rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  padding:12px;
+  min-height:72px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.achCard.locked{
+  opacity:.45;
+  filter: grayscale(.4);
+}
+.achTitle{ font-weight:900; margin-bottom:4px; }
+.achDesc{ font-size:12px; color: rgba(255,255,255,.60); }
+
+/* Waiting */
+.timer{
+  font-size:34px;
+  text-align:center;
+  letter-spacing:2px;
+  margin:14px 0;
+}
+.hourglass{
+  width:110px;
+  height:140px;
+  margin:12px auto 6px;
+  border-radius:26px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.20);
+  position:relative;
+  overflow:hidden;
+  box-shadow: 0 16px 50px rgba(0,0,0,.35);
+}
+.hourglass::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(215,178,106,.18), transparent 55%),
+    radial-gradient(circle at 70% 75%, rgba(185,129,58,.12), transparent 55%);
+  opacity:.85;
+}
+.sandTop, .sandBottom{
+  position:absolute;
+  left:14px;
+  right:14px;
+  border-radius:18px;
+  background: linear-gradient(180deg, rgba(215,178,106,.75), rgba(185,129,58,.35));
+  box-shadow: 0 10px 30px rgba(185,129,58,.12);
+}
+.sandTop{ top:14px; height:48%; transform-origin: top; }
+.sandBottom{ bottom:14px; height:0%; transform-origin: bottom; }
+.sandStream{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:2px;
+  height:44px;
+  transform: translate(-50%,-50%);
+  background: rgba(215,178,106,.65);
+  opacity:.75;
+}
+
+/* Master */
+.kitchenTitle{ font-size:22px; font-weight:900; }
+.kitchenSub{ color: rgba(255,255,255,.65); font-size:13px; }
+
+.kitchenCard{
+  background: rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  padding:14px;
+  margin-top:12px;
+}
+.kitchenCard.new{
+  border-color: rgba(215,178,106,.22);
+  box-shadow: 0 0 0 4px rgba(215,178,106,.06);
+}
+.kitchenName{ font-size:16px; font-weight:900; }
+.kitchenMeta{ font-size:12px; color: rgba(255,255,255,.55); }
+.kitchenBtns{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+.kitchenBtns .btn{ margin-top:0; padding:12px 12px; font-size:14px; }
+</style>
 </head>
 
 <body>
-  <div class="card">
+<div class="card">
 
-    <!-- Floating sound button (всегда доступна) -->
-    <button class="soundFloating off" id="soundBtnFloating" title="Музыка">♪</button>
+  <!-- Floating sound button -->
+  <button class="soundFloating off" id="soundBtnFloating" title="Музыка">♪</button>
 
-    <!-- Audio -->
-    <audio id="bgMusic" src="./assets/7441574b62bac5e.mp3" loop preload="auto"></audio>
+  <!-- Audio -->
+  <audio id="bgMusic" src="./7441574b62bac5e.mp3" loop preload="auto"></audio>
 
-    <!-- ===================== SOUND GATE ===================== -->
-    <div class="screen" id="soundGate">
-      <div class="gateWrap" id="gateWrap">
-        <div class="gateLogo gatePulse" id="gateLogo">
-          <div class="ic">♪</div>
-        </div>
-        <h1 style="text-align:center;margin:0;">Включите зал.</h1>
-        <p class="small" style="text-align:center;margin:0;">
-          Нажмите на знак.<br>
-          Дальше — без лишних слов.
-        </p>
+  <!-- ===================== SOUND GATE ===================== -->
+  <div class="screen active" id="soundGate">
+    <div class="gateWrap" id="gateWrap">
+      <div class="gateLogo gatePulse" id="gateLogo">
+        <div class="ic">♪</div>
       </div>
-    </div>
-
-    <!-- ===================== WELCOME / ПРОЛОГ ===================== -->
-    <div class="screen" id="welcome">
-      <h1>Прежде чем мы начнём.</h1>
-      <p>
-        Здесь не подбирают вкус.<br><br>
-        Здесь фиксируют момент.<br><br>
-        То, что вы получите,<br>
-        не существует заранее.
+      <h1 style="text-align:center;margin:0;">Включите зал.</h1>
+      <p class="small" style="text-align:center;margin:0;">
+        Нажмите на знак.<br>
+        Дальше — без лишних слов.
       </p>
-
-      <div class="glowLine"></div>
-
-      <button class="btn primary" id="btnWelcomeStart">Продолжить</button>
     </div>
-
-    <!-- ===================== DOOR (GEO) ===================== -->
-    <div class="screen" id="door">
-      <h1>Открыть дверь.</h1>
-      <p class="small">
-        Это вход не в заказ.<br>
-        Это вход в процесс.
-      </p>
-
-      <button class="btn primary" id="btnDoor">Открыть</button>
-      <button class="btn" id="btnDoorBot">Я не могу дать гео</button>
-    </div>
-
-    <!-- ===================== OUTSIDE ===================== -->
-    <div class="screen" id="outside">
-      <h1>Снаружи.</h1>
-      <p class="small">
-        Сейчас это место не совпадает с залом.<br>
-        Вернитесь — и повторите.
-      </p>
-
-      <div class="btnRow">
-        <button class="btn primary" id="btnOutsideRetry">Проверить снова</button>
-        <button class="btn" id="btnOutsideBack">Назад</button>
-      </div>
-    </div>
-
-    <!-- ===================== NO PERMISSION ===================== -->
-    <div class="screen" id="no-permission">
-      <h1>Дверь закрыта.</h1>
-      <p class="small">
-        Без разрешения на геолокацию<br>
-        зал не открывается.
-      </p>
-
-      <div class="btnRow">
-        <button class="btn primary" id="btnNoPermRetry">Попробовать снова</button>
-        <button class="btn" id="btnNoPermBack">Назад</button>
-      </div>
-    </div>
-
-    <!-- ===================== GEO ERROR ===================== -->
-    <div class="screen" id="geo-error">
-      <h1>Тишина.</h1>
-      <p class="small">
-        Устройство молчит.<br>
-        Сегодня — без этого.
-      </p>
-
-      <div class="btnRow">
-        <button class="btn primary" id="btnGeoErrRetry">Ещё раз</button>
-        <button class="btn" id="btnGeoErrBot">Отправить гео в Telegram</button>
-      </div>
-
-      <button class="btn" id="btnGeoErrBack">Назад</button>
-    </div>
-
-    <!-- ===================== CABINET (ГОСТЬ) ===================== -->
-    <div class="screen" id="cabinet">
-      <div class="profileTop">
-        <div>
-          <div class="profileName" id="cabinetName">Гость</div>
-          <div class="profileMeta" id="cabinetMeta">Сеансов: 0 · Оценок: 0</div>
-        </div>
-
-        <!-- маленькая inline кнопка звука (опционально) -->
-        <button class="soundFloating off" id="soundBtnInline" title="Музыка">♪</button>
-      </div>
-
-      <div class="panel soft">
-        <div class="row">
-          <div>
-            <b>Сейчас</b><br>
-            <span class="small">Процесс уже начался. Не вмешивайтесь.</span>
-          </div>
-          <span class="pill brass" id="cabinetNowStatus">…</span>
-        </div>
-
-        <button class="btn" id="btnBackToWaiting">Вернуться</button>
-      </div>
-
-      <div class="sectionTitle">Последние моменты</div>
-      <div id="cabinetMoments"></div>
-
-      <div class="btnRow">
-        <button class="btn" id="btnArchive">Архив</button>
-        <button class="btn primary" id="btnNewMoment">Новый момент</button>
-      </div>
-
-      <div class="sectionTitle">Знаки</div>
-      <div class="achGrid" id="cabinetAchievements"></div>
-    </div>
-
-    <!-- ===================== ARCHIVE ===================== -->
-    <div class="screen" id="archive">
-      <div class="row">
-        <h1 style="margin:0">Архив</h1>
-        <span class="badge" id="archiveCount">…</span>
-      </div>
-
-      <p class="small">Здесь лежат моменты, которые уже случились.</p>
-
-      <div id="archiveList"></div>
-
-      <button class="btn" id="btnArchiveBack">Назад</button>
-    </div>
-
-    <!-- ===================== MOMENT VIEW ===================== -->
-    <div class="screen" id="moment">
-      <h1 id="momentTitle">Момент</h1>
-      <p class="small" id="momentTime"></p>
-
-      <div class="panel" id="momentAnswers"></div>
-
-      <div class="panel soft">
-        <b>Оценка</b>
-        <p class="small">Не вкус. Не табак. Результат момента.</p>
-
-        <div class="btnRow">
-          <button class="btn" id="rateBad">Слабо</button>
-          <button class="btn" id="rateOk">Хорошо</button>
-          <button class="btn primary" id="ratePerfect">Идеально</button>
-        </div>
-
-        <button class="btn" id="btnTip">Оставить жест</button>
-      </div>
-
-      <button class="btn" id="btnMomentBack">Назад</button>
-    </div>
-
-    <!-- ===================== COURSE / QUESTIONS ===================== -->
-    <div class="screen" id="course">
-      <h1 class="courseTitle" id="courseTitle">Не думайте долго.</h1>
-      <p class="courseSub" id="courseText">К какому цвету тянется рука сейчас?</p>
-
-      <div id="courseOptions"></div>
-
-      <button class="btn" id="btnCourseBack">Назад</button>
-    </div>
-
-    <!-- ===================== WAITING ===================== -->
-    <div class="screen" id="waiting">
-      <h1 class="waitTitle" id="waitTitle">Процесс начался.</h1>
-      <p class="waitText" id="waitText">Не торопите момент.</p>
-
-      <div class="hourglass">
-        <div class="sandTop" id="sandTop"></div>
-        <div class="sandStream"></div>
-        <div class="sandBottom" id="sandBottom"></div>
-      </div>
-
-      <div class="timer" id="guestTimer">25:00</div>
-      <p class="waitHint" id="guestHint"></p>
-
-      <button class="btn" id="btnWaitingToCabinet">В кабинет</button>
-    </div>
-
-    <!-- ===================== EPILOGUE ===================== -->
-    <div class="screen" id="epilogue">
-      <h1>Это было сделано</h1>
-      <p>
-        именно для этого момента.<br><br>
-        Дальше — без интерфейса.
-      </p>
-
-      <button class="btn" id="btnEpilogueToCabinet">В кабинет</button>
-    </div>
-
-    <!-- ===================== MASTER ===================== -->
-    <div class="screen" id="master">
-      <div class="row">
-        <div>
-          <div class="kitchenTitle">Кухня</div>
-          <div class="kitchenSub">Здесь не “заказы”. Здесь — моменты.</div>
-        </div>
-        <span class="badge" id="masterStatus">…</span>
-      </div>
-
-      <div id="masterList"></div>
-
-      <button class="btn" id="btnMasterRefresh">Обновить</button>
-    </div>
-
   </div>
 
-  <!-- JS -->
-  <script type="module" src="./js/app.js"></script>
+  <!-- ===================== WELCOME ===================== -->
+  <div class="screen" id="welcome">
+    <h1>Прежде чем мы начнём.</h1>
+    <p>
+      Здесь не подбирают вкус.<br><br>
+      Здесь фиксируют момент.<br><br>
+      То, что вы получите,<br>
+      не существует заранее.
+    </p>
+
+    <div class="glowLine"></div>
+
+    <button class="btn primary" id="btnWelcomeStart">Продолжить</button>
+  </div>
+
+  <!-- ===================== DOOR ===================== -->
+  <div class="screen" id="door">
+    <h1>Открыть дверь.</h1>
+    <p class="small">
+      Это вход не в заказ.<br>
+      Это вход в процесс.
+    </p>
+
+    <button class="btn primary" id="btnDoor">Открыть</button>
+    <button class="btn" id="btnDoorBot">Я не могу дать гео</button>
+  </div>
+
+  <!-- ===================== OUTSIDE ===================== -->
+  <div class="screen" id="outside">
+    <h1>Снаружи.</h1>
+    <p class="small">
+      Сейчас это место не совпадает с залом.<br>
+      Вернитесь — и повторите.
+    </p>
+
+    <div class="btnRow">
+      <button class="btn primary" id="btnOutsideRetry">Проверить снова</button>
+      <button class="btn" id="btnOutsideBack">Назад</button>
+    </div>
+  </div>
+
+  <!-- ===================== NO PERMISSION ===================== -->
+  <div class="screen" id="no-permission">
+    <h1>Дверь закрыта.</h1>
+    <p class="small">
+      Без разрешения на геолокацию<br>
+      зал не открывается.
+    </p>
+
+    <div class="btnRow">
+      <button class="btn primary" id="btnNoPermRetry">Попробовать снова</button>
+      <button class="btn" id="btnNoPermBack">Назад</button>
+    </div>
+  </div>
+
+  <!-- ===================== GEO ERROR ===================== -->
+  <div class="screen" id="geo-error">
+    <h1>Тишина.</h1>
+    <p class="small">
+      Устройство молчит.<br>
+      Сегодня — без этого.
+    </p>
+
+    <div class="btnRow">
+      <button class="btn primary" id="btnGeoErrRetry">Ещё раз</button>
+      <button class="btn" id="btnGeoErrBot">Отправить гео в Telegram</button>
+    </div>
+
+    <button class="btn" id="btnGeoErrBack">Назад</button>
+  </div>
+
+  <!-- ===================== CABINET ===================== -->
+  <div class="screen" id="cabinet">
+    <div class="profileTop">
+      <div>
+        <div class="profileName" id="cabinetName">Гость</div>
+        <div class="profileMeta" id="cabinetMeta">Сеансов: 0 · Оценок: 0</div>
+      </div>
+    </div>
+
+    <div class="panel soft" id="cabinetNowPanel">
+      <div class="row">
+        <div>
+          <b>Сейчас</b><br>
+          <span class="small">Процесс уже начался. Не вмешивайтесь.</span>
+        </div>
+        <span class="pill brass" id="cabinetNowStatus">…</span>
+      </div>
+
+      <button class="btn" id="btnBackToWaiting">Вернуться</button>
+    </div>
+
+    <div class="sectionTitle">Последние моменты</div>
+    <div id="cabinetMoments"></div>
+
+    <div class="btnRow">
+      <button class="btn" id="btnArchive">Архив</button>
+      <button class="btn primary" id="btnNewMoment">Новый момент</button>
+    </div>
+
+    <div class="sectionTitle">Знаки</div>
+    <div class="achGrid" id="cabinetAchievements"></div>
+  </div>
+
+  <!-- ===================== ARCHIVE ===================== -->
+  <div class="screen" id="archive">
+    <div class="row">
+      <h1 style="margin:0">Архив</h1>
+      <span class="badge" id="archiveCount">…</span>
+    </div>
+
+    <p class="small">Здесь лежат моменты, которые уже случились.</p>
+
+    <div id="archiveList"></div>
+
+    <button class="btn" id="btnArchiveBack">Назад</button>
+  </div>
+
+  <!-- ===================== MOMENT ===================== -->
+  <div class="screen" id="moment">
+    <h1 id="momentTitle">Момент</h1>
+    <p class="small" id="momentTime"></p>
+
+    <div class="panel" id="momentAnswers"></div>
+
+    <div class="panel soft">
+      <b>Оценка</b>
+      <p class="small">Не вкус. Не табак. Результат момента.</p>
+
+      <div class="btnRow">
+        <button class="btn" id="rateBad">Слабо</button>
+        <button class="btn" id="rateOk">Хорошо</button>
+        <button class="btn primary" id="ratePerfect">Идеально</button>
+      </div>
+
+      <button class="btn" id="btnTip">Оставить жест</button>
+    </div>
+
+    <button class="btn" id="btnMomentBack">Назад</button>
+  </div>
+
+  <!-- ===================== COURSE ===================== -->
+  <div class="screen" id="course">
+    <h1 id="courseTitle">Не думайте долго.</h1>
+    <p class="small" id="courseText">К какому цвету тянется рука сейчас?</p>
+
+    <div id="courseOptions"></div>
+
+    <button class="btn" id="btnCourseBack">Назад</button>
+  </div>
+
+  <!-- ===================== WAITING ===================== -->
+  <div class="screen" id="waiting">
+    <h1 id="waitTitle">Процесс начался.</h1>
+    <p class="small" id="waitText">Не торопите момент.</p>
+
+    <div class="hourglass">
+      <div class="sandTop" id="sandTop"></div>
+      <div class="sandStream"></div>
+      <div class="sandBottom" id="sandBottom"></div>
+    </div>
+
+    <div class="timer" id="guestTimer">25:00</div>
+    <p class="small" style="text-align:center" id="guestHint"></p>
+
+    <button class="btn" id="btnWaitingToCabinet">В кабинет</button>
+  </div>
+
+  <!-- ===================== EPILOGUE ===================== -->
+  <div class="screen" id="epilogue">
+    <h1>Это было сделано</h1>
+    <p>
+      именно для этого момента.<br><br>
+      Дальше — без интерфейса.
+    </p>
+
+    <button class="btn" id="btnEpilogueToCabinet">В кабинет</button>
+  </div>
+
+  <!-- ===================== MASTER ===================== -->
+  <div class="screen" id="master">
+    <div class="row">
+      <div>
+        <div class="kitchenTitle">Кухня</div>
+        <div class="kitchenSub">Здесь не “заказы”. Здесь — моменты.</div>
+      </div>
+      <span class="badge" id="masterStatus">…</span>
+    </div>
+
+    <div id="masterList"></div>
+
+    <button class="btn" id="btnMasterRefresh">Обновить</button>
+  </div>
+
+</div>
+
+<script>
+/* ===================== CONFIG ===================== */
+const BACKEND_BASE = "https://hookah-mix-bot-56x5.onrender.com";
+const MASTER_ID = 1292778768;
+
+const DURATION_MS = 25 * 60 * 1000;
+const TIP_URL = "https://netmonet.co/qr/192937/tip?o=6";
+
+const GEOFENCE = { lat: 56.519963, lon: 84.933527, radiusM: 40 };
+const GEO_TTL_MS = 2 * 60 * 60 * 1000;
+
+const MUSIC_VOLUME = 0.3;
+
+const tg = window.Telegram?.WebApp;
+const tgUser = tg?.initDataUnsafe?.user || null;
+const isMaster = tgUser && tgUser.id === MASTER_ID;
+
+const guest = {
+  id: tgUser?.id,
+  name: tgUser?.first_name || "Гость",
+  username: tgUser?.username || ""
+};
+
+const LS_MOMENT_IDS = "hm_moment_ids";
+const LS_GEO_UNTIL = "hm_geo_until";
+const LS_MUSIC_ON = "hm_music_on";
+
+let guestTimerInt = null;
+
+/* ===================== UI ===================== */
+function go(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id)?.classList.add("active");
+}
+
+function escapeHtml(str=""){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function getMomentIds(){
+  try { return JSON.parse(localStorage.getItem(LS_MOMENT_IDS)||"[]"); }
+  catch { return []; }
+}
+function addMomentId(id){
+  const ids = getMomentIds();
+  if(!ids.includes(id)) ids.push(id);
+  localStorage.setItem(LS_MOMENT_IDS, JSON.stringify(ids));
+  return ids;
+}
+
+function setGeoAccessUntil(ts){
+  localStorage.setItem(LS_GEO_UNTIL, String(ts));
+}
+function hasGeoAccessNow(){
+  const until = Number(localStorage.getItem(LS_GEO_UNTIL)||0);
+  return Date.now() < until;
+}
+
+/* ===================== MUSIC ===================== */
+const audioEl = document.getElementById("bgMusic");
+const btnSound = document.getElementById("soundBtnFloating");
+
+function setSoundBtn(on){
+  btnSound.classList.toggle("on", !!on);
+  btnSound.classList.toggle("off", !on);
+}
+
+async function playMusic(){
+  try{
+    audioEl.volume = MUSIC_VOLUME;
+    await audioEl.play();
+    localStorage.setItem(LS_MUSIC_ON,"1");
+    setSoundBtn(true);
+  }catch(e){
+    console.warn("Music blocked:", e);
+    localStorage.setItem(LS_MUSIC_ON,"0");
+    setSoundBtn(false);
+  }
+}
+function pauseMusic(){
+  audioEl.pause();
+  localStorage.setItem(LS_MUSIC_ON,"0");
+  setSoundBtn(false);
+}
+
+btnSound.addEventListener("click",()=>{
+  if(audioEl.paused) playMusic();
+  else pauseMusic();
+});
+
+/* ===================== GEO ===================== */
+function distanceMeters(lat1, lon1, lat2, lon2){
+  const R = 6371000;
+  const toRad = v => v*Math.PI/180;
+  const dLat = toRad(lat2-lat1);
+  const dLon = toRad(lon2-lon1);
+  const a =
+    Math.sin(dLat/2)**2 +
+    Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+function isInsideFence(lat, lon){
+  const d = distanceMeters(lat, lon, GEOFENCE.lat, GEOFENCE.lon);
+  return d <= GEOFENCE.radiusM;
+}
+function requestLocation(){
+  return new Promise((resolve,reject)=>{
+    if(!navigator.geolocation) return reject(new Error("no_geolocation"));
+    navigator.geolocation.getCurrentPosition(
+      (pos)=>resolve({lat:pos.coords.latitude, lon:pos.coords.longitude, accuracy:pos.coords.accuracy}),
+      (err)=>reject(err),
+      { enableHighAccuracy:true, timeout:8000, maximumAge:0 }
+    );
+  });
+}
+
+/* ===================== API ===================== */
+async function safeJson(r){
+  const t = await r.text();
+  try { return JSON.parse(t); } catch { return {ok:false, raw:t}; }
+}
+
+async function apiGetMoments(limit=200){
+  const r = await fetch(`${BACKEND_BASE}/moments?limit=${limit}`);
+  const data = await safeJson(r);
+  if(!r.ok) throw new Error("getMoments failed");
+  return data;
+}
+
+async function apiCreateMoment(moment){
+  const r = await fetch(`${BACKEND_BASE}/moment`,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(moment)
+  });
+  const data = await safeJson(r);
+  if(!r.ok) throw new Error("createMoment failed");
+  return data;
+}
+
+async function apiSetMomentStatus(id,status){
+  const r = await fetch(`${BACKEND_BASE}/moment/${id}/status`,{
+    method:"PATCH",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({status})
+  });
+  const data = await safeJson(r);
+  if(!r.ok) throw new Error("setStatus failed");
+  return data;
+}
+
+async function apiSetMomentRating(id,rating){
+  const r = await fetch(`${BACKEND_BASE}/moment/${id}/rating`,{
+    method:"PATCH",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({rating})
+  });
+  const data = await safeJson(r);
+  if(!r.ok) throw new Error("setRating failed");
+  return data;
+}
+
+/* ===================== FLOW ===================== */
+const EPITHETS = ["Сухая Тишина","Тихая Ночь","Чёрная Тень","Белый Шум","Холодный Свет","Тёплый Металл","Медный Пепел","Нервная Комната"];
+function randomEpithet(){
+  return EPITHETS[Math.floor(Math.random()*EPITHETS.length)];
+}
+
+const QUESTIONS = [
+  { title:"Не думайте долго.", text:"К какому цвету тянется рука сейчас?", options:["Коричневый","Зелёный","Синий","Фиолетовый","Белый"] },
+  { title:"Ощущение.", text:"Не вкус. Не запах. Ощущение во рту —", options:["Сухо","Мягко","Плотно","Пусто"] },
+  { title:"Если сделать паузу.", text:"Не перекусить. Просто паузу.", options:["Орех","Фрукт","Хлеб","Ничего"] },
+  { title:"Скорость.", text:"Это время хочется прожить —", options:["Медленно","Рывками","Ровно","Не чувствуя времени"] },
+  { title:"Пространство.", text:"Если закрыть глаза, вокруг сейчас —", options:["Полумрак","Яркий свет","Тень","Ничего"] },
+  { title:"Этот момент —", text:"не про планы и не про цели.", options:["Начало","Продолжение","Завершение"] },
+  { title:"Температура.", text:"Это должно быть —", options:["Холод","Тепло","Без температуры","Контраст"] },
+  { title:"Тело.", text:"Это должно ощущаться —", options:["Почти вплотную","На расстоянии","Воздушно","Тяжело"] },
+  { title:"Материал.", text:"Ближе к чему?", options:["Бархат","Металл","Дерево","Стекло"] },
+  { title:"Запрет.", text:"Что сегодня нельзя впускать?", options:["Цитрус","Ягоды","Десерт","Тяжёлые специи","Мята"] },
+  { title:"Вес.", text:"Это должно быть —", options:["Легко","Ровно","Плотно","Тяжело"] },
+];
+
+let courseAnswers = {};
+let courseIndex = 0;
+
+function renderCourse(){
+  const q = QUESTIONS[courseIndex];
+  document.getElementById("courseTitle").textContent = q.title;
+  document.getElementById("courseText").textContent = q.text;
+
+  const box = document.getElementById("courseOptions");
+  box.innerHTML = "";
+
+  q.options.forEach(opt=>{
+    const div = document.createElement("div");
+    div.className = "option";
+    div.textContent = opt;
+    div.onclick = ()=>pickCourse(opt);
+    box.appendChild(div);
+  });
+}
+
+async function pickCourse(val){
+  courseAnswers[courseIndex+1] = val;
+  courseIndex++;
+
+  if(courseIndex < QUESTIONS.length){
+    renderCourse();
+    return;
+  }
+
+  await createMomentFromAnswers();
+}
+
+async function createMomentFromAnswers(){
+  const id = Date.now()+"_"+Math.random().toString(36).slice(2,6);
+
+  const moment = {
+    id,
+    createdAt: Date.now(),
+    status: "new",
+    guest,
+    answers: courseAnswers,
+    epithet: randomEpithet(),
+    rating: null,
+    acceptedAt: null
+  };
+
+  addMomentId(id);
+
+  try{ await apiCreateMoment(moment); }catch(e){ console.error(e); }
+
+  go("waiting");
+  startWaitingLoop();
+}
+
+/* ===================== WAITING ===================== */
+function formatClock(ms){
+  const total = Math.max(0, Math.floor(ms/1000));
+  const m = Math.floor(total/60);
+  const s = total%60;
+  return `${m}:${String(s).padStart(2,"0")}`;
+}
+
+function setSand(progress01){
+  const p = Math.max(0, Math.min(1, progress01));
+  const top = document.getElementById("sandTop");
+  const bottom = document.getElementById("sandBottom");
+
+  // верх уменьшается, низ растёт
+  top.style.height = `${Math.max(0, 48 - (48*p))}%`;
+  bottom.style.height = `${Math.max(0, 48*p)}%`;
+}
+
+async function startWaitingLoop(){
+  clearInterval(guestTimerInt);
+
+  const timerEl = document.getElementById("guestTimer");
+  const hintEl = document.getElementById("guestHint");
+
+  async function tick(){
+    try{
+      const ids = getMomentIds();
+      const data = await apiGetMoments(200);
+      const mine = (data.moments||[]).filter(m=>ids.includes(m.id));
+      const active = mine.find(m=>m.status !== "finished") || null;
+
+      if(!active){
+        go("cabinet");
+        await renderCabinet();
+        return;
+      }
+
+      if(!active.acceptedAt){
+        document.getElementById("waitTitle").textContent = "Тишина.";
+        document.getElementById("waitText").textContent = "Кухня ещё не ответила.";
+        timerEl.textContent = "—:—";
+        hintEl.textContent = "Время начнётся, когда кухня подтвердит.";
+        setSand(0);
+        return;
+      }
+
+      const left = (active.acceptedAt + DURATION_MS) - Date.now();
+      const progress = 1 - (left / DURATION_MS);
+
+      if(left <= 0 || active.status === "finished"){
+        go("epilogue");
+        return;
+      }
+
+      document.getElementById("waitTitle").textContent = "Процесс начался.";
+      document.getElementById("waitText").textContent = "Не торопите момент.";
+      timerEl.textContent = formatClock(left);
+      hintEl.textContent = "Песок идёт. Не вмешивайтесь.";
+      setSand(progress);
+
+    }catch(e){
+      hintEl.textContent = "Нет связи.";
+    }
+  }
+
+  await tick();
+  guestTimerInt = setInterval(tick, 2000);
+}
+
+/* ===================== CABINET / ARCHIVE / MOMENT ===================== */
+function calcAchievements(moments){
+  const sessions = moments.length;
+  const rated = moments.filter(m=>!!m.rating).length;
+
+  return [
+    { title:"Первый момент", desc:"Вы вошли.", unlocked:sessions>=1 },
+    { title:"Возвращение", desc:"Вы вернулись.", unlocked:sessions>=2 },
+    { title:"Честность", desc:"Вы оценили три.", unlocked:rated>=3 },
+  ];
+}
+
+async function renderCabinet(){
+  const ids = getMomentIds();
+
+  document.getElementById("cabinetName").textContent = guest.name;
+
+  const momentsBox = document.getElementById("cabinetMoments");
+  const achBox = document.getElementById("cabinetAchievements");
+  const metaEl = document.getElementById("cabinetMeta");
+
+  const nowPanel = document.getElementById("cabinetNowPanel");
+  const nowStatus = document.getElementById("cabinetNowStatus");
+
+  try{
+    const data = await apiGetMoments(200);
+    const mine = (data.moments||[])
+      .filter(m=>ids.includes(m.id))
+      .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+
+    const rated = mine.filter(m=>!!m.rating).length;
+    metaEl.textContent = `Сеансов: ${mine.length} · Оценок: ${rated}`;
+
+    const active = mine.find(m=>m.status !== "finished") || null;
+    nowPanel.style.display = active ? "block" : "none";
+    nowStatus.textContent = active ? "В процессе" : "Пусто";
+
+    momentsBox.innerHTML = "";
+    const last = mine.slice(0,3);
+
+    if(!last.length){
+      momentsBox.innerHTML = `<p class="small">Пока пусто. Но зал уже здесь.</p>`;
+    }else{
+      last.forEach(m=>{
+        momentsBox.innerHTML += `
+          <div class="momentCard">
+            <div class="momentTitleRow">
+              <div>
+                <div class="momentTitle">${escapeHtml(m.epithet||"Момент")}</div>
+                <div class="momentTime">${new Date(m.createdAt||Date.now()).toLocaleString("ru-RU")}</div>
+              </div>
+              <span class="pill brass">${escapeHtml(m.status||"…")}</span>
+            </div>
+            <button class="btn" style="margin-top:12px" onclick="openMoment('${escapeHtml(m.id)}')">Открыть</button>
+          </div>
+        `;
+      });
+    }
+
+    const ach = calcAchievements(mine);
+    achBox.innerHTML = "";
+    ach.forEach(a=>{
+      achBox.innerHTML += `
+        <div class="achCard ${a.unlocked ? "" : "locked"}">
+          <div class="achTitle">${escapeHtml(a.title)}</div>
+          <div class="achDesc">${escapeHtml(a.desc)}</div>
+        </div>
+      `;
+    });
+
+  }catch(e){
+    momentsBox.innerHTML = `<p class="small">Нет связи.</p>`;
+  }
+}
+
+let OPEN_MOMENT_ID = null;
+
+window.openMoment = async function(id){
+  OPEN_MOMENT_ID = id;
+  go("moment");
+  await renderMoment();
+}
+
+async function renderArchive(){
+  const ids = getMomentIds();
+  const box = document.getElementById("archiveList");
+  const count = document.getElementById("archiveCount");
+
+  try{
+    const data = await apiGetMoments(200);
+    const mine = (data.moments||[])
+      .filter(m=>ids.includes(m.id))
+      .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+
+    count.textContent = String(mine.length);
+    box.innerHTML = "";
+
+    if(!mine.length){
+      box.innerHTML = `<p class="small">Архив пуст.</p>`;
+      return;
+    }
+
+    mine.forEach(m=>{
+      box.innerHTML += `
+        <div class="momentCard">
+          <div class="momentTitleRow">
+            <div>
+              <div class="momentTitle">${escapeHtml(m.epithet||"Момент")}</div>
+              <div class="momentTime">${new Date(m.createdAt||Date.now()).toLocaleString("ru-RU")}</div>
+            </div>
+            <span class="pill brass">${escapeHtml(m.rating ? "Оценено" : "Без оценки")}</span>
+          </div>
+          <button class="btn" style="margin-top:12px" onclick="openMoment('${escapeHtml(m.id)}')">Открыть</button>
+        </div>
+      `;
+    });
+
+  }catch(e){
+    box.innerHTML = `<p class="small">Нет связи.</p>`;
+  }
+}
+
+async function renderMoment(){
+  const id = OPEN_MOMENT_ID;
+  const ids = getMomentIds();
+
+  const titleEl = document.getElementById("momentTitle");
+  const timeEl = document.getElementById("momentTime");
+  const answersEl = document.getElementById("momentAnswers");
+
+  if(!id || !ids.includes(id)){
+    titleEl.textContent = "Недоступно";
+    timeEl.textContent = "";
+    answersEl.innerHTML = "";
+    return;
+  }
+
+  try{
+    const data = await apiGetMoments(200);
+    const m = (data.moments||[]).find(x=>x.id===id);
+    if(!m) return;
+
+    titleEl.textContent = m.epithet || "Момент";
+    timeEl.textContent = new Date(m.createdAt||Date.now()).toLocaleString("ru-RU");
+
+    answersEl.innerHTML = `<b>Условия</b><br><br>` +
+      Object.entries(m.answers||{}).map(([k,v])=>`<div class="small">${escapeHtml(String(v))}</div>`).join("");
+
+  }catch(e){
+    console.error(e);
+  }
+}
+
+/* ===================== MASTER ===================== */
+async function renderMaster(){
+  const list = document.getElementById("masterList");
+  const status = document.getElementById("masterStatus");
+
+  try{
+    const data = await apiGetMoments(200);
+    const moments = (data.moments||[]).slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+
+    status.textContent = String(moments.length);
+    list.innerHTML = "";
+
+    if(!moments.length){
+      list.innerHTML = `<p class="small">Пока пусто.</p>`;
+      return;
+    }
+
+    moments.forEach(m=>{
+      list.innerHTML += `
+        <div class="kitchenCard ${m.status==="new" ? "new" : ""}">
+          <div class="kitchenName">${escapeHtml(m.guest?.name || "Гость")}</div>
+          <div class="kitchenMeta">${new Date(m.createdAt||Date.now()).toLocaleString("ru-RU")}</div>
+
+          <div class="kitchenBtns">
+            <button class="btn" onclick="setMasterStatus('${escapeHtml(m.id)}','accepted')">Кухня услышала</button>
+            <button class="btn" onclick="setMasterStatus('${escapeHtml(m.id)}','in_progress')">Печь работает</button>
+            <button class="btn" onclick="setMasterStatus('${escapeHtml(m.id)}','serving')">Подача</button>
+            <button class="btn primary" onclick="setMasterStatus('${escapeHtml(m.id)}','finished')">Момент случился</button>
+          </div>
+        </div>
+      `;
+    });
+
+  }catch(e){
+    status.textContent = "нет связи";
+    list.innerHTML = `<p class="small">Нет связи.</p>`;
+  }
+}
+
+window.setMasterStatus = async function(id,status){
+  try{
+    await apiSetMomentStatus(id,status);
+    await renderMaster();
+  }catch(e){
+    console.error(e);
+  }
+}
+
+/* ===================== EVENTS ===================== */
+document.getElementById("gateLogo").addEventListener("click", async ()=>{
+  await playMusic();
+  document.getElementById("gateWrap").classList.add("gateOut");
+  setTimeout(()=>go("welcome"), 520);
+});
+
+document.getElementById("btnWelcomeStart").addEventListener("click", ()=>{
+  courseAnswers = {};
+  courseIndex = 0;
+  go("course");
+  renderCourse();
+});
+
+document.getElementById("btnCourseBack").addEventListener("click", ()=>{
+  if(courseIndex<=0){ go("welcome"); return; }
+  courseIndex = Math.max(0, courseIndex-1);
+  renderCourse();
+});
+
+document.getElementById("btnWaitingToCabinet").addEventListener("click", async ()=>{
+  go("cabinet");
+  await renderCabinet();
+});
+
+document.getElementById("btnEpilogueToCabinet").addEventListener("click", async ()=>{
+  go("cabinet");
+  await renderCabinet();
+});
+
+document.getElementById("btnArchive").addEventListener("click", async ()=>{
+  go("archive");
+  await renderArchive();
+});
+
+document.getElementById("btnArchiveBack").addEventListener("click", async ()=>{
+  go("cabinet");
+  await renderCabinet();
+});
+
+document.getElementById("btnMomentBack").addEventListener("click", async ()=>{
+  go("archive");
+  await renderArchive();
+});
+
+document.getElementById("btnTip").addEventListener("click", ()=>{
+  window.open(TIP_URL, "_blank");
+});
+
+document.getElementById("rateBad").addEventListener("click", async ()=>{
+  if(!OPEN_MOMENT_ID) return;
+  await apiSetMomentRating(OPEN_MOMENT_ID,"bad");
+  alert("Запомнил.");
+});
+document.getElementById("rateOk").addEventListener("click", async ()=>{
+  if(!OPEN_MOMENT_ID) return;
+  await apiSetMomentRating(OPEN_MOMENT_ID,"ok");
+  alert("Запомнил.");
+});
+document.getElementById("ratePerfect").addEventListener("click", async ()=>{
+  if(!OPEN_MOMENT_ID) return;
+  await apiSetMomentRating(OPEN_MOMENT_ID,"perfect");
+  alert("Запомнил.");
+});
+
+document.getElementById("btnNewMoment").addEventListener("click", ()=>{
+  // новый момент не должен снова проходить дверь/гео — только курс
+  courseAnswers = {};
+  courseIndex = 0;
+  go("course");
+  renderCourse();
+});
+
+document.getElementById("btnBackToWaiting").addEventListener("click", ()=>{
+  go("waiting");
+  startWaitingLoop();
+});
+
+document.getElementById("btnMasterRefresh").addEventListener("click", renderMaster);
+
+/* ===================== DOOR FLOW EVENTS ===================== */
+async function openDoorFlow(){
+  try{
+    const pos = await requestLocation();
+    const ok = isInsideFence(pos.lat, pos.lon);
+
+    if(!ok){
+      go("outside");
+      return;
+    }
+
+    setGeoAccessUntil(Date.now()+GEO_TTL_MS);
+    go("soundGate");
+
+  }catch(e){
+    if(e?.code===1) go("no-permission");
+    else go("geo-error");
+  }
+}
+
+document.getElementById("btnDoor").addEventListener("click", openDoorFlow);
+document.getElementById("btnDoorBot").addEventListener("click", ()=>{
+  alert("Отправьте геопозицию в чат бота кнопкой Telegram «📍 Отправить геопозицию».");
+});
+
+document.getElementById("btnOutsideRetry").addEventListener("click", openDoorFlow);
+document.getElementById("btnOutsideBack").addEventListener("click", ()=>go("door"));
+
+document.getElementById("btnNoPermRetry").addEventListener("click", openDoorFlow);
+document.getElementById("btnNoPermBack").addEventListener("click", ()=>go("door"));
+
+document.getElementById("btnGeoErrRetry").addEventListener("click", openDoorFlow);
+document.getElementById("btnGeoErrBot").addEventListener("click", ()=>{
+  alert("Отправьте геопозицию в чат бота кнопкой Telegram «📍 Отправить геопозицию».");
+});
+document.getElementById("btnGeoErrBack").addEventListener("click", ()=>go("door"));
+
+/* ===================== START ===================== */
+document.addEventListener("DOMContentLoaded", async ()=>{
+  try{
+    tg?.ready();
+    tg?.expand();
+  }catch{}
+
+  // восстановим кнопку звука
+  const musicOn = localStorage.getItem(LS_MUSIC_ON)==="1";
+  setSoundBtn(musicOn);
+
+  // если мастер — сразу кухня
+  if(isMaster){
+    go("master");
+    renderMaster();
+    setInterval(renderMaster, 3000);
+    return;
+  }
+
+  // если уже есть моменты — сразу кабинет
+  const ids = getMomentIds();
+  if(ids.length){
+    go("cabinet");
+    await renderCabinet();
+    return;
+  }
+
+  // если есть доступ по гео — сразу зал
+  if(hasGeoAccessNow()){
+    go("soundGate");
+    return;
+  }
+
+  // иначе дверь
+  go("door");
+});
+</script>
+
 </body>
 </html>
