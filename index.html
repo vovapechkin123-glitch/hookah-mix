@@ -54,37 +54,17 @@ body{
 
   transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease, opacity .12s ease;
 }
-
-.soundBtn:active{
-  transform: scale(.96);
-}
-
-.soundBtn .icon{
-  font-weight:900;
-  font-size:15px;
-  opacity:.85;
-}
-
-/* OFF state */
-.soundBtn.off{
-  opacity:.55;
-  background:rgba(255,255,255,.05);
-  border-color:rgba(255,255,255,.12);
-}
-.soundBtn.off .icon{
-  opacity:.65;
-}
-
-/* ON state */
+.soundBtn:active{ transform: scale(.96); }
+.soundBtn .icon{ font-weight:900; font-size:15px; opacity:.85; }
+.soundBtn.off{ opacity:.55; background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.12); }
+.soundBtn.off .icon{ opacity:.65; }
 .soundBtn.on{
   opacity:1;
   background:linear-gradient(135deg, rgba(255,122,24,.95), rgba(255,61,119,.90));
   border-color:rgba(255,255,255,.22);
   box-shadow:0 12px 40px rgba(255,61,119,.16), 0 12px 40px rgba(255,122,24,.12);
 }
-.soundBtn.on .icon{
-  opacity:1;
-}
+.soundBtn.on .icon{ opacity:1; }
 
 /* ===== INLINE SOUND BUTTON (FOR CABINET HEADER) ===== */
 .soundInline{
@@ -104,22 +84,10 @@ body{
 
   transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease, opacity .12s ease;
 }
-
 .soundInline:active{ transform: scale(.96); }
-
-.soundInline .icon{
-  font-weight:900;
-  font-size:14px;
-  opacity:.85;
-}
-
-.soundInline.off{
-  opacity:.55;
-  background:rgba(255,255,255,.05);
-  border-color:rgba(255,255,255,.12);
-}
+.soundInline .icon{ font-weight:900; font-size:14px; opacity:.85; }
+.soundInline.off{ opacity:.55; background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.12); }
 .soundInline.off .icon{ opacity:.65; }
-
 .soundInline.on{
   opacity:1;
   background:linear-gradient(135deg, rgba(255,122,24,.95), rgba(255,61,119,.90));
@@ -195,9 +163,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   border:1px solid rgba(255,255,255,.10);
 }
 
-.fadeIn{
-  animation:fadeIn .18s ease-out;
-}
+.fadeIn{ animation:fadeIn .18s ease-out; }
 @keyframes fadeIn{
   from{opacity:0; transform:translateY(6px)}
   to{opacity:1; transform:translateY(0)}
@@ -280,6 +246,64 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
   display:block;
   text-align:center;
 }
+
+/* ===== SOUND GATE (AFTER GEO) ===== */
+.gateWrap{
+  min-height:340px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+}
+.gateLogo{
+  width:110px;
+  height:110px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  user-select:none;
+  position:relative;
+
+  background:linear-gradient(135deg, rgba(255,122,24,.95), rgba(255,61,119,.90));
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 18px 70px rgba(255,61,119,.18), 0 18px 70px rgba(255,122,24,.14);
+}
+.gateLogo .ic{
+  font-weight:900;
+  font-size:44px;
+  opacity:1;
+}
+.gateHint{
+  text-align:center;
+  max-width:360px;
+}
+.gatePulse{
+  animation: gatePulse 3.2s ease-in-out infinite;
+}
+@keyframes gatePulse{
+  0%{ transform:scale(1); filter:saturate(1); }
+  50%{ transform:scale(1.05); filter:saturate(1.15); }
+  100%{ transform:scale(1); filter:saturate(1); }
+}
+
+.gatePlaying .gateLogo{
+  animation: gatePlay 2.8s ease-in-out 1 forwards;
+}
+@keyframes gatePlay{
+  0%{ transform:scale(1); opacity:1; }
+  45%{ transform:scale(1.10); opacity:1; }
+  100%{ transform:scale(2.20); opacity:0; }
+}
+.gatePlaying .gateHint{
+  animation: gateFade 2.8s ease-in-out 1 forwards;
+}
+@keyframes gateFade{
+  0%{ opacity:.85; transform:translateY(0); }
+  100%{ opacity:0; transform:translateY(12px); }
+}
 </style>
 </head>
 
@@ -293,6 +317,24 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
 
   <!-- BACKGROUND MUSIC -->
   <audio id="bgMusic" src="7441574b62bac5e.mp3" loop preload="auto"></audio>
+
+  <!-- =========================
+       SOUND GATE (AFTER GEO CONFIRMED)
+  ========================= -->
+  <div class="screen" id="soundGate">
+    <div class="gateWrap" id="gateWrap">
+      <div class="gateLogo gatePulse" id="gateLogo" onclick="gateStart()">
+        <div class="ic">♪</div>
+      </div>
+      <div class="gateHint" id="gateHint">
+        <h1 style="margin:0 0 8px;">Включите зал.</h1>
+        <p class="small muted" style="margin:0;">
+          Нажмите на знак.<br>
+          Дальше — без лишних слов.
+        </p>
+      </div>
+    </div>
+  </div>
 
 <!-- =========================
      WELCOME (ТОЛЬКО ДЛЯ НОВЫХ)
@@ -353,7 +395,6 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
 
     <div class="headerRight">
       <span class="badge" id="cabRank">…</span>
-      <!-- INLINE SOUND BUTTON -->
       <div class="soundInline off" id="soundBtnInline" onclick="toggleMusic()" title="Мелодия">
         <div class="icon">♪</div>
       </div>
@@ -462,7 +503,7 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
     не существует заранее.
   </p>
 
-  <button class="btn primary" onclick="go('door')">Продолжить</button>
+  <button class="btn primary" onclick="prologueContinue()">Продолжить</button>
   <button class="btn" onclick="goHome()">Назад</button>
 </div>
 
@@ -470,17 +511,15 @@ p{opacity:.85;line-height:1.5;margin:0 0 10px}
      ДВЕРЬ (ГЕО)
 ========================= -->
 <div class="screen" id="door">
-  <h1>Дверь открывается только внутри.</h1>
+  <h1>Открыть дверь.</h1>
   <p id="doorText">
-    Мы не готовим это снаружи.<br><br>
-    Разрешите местоположение.<br>
-    Один раз.
+    Начало для всех одно.<br><br>
+    Дверь открывается только внутри.<br>
+    Разрешите местоположение.
   </p>
 
   <button class="btn primary" id="btnDoor" onclick="doorCheck()">Открыть дверь</button>
   <button class="btn" onclick="openBot()">Передать координаты через Telegram</button>
-
-  <button class="btn" onclick="go('s0')">Назад</button>
 </div>
 
 <!-- ===== СНАРУЖИ ===== -->
@@ -580,11 +619,15 @@ const TIP_URL = "https://netmonet.co/qr/192937/tip?o=6";
 /* Геозона (дом для теста) */
 const VENUE = { lat: 56.519963, lng: 84.933527, radius: 40 };
 
+/* TTL допусков: 6 часов (можно увеличить/уменьшить) */
+const GEO_TTL_MS = 6 * 60 * 60 * 1000;
+
 /* LocalStorage keys */
 const LS_MOMENTS = "tm_moments";
 const LS_ACTIVE = "tm_active_moment";
 const LS_ARCHIVE_FILTER = "tm_archive_filter";
 const LS_MUSIC = "tm_music_enabled";
+const LS_GEO_OK_UNTIL = "tm_geo_ok_until";
 
 /* Telegram */
 const tg = window.Telegram?.WebApp;
@@ -603,60 +646,38 @@ let guestTimerInt = null;
 function isMusicEnabled(){
   return localStorage.getItem(LS_MUSIC) === "1";
 }
-
 function setMusicEnabled(v){
   localStorage.setItem(LS_MUSIC, v ? "1" : "0");
   updateMusicUI();
 }
-
 function updateMusicUI(){
   const f = document.getElementById("soundBtnFloating");
   const i = document.getElementById("soundBtnInline");
 
   const on = isMusicEnabled();
 
-  if(f){
-    f.classList.toggle("on", on);
-    f.classList.toggle("off", !on);
-  }
-  if(i){
-    i.classList.toggle("on", on);
-    i.classList.toggle("off", !on);
-  }
+  if(f){ f.classList.toggle("on", on); f.classList.toggle("off", !on); }
+  if(i){ i.classList.toggle("on", on); i.classList.toggle("off", !on); }
 }
-
-function getMusicEl(){
-  return document.getElementById("bgMusic");
-}
-
+function getMusicEl(){ return document.getElementById("bgMusic"); }
 function applyMusicDefaults(){
   const a = getMusicEl();
   if(!a) return;
   a.volume = 0.30; // 30%
 }
-
 async function playMusic(){
   const a = getMusicEl();
   if(!a) return;
-
   applyMusicDefaults();
-
-  try{
-    await a.play();
-  }catch(e){
-    // iPhone может блокировать до клика — это нормально
-  }
+  try{ await a.play(); }catch(e){}
 }
-
 function pauseMusic(){
   const a = getMusicEl();
   if(!a) return;
   try{ a.pause(); }catch(e){}
 }
-
 async function toggleMusic(){
   haptic("light");
-
   if(isMusicEnabled()){
     setMusicEnabled(false);
     pauseMusic();
@@ -664,6 +685,32 @@ async function toggleMusic(){
     setMusicEnabled(true);
     await playMusic();
   }
+}
+
+/* ===== GEO SESSION (LOCAL) ===== */
+function setGeoOkNow(){
+  const until = Date.now() + GEO_TTL_MS;
+  localStorage.setItem(LS_GEO_OK_UNTIL, String(until));
+}
+function isGeoOk(){
+  const until = Number(localStorage.getItem(LS_GEO_OK_UNTIL) || "0");
+  return until > Date.now();
+}
+
+/* ===== SOUND GATE FLOW ===== */
+async function gateStart(){
+  // Включаем музыку строго по клику (iPhone-safe)
+  setMusicEnabled(true);
+  await playMusic();
+
+  const wrap = document.getElementById("gateWrap");
+  if(wrap) wrap.classList.add("gatePlaying");
+
+  // Делаем “побольше” атмосферу: 2.8s + небольшой хвост
+  setTimeout(()=>{
+    // После интро показываем “всё как есть”
+    goHome();
+  }, 3200);
 }
 
 /* ===== ВОПРОСЫ ===== */
@@ -908,6 +955,16 @@ function resumeActiveMoment(){
   startTimer(active.startAt);
 }
 
+/* ===== PROLOGUE CONTINUE (SMART) ===== */
+function prologueContinue(){
+  // если допуск уже есть — не возвращаем к двери
+  if(isGeoOk()){
+    startCourse();
+    return;
+  }
+  go("door");
+}
+
 /* ===== ARCHIVE ===== */
 function openArchive(){
   renderArchive();
@@ -1150,8 +1207,12 @@ async function doorCheck(){
     const data = await apiGeoCheck(geo.lat, geo.lng);
 
     if(data?.ok && data.allowed){
+      // фикс: сохраняем, что допуск открыт (и не мучаем человека дальше)
+      setGeoOkNow();
       haptic("medium");
-      startCourse();
+
+      // сразу после гео — атмосферный gate
+      go("soundGate");
       return;
     }
 
@@ -1160,10 +1221,12 @@ async function doorCheck(){
       `Вы слишком далеко.<br>Сейчас между нами примерно <b>${dist} м</b>.<br><br>Подойдите ближе. И попробуйте снова.`;
     go("outside");
   }catch(e){
+    // если браузер молчит — пробуем серверную сессию (fallback)
     const s = await apiGeoSession();
     if(s?.ok && s.allowed){
+      setGeoOkNow();
       haptic("medium");
-      startCourse();
+      go("soundGate");
       return;
     }
 
@@ -1174,7 +1237,7 @@ async function doorCheck(){
     go("geo-error");
   }finally{
     btn.disabled = false;
-    txt.innerHTML = `Мы не готовим это снаружи.<br><br>Разрешите местоположение.<br>Один раз.`;
+    txt.innerHTML = `Начало для всех одно.<br><br>Дверь открывается только внутри.<br>Разрешите местоположение.`;
   }
 }
 
@@ -1186,15 +1249,18 @@ async function confirmMoment(){
   hint.textContent = "Проверяем допуск…";
 
   try{
-    let allowed = false;
+    // фикс: если допуск уже есть — не дергаем гео снова
+    let allowed = isGeoOk();
 
-    try{
-      const geo = await getGeolocation();
-      const data = await apiGeoCheck(geo.lat, geo.lng);
-      allowed = !!(data?.ok && data.allowed);
-    }catch(e){
-      const s = await apiGeoSession();
-      allowed = !!(s?.ok && s.allowed);
+    if(!allowed){
+      try{
+        const geo = await getGeolocation();
+        const data = await apiGeoCheck(geo.lat, geo.lng);
+        allowed = !!(data?.ok && data.allowed);
+      }catch(e){
+        const s = await apiGeoSession();
+        allowed = !!(s?.ok && s.allowed);
+      }
     }
 
     if(!allowed){
@@ -1202,6 +1268,9 @@ async function confirmMoment(){
       setTimeout(()=>go("geo-error"), 500);
       return;
     }
+
+    // если подтвердили — продлеваем TTL допуска
+    setGeoOkNow();
 
     const id = Date.now()+"_"+Math.random().toString(36).slice(2,6);
     const epithet = generateEpithet();
@@ -1316,7 +1385,14 @@ document.addEventListener("DOMContentLoaded", ()=>{
   document.getElementById("fltAll").classList.toggle("active", mode === "all");
   document.getElementById("fltNoRate").classList.toggle("active", mode === "no_rate");
 
-  goHome();
+  // НОВОЕ ПРАВИЛО:
+  // Начало для всех: "дверь".
+  // Но если допуск уже открыт — сразу показываем soundGate (атмосфера), и далее goHome().
+  if(isGeoOk()){
+    go("soundGate");
+  }else{
+    go("door");
+  }
 });
 </script>
 
