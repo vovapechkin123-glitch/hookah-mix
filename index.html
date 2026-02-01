@@ -21,12 +21,8 @@
   --brass1: rgba(231,194,122,1);
   --brass2: rgba(183,122,51,1);
 
-  --stroke: rgba(255,230,190,.14);
-  --stroke2: rgba(255,255,255,.10);
-
-  --paperTop: rgba(34,20,12,.86);
-  --paperMid: rgba(18,10,6,.88);
-  --paperBot: rgba(10,6,4,.94);
+  --stroke: rgba(255,230,190,.12);
+  --stroke2: rgba(255,255,255,.08);
 
   --ease: cubic-bezier(.2,.9,.2,1);
   --r14: 14px;
@@ -47,11 +43,12 @@ body{
   overflow:hidden;
   font-family: "Cormorant Garamond", ui-serif, Georgia, "Times New Roman", serif;
 
+  /* 🔥 главный фон — bgg.jpg */
   background:
     radial-gradient(1400px 900px at 20% 10%, rgba(231,194,122,.10), transparent 60%),
     radial-gradient(1100px 800px at 85% 35%, rgba(183,122,51,.10), transparent 62%),
     radial-gradient(900px 700px at 40% 90%, rgba(0,0,0,.40), transparent 65%),
-    url("./bg.jpg") center/cover no-repeat fixed;
+    url("./bgg.jpg") center/cover no-repeat fixed;
 }
 
 body::before{
@@ -61,17 +58,18 @@ body::before{
   z-index:0;
   pointer-events:none;
   background:
-    radial-gradient(1200px 900px at 50% 42%, rgba(0,0,0,.10), rgba(0,0,0,.70) 72%, rgba(0,0,0,.92) 100%),
-    linear-gradient(180deg, rgba(0,0,0,.68), rgba(0,0,0,.28) 40%, rgba(0,0,0,.74));
+    radial-gradient(1200px 900px at 50% 42%, rgba(0,0,0,.15), rgba(0,0,0,.70) 72%, rgba(0,0,0,.92) 100%),
+    linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,.28) 40%, rgba(0,0,0,.72));
 }
 
+/* лёгкий шум */
 body::after{
   content:"";
   position:fixed;
   inset:0;
   z-index:0;
   pointer-events:none;
-  opacity:.08;
+  opacity:.06;
   mix-blend-mode: overlay;
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
@@ -88,101 +86,62 @@ body::after{
 }
 
 /* =========================
-   BOOK FRAME (как на макете)
+   BOOK FRAME (LEATHER)
    ========================= */
 .frame{
   width:min(460px, 100%);
-  border-radius: 34px;
-  padding: 14px;
-  position:relative;
+  border-radius: var(--r26);
+  padding: 16px;
 
-  /* “кожаная” обложка */
+  /* 🔥 обложка-кожа */
   background:
-    radial-gradient(900px 520px at 20% 10%, rgba(231,194,122,.10), transparent 62%),
-    radial-gradient(800px 520px at 80% 90%, rgba(183,122,51,.10), transparent 62%),
-    linear-gradient(180deg, rgba(70,35,18,.86), rgba(10,6,4,.96));
+    radial-gradient(900px 500px at 30% 10%, rgba(231,194,122,.10), transparent 62%),
+    radial-gradient(900px 600px at 70% 90%, rgba(183,122,51,.10), transparent 60%),
+    url("./leather.jpg") center/cover no-repeat;
 
-  border: 1px solid rgba(255,230,190,.10);
+  border: 1px solid rgba(255,255,255,.10);
 
   box-shadow:
-    0 38px 130px rgba(0,0,0,.78),
-    0 12px 50px rgba(0,0,0,.55);
+    0 34px 120px rgba(0,0,0,.72),
+    0 10px 40px rgba(0,0,0,.55);
 
   overflow:hidden;
   animation: frameBreath 6.2s ease-in-out infinite;
 }
 
-.frame::before{
-  content:"";
-  position:absolute;
-  inset: 10px;
-  border-radius: 26px;
-  border: 1px solid rgba(231,194,122,.10);
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.06),
-    inset 0 1px 0 rgba(255,255,255,.06),
-    inset 0 -26px 50px rgba(0,0,0,.40);
-  pointer-events:none;
-  opacity:.92;
-}
-
-.frame::after{
-  content:"";
-  position:absolute;
-  inset:-40px;
-  background:
-    radial-gradient(700px 500px at 20% 20%, rgba(231,194,122,.10), transparent 60%),
-    radial-gradient(700px 500px at 80% 80%, rgba(183,122,51,.10), transparent 60%);
-  filter: blur(20px);
-  opacity:.55;
-  pointer-events:none;
-}
-
 @keyframes frameBreath{
   0%,100%{ transform: translateY(0); filter: brightness(1); }
-  50%{ transform: translateY(-2px); filter: brightness(1.05); }
+  50%{ transform: translateY(-2px); filter: brightness(1.06); }
 }
 
 /* =========================
-   MAIN PANEL
+   PANEL (PAPER)
    ========================= */
 .panel{
-  border-radius: var(--r26);
+  border-radius: var(--r22);
   position:relative;
   overflow:hidden;
 
+  /* 🔥 бумага внутри */
   background:
-    radial-gradient(900px 520px at 30% 10%, rgba(231,194,122,.10), transparent 62%),
+    radial-gradient(900px 520px at 30% 10%, rgba(231,194,122,.12), transparent 62%),
     radial-gradient(860px 600px at 74% 92%, rgba(183,122,51,.10), transparent 60%),
-    linear-gradient(180deg, var(--paperTop), var(--paperMid) 55%, var(--paperBot));
+    url("./paper.jpg") center/cover no-repeat;
 
-  border: 1px solid rgba(255,230,190,.14);
+  border: 1px solid rgba(255,230,190,.16);
 
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 1px 0 rgba(255,255,255,.10),
     inset 0 -22px 50px rgba(0,0,0,.55),
     0 18px 70px rgba(0,0,0,.55);
 }
 
-/* “пергаментная” подложка как в макете */
-.panel::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  opacity:.10;
-  mix-blend-mode: overlay;
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,.10), transparent 55%),
-    radial-gradient(circle at 70% 80%, rgba(255,255,255,.06), transparent 60%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
-}
-
+/* внутренний бордер */
 .panel::before{
   content:"";
   position:absolute;
-  inset: 10px;
-  border-radius: var(--r22);
+  inset: 12px;
+  border-radius: var(--r18);
   border: 1px solid rgba(255,255,255,.10);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.08),
@@ -190,6 +149,39 @@ body::after{
     0 0 0 1px rgba(231,194,122,.06);
   pointer-events:none;
   opacity:.98;
+}
+
+/* 🔥 орнамент поверх */
+.panel::after{
+  content:"";
+  position:absolute;
+  inset: 6px;
+  pointer-events:none;
+  background: url("./ornament.png") center/contain no-repeat;
+  opacity:.88;
+  filter: drop-shadow(0 10px 24px rgba(0,0,0,.55));
+}
+
+/* 🔥 виньетка + пыль */
+.vignette{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background: url("./vignette.png") center/cover no-repeat;
+  opacity:.75;
+  mix-blend-mode: overlay;
+  z-index:1;
+}
+
+/* 🔥 золотое зерно для металла */
+.goldNoise{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background: url("./gold_noise.png") center/cover no-repeat;
+  opacity:.12;
+  mix-blend-mode: overlay;
+  z-index:1;
 }
 
 .glow{
@@ -211,9 +203,12 @@ body::after{
   50%{ transform: translate3d(0,-8px,0); opacity:.76; }
 }
 
+/* =========================
+   UI ELEMENTS
+   ========================= */
 .topbar{
   position:relative;
-  z-index:2;
+  z-index:3;
   padding: 14px 14px 10px;
   display:flex;
   align-items:center;
@@ -230,7 +225,7 @@ body::after{
   font-weight:700;
   font-size:12px;
   font-family: "Cinzel", serif;
-  color: rgba(255,255,255,.80);
+  color: rgba(255,255,255,.78);
 }
 
 .brand .dot{
@@ -251,6 +246,18 @@ body::after{
   cursor:pointer;
   transition: transform .14s var(--ease), border-color .14s var(--ease), box-shadow .14s var(--ease), opacity .14s var(--ease);
   user-select:none;
+  position:relative;
+  overflow:hidden;
+}
+
+.iconBtn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: url("./gold_noise.png") center/cover no-repeat;
+  opacity:.12;
+  mix-blend-mode: overlay;
+  pointer-events:none;
 }
 
 .iconBtn:hover{ border-color: rgba(231,194,122,.26); }
@@ -262,7 +269,7 @@ body::after{
 
 .content{
   position:relative;
-  z-index:2;
+  z-index:3;
   padding: 10px 14px 12px;
   max-height: calc(100vh - 160px);
   overflow:auto;
@@ -276,7 +283,7 @@ body::after{
 
 .bottombar{
   position:relative;
-  z-index:2;
+  z-index:3;
   padding: 10px 14px calc(12px + var(--safeBottom));
   display:flex;
   justify-content:space-between;
@@ -302,6 +309,18 @@ body::after{
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.06),
     inset 0 -18px 28px rgba(0,0,0,.34);
+  position:relative;
+  overflow:hidden;
+}
+
+.tab::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: url("./gold_noise.png") center/cover no-repeat;
+  opacity:.10;
+  mix-blend-mode: overlay;
+  pointer-events:none;
 }
 
 .tab:active{ transform: translateY(1px) scale(.99); }
@@ -320,7 +339,6 @@ body::after{
   margin:0 0 6px;
   letter-spacing:.03em;
   font-weight:800;
-  text-shadow: 0 10px 26px rgba(0,0,0,.40);
 }
 
 .sub{
@@ -346,6 +364,18 @@ body::after{
     inset 0 1px 0 rgba(255,255,255,.06),
     inset 0 -18px 34px rgba(0,0,0,.36);
   padding: 12px;
+  position:relative;
+  overflow:hidden;
+}
+
+.card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: url("./gold_noise.png") center/cover no-repeat;
+  opacity:.06;
+  mix-blend-mode: overlay;
+  pointer-events:none;
 }
 
 .card + .card{ margin-top: 10px; }
@@ -373,15 +403,15 @@ body::after{
 }
 
 .badge.brass{
-  border-color: rgba(231,194,122,.30);
+  border-color: rgba(231,194,122,.26);
   background:
-    radial-gradient(260px 160px at 30% 10%, rgba(231,194,122,.26), transparent 60%),
-    linear-gradient(180deg, rgba(231,194,122,.14), rgba(0,0,0,.20));
+    radial-gradient(260px 160px at 30% 10%, rgba(231,194,122,.22), transparent 60%),
+    linear-gradient(180deg, rgba(231,194,122,.12), rgba(0,0,0,.20));
   color: rgba(255,255,255,.92);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.08),
     inset 0 -18px 26px rgba(0,0,0,.26),
-    0 10px 26px rgba(183,122,51,.12);
+    0 10px 26px rgba(183,122,51,.10);
 }
 
 .badge.pulse{ animation: badgePulse 2.4s ease-in-out infinite; }
@@ -400,24 +430,32 @@ body::after{
   letter-spacing:.08em;
   transition: transform .14s var(--ease), border-color .14s var(--ease), box-shadow .14s var(--ease), filter .14s var(--ease);
   user-select:none;
+  position:relative;
+  overflow:hidden;
 }
 
-.btn:hover{ border-color: rgba(231,194,122,.18); }
+.btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: url("./gold_noise.png") center/cover no-repeat;
+  opacity:.10;
+  mix-blend-mode: overlay;
+  pointer-events:none;
+}
+
+.btn:hover{ border-color: rgba(231,194,122,.16); }
 .btn:active{ transform: translateY(1px) scale(.99); }
 
 .btn.primary{
-  border-color: rgba(231,194,122,.28);
+  border-color: rgba(231,194,122,.22);
   background:
-    radial-gradient(520px 260px at 30% 10%, rgba(231,194,122,.22), transparent 56%),
-    linear-gradient(180deg, rgba(231,194,122,.14), rgba(0,0,0,.22));
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.08),
-    0 14px 34px rgba(183,122,51,.14);
+    radial-gradient(520px 260px at 30% 10%, rgba(231,194,122,.18), transparent 56%),
+    linear-gradient(180deg, rgba(231,194,122,.12), rgba(0,0,0,.22));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 26px rgba(183,122,51,.10);
 }
 
-.btn.ghost{
-  background: rgba(0,0,0,.14);
-}
+.btn.ghost{ background: rgba(0,0,0,.14); }
 
 .btnRow{ display:flex; gap:10px; margin-top:10px; }
 .btnRow .btn{ width:100%; }
@@ -433,9 +471,21 @@ body::after{
   transition: transform .14s var(--ease), border-color .14s var(--ease), filter .14s var(--ease);
   user-select:none;
   font-size: 16px;
+  position:relative;
+  overflow:hidden;
 }
 
-.option:hover{ border-color: rgba(231,194,122,.20); filter: brightness(1.05); }
+.option::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: url("./gold_noise.png") center/cover no-repeat;
+  opacity:.06;
+  mix-blend-mode: overlay;
+  pointer-events:none;
+}
+
+.option:hover{ border-color: rgba(231,194,122,.18); }
 .option:active{ transform: translateY(1px) scale(.99); }
 .option + .option{ margin-top: 10px; }
 
@@ -755,6 +805,8 @@ a{ color: inherit; text-decoration:none; }
   <div class="frame">
     <div class="panel">
       <div class="glow"></div>
+      <div class="goldNoise"></div>
+      <div class="vignette"></div>
 
       <div class="topbar">
         <div class="brand">
@@ -765,8 +817,7 @@ a{ color: inherit; text-decoration:none; }
       </div>
 
       <div class="content">
-
-        <div class="screen active fadeIn" id="scr_gate">
+                <div class="screen active fadeIn" id="scr_gate">
           <div class="gate">
             <div>
               <div class="seal" id="sealBtn"><div class="note">♫</div></div>
@@ -948,19 +999,18 @@ a{ color: inherit; text-decoration:none; }
           <div class="miniNote">Песок у гостя начнётся, когда вы нажмёте “Кухня услышала”.</div>
         </div>
 
-      </div>
+      </div><!-- /content -->
 
       <div class="bottombar" id="bottomTabs" style="display:none;">
         <button class="tab" id="tabArchive">Архив</button>
         <button class="tab active" id="tabMoments">Моменты</button>
       </div>
 
-    </div>
-  </div>
-</div>
+    </div><!-- /panel -->
+  </div><!-- /frame -->
+</div><!-- /app -->
 
 <audio id="bgMusic" src="./7441574b62bac5e.mp3" loop preload="auto"></audio>
-
 <script>
 /* =========================
    CONFIG
@@ -972,7 +1022,7 @@ const TIP_URL = "https://netmonet.co/qr/192937/tip?o=6";
 const DURATION_MS = 25 * 60 * 1000;
 const MUSIC_VOLUME = 0.30;
 
-// ✅ координаты обновлены
+/* координаты */
 const GEOFENCE = { lat: 56.482707, lon: 84.952464, radiusM: 40 };
 const GEO_TTL_MS = 2 * 60 * 60 * 1000;
 
@@ -991,6 +1041,7 @@ const LS_GEO_UNTIL = "hm_geo_until";
 const LS_MUSIC_ON = "hm_music_on";
 
 const $ = (id)=>document.getElementById(id);
+
 function escapeHtml(str=""){
   return String(str)
     .replaceAll("&","&amp;")
@@ -1006,6 +1057,7 @@ const screens = [
   "scr_cabinet","scr_archive","scr_moment",
   "scr_master"
 ];
+
 function go(id){
   screens.forEach(s=>$(s).classList.remove("active"));
   $(id).classList.add("active");
@@ -1014,6 +1066,7 @@ function go(id){
 function showBottomTabs(on){
   $("bottomTabs").style.display = on ? "flex" : "none";
 }
+
 function setActiveTab(tab){
   $("tabArchive").classList.toggle("active", tab==="archive");
   $("tabMoments").classList.toggle("active", tab==="moments");
@@ -1033,6 +1086,7 @@ function setMusicBtn(on){
   musicBtn?.classList.toggle("on", !!on);
   musicBtn2?.classList.toggle("on", !!on);
 }
+
 async function playMusic(){
   try{
     audioEl.volume = MUSIC_VOLUME;
@@ -1045,16 +1099,19 @@ async function playMusic(){
     setMusicBtn(false);
   }
 }
+
 function pauseMusic(){
   audioEl.pause();
   localStorage.setItem(LS_MUSIC_ON,"0");
   setMusicBtn(false);
   tap();
 }
+
 function toggleMusic(){
   if(audioEl.paused) playMusic();
   else pauseMusic();
 }
+
 musicBtn.addEventListener("click", toggleMusic);
 musicBtn2.addEventListener("click", toggleMusic);
 
@@ -1067,9 +1124,11 @@ function distanceMeters(lat1, lon1, lat2, lon2){
   const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
   return 2*R*Math.asin(Math.sqrt(a));
 }
+
 function isInsideFence(lat, lon){
   return distanceMeters(lat, lon, GEOFENCE.lat, GEOFENCE.lon) <= GEOFENCE.radiusM;
 }
+
 function requestLocation(){
   return new Promise((resolve,reject)=>{
     if(!navigator.geolocation) return reject(new Error("no_geolocation"));
@@ -1080,6 +1139,7 @@ function requestLocation(){
     );
   });
 }
+
 function setGeoAccessUntil(ts){ localStorage.setItem(LS_GEO_UNTIL, String(ts)); }
 function hasGeoAccessNow(){ return Date.now() < Number(localStorage.getItem(LS_GEO_UNTIL)||0); }
 
@@ -1099,12 +1159,14 @@ async function safeJson(r){
   const t = await r.text();
   try{ return JSON.parse(t); }catch{ return { ok:false, raw:t }; }
 }
+
 async function apiGetMoments(limit=200){
   const r = await fetch(`${BACKEND_BASE}/moments?limit=${limit}`);
   const data = await safeJson(r);
   if(!r.ok) throw new Error("getMoments failed");
   return data;
 }
+
 async function apiCreateMoment(m){
   const r = await fetch(`${BACKEND_BASE}/moment`,{
     method:"POST",
@@ -1115,6 +1177,7 @@ async function apiCreateMoment(m){
   if(!r.ok) throw new Error("createMoment failed");
   return data;
 }
+
 async function apiSetStatus(id,status){
   const r = await fetch(`${BACKEND_BASE}/moment/${id}/status`,{
     method:"PATCH",
@@ -1125,6 +1188,7 @@ async function apiSetStatus(id,status){
   if(!r.ok) throw new Error("setStatus failed");
   return data;
 }
+
 async function apiSetRating(id,rating){
   const r = await fetch(`${BACKEND_BASE}/moment/${id}/rating`,{
     method:"PATCH",
@@ -1212,6 +1276,7 @@ function fmt(ms){
   const s = t%60;
   return `${m}:${String(s).padStart(2,"0")}`;
 }
+
 function setHourglassProgress(p01){
   const p = Math.max(0, Math.min(1, p01));
   const top = $("hgTop");
@@ -1477,8 +1542,7 @@ async function renderKitchen(){
             <button class="btn" onclick="tap(); kSet('${escapeHtml(m.id)}','serving')">Подача</button>
             <button class="btn" onclick="tap(); kSet('${escapeHtml(m.id)}','finished')">Момент случился</button>
           </div>
-        </div>
-      `;
+        `;
     });
 
   }catch(e){
@@ -1486,6 +1550,7 @@ async function renderKitchen(){
     list.innerHTML = `<div class="small">Нет связи.</div>`;
   }
 }
+
 window.kSet = async function(id,status){
   try{
     await apiSetStatus(id,status);
@@ -1562,6 +1627,7 @@ $("btnQBack").addEventListener("click", ()=>{
   delete answers[String(qIndex+1)];
   renderQuestion();
 });
+
 $("btnQAbort").addEventListener("click", async ()=>{
   tap();
   await renderCabinet();
@@ -1584,6 +1650,7 @@ $("btnCabToWait").addEventListener("click", ()=>{
   showBottomTabs(false);
   startWaitingLoop();
 });
+
 $("btnCabOpenNow").addEventListener("click", async ()=>{
   tap();
   if(!openMomentId){ return; }
@@ -1631,12 +1698,14 @@ $("rateBad").addEventListener("click", async ()=>{
   try{ await apiSetRating(openMomentId,"bad"); }catch{}
   alert("Запомнил.");
 });
+
 $("rateOk").addEventListener("click", async ()=>{
   tap();
   if(!openMomentId) return;
   try{ await apiSetRating(openMomentId,"ok"); }catch{}
   alert("Запомнил.");
 });
+
 $("ratePerfect").addEventListener("click", async ()=>{
   tap();
   if(!openMomentId) return;
@@ -1651,6 +1720,7 @@ $("tabArchive").addEventListener("click", async ()=>{
   showBottomTabs(true);
   setActiveTab("archive");
 });
+
 $("tabMoments").addEventListener("click", async ()=>{
   tap();
   await renderCabinet();
@@ -1697,5 +1767,6 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   showBottomTabs(false);
 });
 </script>
+
 </body>
 </html>
