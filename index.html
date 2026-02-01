@@ -6,7 +6,6 @@
 <title>THE MENU</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<!-- Fonts (рендерность) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -56,7 +55,6 @@ body{
     url("./bg.jpg") center/cover no-repeat fixed;
 }
 
-/* Виньетка + кинолайт */
 body::before{
   content:"";
   position:fixed;
@@ -68,7 +66,6 @@ body::before{
     linear-gradient(180deg, rgba(0,0,0,.58), rgba(0,0,0,.32) 40%, rgba(0,0,0,.60));
 }
 
-/* Очень тонкий noise */
 body::after{
   content:"";
   position:fixed;
@@ -91,7 +88,6 @@ body::after{
   padding: calc(14px + var(--safeTop)) 14px calc(14px + var(--safeBottom));
 }
 
-/* Телефонная “рамка” */
 .frame{
   width:min(420px, 100%);
   border-radius: var(--r26);
@@ -103,7 +99,6 @@ body::after{
   overflow:hidden;
 }
 
-/* Панель (пергамент/кожа) */
 .panel{
   border-radius: var(--r22);
   background:
@@ -116,7 +111,6 @@ body::after{
   overflow:hidden;
 }
 
-/* Внутренняя “рамка” как в рендере */
 .panel::before{
   content:"";
   position:absolute;
@@ -131,7 +125,6 @@ body::after{
   opacity:.95;
 }
 
-/* “Дыхание” теплого света */
 .glow{
   position:absolute;
   inset:-80px;
@@ -149,7 +142,6 @@ body::after{
   50%{ transform: translate3d(0,-8px,0); opacity:.78; }
 }
 
-/* Верхняя шапка */
 .topbar{
   position:relative;
   z-index:2;
@@ -177,7 +169,6 @@ body::after{
   box-shadow: 0 0 0 4px rgba(231,194,122,.10);
 }
 
-/* Кнопка музыки (как “значок”) */
 .iconBtn{
   width:36px;height:36px;
   border-radius:999px;
@@ -198,7 +189,6 @@ body::after{
   box-shadow: 0 0 0 4px rgba(231,194,122,.10);
 }
 
-/* Контент: делаем прокрутку внутри, чтобы низ не “резался” */
 .content{
   position:relative;
   z-index:2;
@@ -215,7 +205,6 @@ body::after{
 }
 .content::-webkit-scrollbar-track{ background: transparent; }
 
-/* Нижние табы */
 .bottombar{
   position:relative;
   z-index:2;
@@ -251,7 +240,6 @@ body::after{
   box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
 }
 
-/* Типографика */
 .h1{
   font-family:"Cinzel", serif;
   font-size: 22px;
@@ -271,7 +259,6 @@ body::after{
   margin: 12px 0;
 }
 
-/* Карты */
 .card{
   background:
     radial-gradient(700px 320px at 20% 10%, rgba(231,194,122,.08), transparent 58%),
@@ -292,6 +279,9 @@ body::after{
   gap:10px;
 }
 
+/* ===========================
+   STATUS PLATES (тиснение)
+   =========================== */
 .badge{
   font-size:11px;
   padding: 7px 12px;
@@ -303,6 +293,18 @@ body::after{
   letter-spacing:.18em;
   text-transform:uppercase;
   font-family:"Cinzel", serif;
+  position:relative;
+  overflow:hidden;
+}
+.badge::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(220px 120px at 20% 10%, rgba(255,255,255,.08), transparent 60%),
+    linear-gradient(90deg, transparent, rgba(231,194,122,.10), transparent);
+  opacity:.35;
+  pointer-events:none;
 }
 .badge.brass{
   border-color: rgba(231,194,122,.22);
@@ -310,8 +312,19 @@ body::after{
     radial-gradient(220px 140px at 30% 10%, rgba(231,194,122,.16), transparent 55%),
     linear-gradient(180deg, rgba(231,194,122,.10), rgba(0,0,0,.18));
   color: rgba(255,255,255,.90);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+.badge.pulse{
+  animation: badgePulse 2.4s ease-in-out infinite;
+}
+@keyframes badgePulse{
+  0%,100%{ filter: brightness(1); }
+  50%{ filter: brightness(1.18); }
 }
 
+/* ===========================
+   BUTTONS
+   =========================== */
 .btn{
   width:100%;
   padding: 12px 12px;
@@ -370,7 +383,9 @@ body::after{
 .screen{ display:none; }
 .screen.active{ display:block; }
 
-/* GATE */
+/* ===========================
+   GATE
+   =========================== */
 .gate{
   display:flex;
   align-items:center;
@@ -430,7 +445,9 @@ body::after{
   to{ opacity:0; transform: translateY(10px) scale(.985); }
 }
 
-/* CABINET */
+/* ===========================
+   CABINET
+   =========================== */
 .profile{
   display:flex;
   align-items:flex-start;
@@ -475,27 +492,103 @@ body::after{
   gap:10px;
 }
 
-.ach{
-  border-radius: 16px;
+/* ===========================
+   MEDALLIONS / SEALS (ЗНАКИ)
+   =========================== */
+.medal{
+  position:relative;
+  border-radius: 18px;
   border:1px solid rgba(255,255,255,.10);
   background:
     radial-gradient(320px 200px at 20% 20%, rgba(231,194,122,.09), transparent 58%),
     rgba(0,0,0,.16);
   padding: 12px;
-  min-height: 74px;
+  min-height: 92px;
+  overflow:hidden;
+  transition: transform .16s var(--ease), border-color .16s var(--ease), filter .16s var(--ease);
+  user-select:none;
+  cursor:pointer;
 }
-.ach.lock{
+.medal:active{
+  transform: translateY(1px) scale(.99);
+}
+.medal:hover{
+  border-color: rgba(231,194,122,.18);
+}
+.medal.lock{
   opacity:.40;
-  filter: grayscale(.35);
+  filter: grayscale(.45) brightness(.85);
+  cursor:default;
 }
-.ach .t{
+.medal .head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.medal .sealCoin{
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  position:relative;
+  flex:0 0 auto;
+  border:1px solid rgba(255,255,255,.12);
+  background:
+    radial-gradient(circle at 30% 30%, rgba(231,194,122,.96), rgba(183,122,51,.64));
+  box-shadow:
+    0 12px 32px rgba(183,122,51,.18),
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -14px 18px rgba(0,0,0,.35);
+}
+.medal .sealCoin::after{
+  content:"";
+  position:absolute;
+  inset:6px;
+  border-radius:999px;
+  border:1px solid rgba(0,0,0,.35);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  opacity:.8;
+}
+.medal .sealMark{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:"Cinzel", serif;
+  font-weight:900;
+  color: rgba(0,0,0,.52);
+  letter-spacing:.08em;
+  text-shadow: 0 1px 0 rgba(255,255,255,.12);
+  font-size: 14px;
+}
+.medal .t{
   font-family:"Cinzel", serif;
   font-weight:800;
   font-size:13px;
-  margin-bottom:6px;
+  margin-bottom:2px;
   letter-spacing:.06em;
 }
-.ach .d{ font-size:13px; color: rgba(255,255,255,.60); line-height:1.35; }
+.medal .d{
+  font-size:13px;
+  color: rgba(255,255,255,.60);
+  line-height:1.35;
+}
+
+/* сияние открытого медальона */
+.medal.ok::before{
+  content:"";
+  position:absolute;
+  inset:-80px;
+  background: radial-gradient(circle, rgba(231,194,122,.14), transparent 60%);
+  opacity:.65;
+  filter: blur(18px);
+  animation: medalGlow 3.4s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes medalGlow{
+  0%,100%{ transform: translate3d(0,0,0); opacity:.45; }
+  50%{ transform: translate3d(0,-6px,0); opacity:.85; }
+}
 
 .tabsHint{
   font-size:12px;
@@ -629,7 +722,6 @@ a{ color: inherit; text-decoration:none; }
 
       <div class="content">
 
-        <!-- GATE -->
         <div class="screen active fadeIn" id="scr_gate">
           <div class="gate">
             <div>
@@ -641,7 +733,6 @@ a{ color: inherit; text-decoration:none; }
           </div>
         </div>
 
-        <!-- DOOR -->
         <div class="screen fadeIn" id="scr_door">
           <div class="h1">Открыть дверь.</div>
           <div class="sub">Это вход не в заказ.<br>Это вход в процесс.</div>
@@ -676,7 +767,6 @@ a{ color: inherit; text-decoration:none; }
           <button class="btn" id="btnGeoErrBack">Назад</button>
         </div>
 
-        <!-- WELCOME -->
         <div class="screen fadeIn" id="scr_welcome">
           <div class="h1">Прежде чем мы начнём.</div>
           <div class="sub">
@@ -689,7 +779,6 @@ a{ color: inherit; text-decoration:none; }
           <button class="btn ghost" id="btnGoCabinet">В кабинет</button>
         </div>
 
-        <!-- COURSE -->
         <div class="screen fadeIn" id="scr_course">
           <div class="h1" id="qTitle">THE MENU</div>
           <div class="sub" id="qText">К какому цвету тянется рука сейчас?</div>
@@ -700,7 +789,6 @@ a{ color: inherit; text-decoration:none; }
           </div>
         </div>
 
-        <!-- WAIT -->
         <div class="screen fadeIn" id="scr_wait">
           <div class="waitCenter">
             <div class="h1" id="waitTitle">Процесс идёт.</div>
@@ -722,7 +810,6 @@ a{ color: inherit; text-decoration:none; }
           </div>
         </div>
 
-        <!-- CABINET -->
         <div class="screen fadeIn" id="scr_cabinet">
           <div class="profile">
             <div>
@@ -741,7 +828,7 @@ a{ color: inherit; text-decoration:none; }
                 <div class="momentTitle" style="font-size:16px;">Сейчас</div>
                 <div class="small" id="cabNowText">Процесс уже начался. Не вмешивайтесь.</div>
               </div>
-              <span class="badge brass" id="cabNowState">…</span>
+              <span class="badge brass pulse" id="cabNowState">…</span>
             </div>
             <div class="btnRow">
               <button class="btn primary" id="btnCabToWait">Вернуться к процессу</button>
@@ -763,7 +850,6 @@ a{ color: inherit; text-decoration:none; }
           <div class="tabsHint">Оценка — это не вкус. Это след.</div>
         </div>
 
-        <!-- ARCHIVE -->
         <div class="screen fadeIn" id="scr_archive">
           <div class="row">
             <div class="h1" style="margin:0;">Архив</div>
@@ -774,7 +860,6 @@ a{ color: inherit; text-decoration:none; }
           <button class="btn" id="btnArchBack">Назад</button>
         </div>
 
-        <!-- MOMENT -->
         <div class="screen fadeIn" id="scr_moment">
           <div class="row">
             <div>
@@ -804,7 +889,6 @@ a{ color: inherit; text-decoration:none; }
           <button class="btn" id="btnMomentBack">Назад</button>
         </div>
 
-        <!-- MASTER -->
         <div class="screen fadeIn" id="scr_master">
           <div class="row">
             <div>
@@ -1154,9 +1238,9 @@ function calcAchievements(moments){
   const sessions = moments.length;
   const rated = moments.filter(m=>!!m.rating).length;
   return [
-    { t:"Первый момент", d:"Вы вошли.", ok: sessions>=1 },
-    { t:"Возвращение", d:"Вы вернулись.", ok: sessions>=2 },
-    { t:"Честность", d:"Вы оценили три.", ok: rated>=3 }
+    { t:"Первый момент", d:"Вы вошли.", ok: sessions>=1, mark:"I" },
+    { t:"Возвращение", d:"Вы вернулись.", ok: sessions>=2, mark:"II" },
+    { t:"Честность", d:"Вы оценили три.", ok: rated>=3, mark:"III" }
   ];
 }
 
@@ -1214,9 +1298,16 @@ async function renderCabinet(){
     const ach = calcAchievements(mine);
     ach.forEach(a=>{
       achBox.innerHTML += `
-        <div class="ach ${a.ok ? "" : "lock"}">
-          <div class="t">${escapeHtml(a.t)}</div>
-          <div class="d">${escapeHtml(a.d)}</div>
+        <div class="medal ${a.ok ? "ok" : "lock"}">
+          <div class="head">
+            <div class="sealCoin">
+              <div class="sealMark">${escapeHtml(a.mark)}</div>
+            </div>
+            <div>
+              <div class="t">${escapeHtml(a.t)}</div>
+              <div class="d">${escapeHtml(a.d)}</div>
+            </div>
+          </div>
         </div>
       `;
     });
