@@ -43,12 +43,13 @@
 
 *{ box-sizing:border-box; }
 html,body{ height:100%; }
+
 body{
   margin:0;
   color:var(--ink);
   overflow:hidden;
-
   font-family: "Cormorant Garamond", ui-serif, Georgia, "Times New Roman", serif;
+
   background:
     radial-gradient(1200px 900px at 22% 10%, rgba(231,194,122,.10), transparent 60%),
     radial-gradient(900px 700px at 85% 35%, rgba(183,122,51,.12), transparent 60%),
@@ -234,9 +235,7 @@ body::after{
     inset 0 1px 0 rgba(255,255,255,.06),
     inset 0 -18px 28px rgba(0,0,0,.34);
 }
-
 .tab:active{ transform: translateY(1px) scale(.99); }
-
 .tab.active{
   background:
     radial-gradient(520px 260px at 30% 10%, rgba(231,194,122,.20), transparent 56%),
@@ -390,9 +389,7 @@ body::after{
 .fadeIn{ animation: fadeIn .26s var(--ease) both; }
 @keyframes fadeIn{ from{opacity:0; transform: translateY(6px);} to{opacity:1; transform:none;} }
 
-.stagger{
-  animation: fadeInStagger .28s var(--ease) both;
-}
+.stagger{ animation: fadeInStagger .28s var(--ease) both; }
 @keyframes fadeInStagger{
   from{ opacity:0; transform: translateY(10px); filter: blur(2px); }
   to{ opacity:1; transform: translateY(0); filter: blur(0); }
@@ -569,16 +566,6 @@ body::after{
     inset 0 -10px 14px rgba(0,0,0,.28);
   opacity:.9;
 }
-.medal .sealCoin::after{
-  content:"";
-  position:absolute;
-  inset:-14px;
-  border-radius:999px;
-  background: radial-gradient(circle, rgba(231,194,122,.14), transparent 60%);
-  opacity:0;
-  transform: scale(.95);
-  transition: opacity .18s var(--ease), transform .18s var(--ease);
-}
 .medal.ok::before{
   content:"";
   position:absolute;
@@ -592,10 +579,6 @@ body::after{
 @keyframes medalGlow{
   0%,100%{ transform: translate3d(0,0,0); opacity:.45; }
   50%{ transform: translate3d(0,-6px,0); opacity:.85; }
-}
-.medal.ok:hover .sealCoin::after{
-  opacity:.9;
-  transform: scale(1);
 }
 .medal .sealIcon{
   position:absolute;
@@ -970,6 +953,7 @@ const TIP_URL = "https://netmonet.co/qr/192937/tip?o=6";
 const DURATION_MS = 25 * 60 * 1000;
 const MUSIC_VOLUME = 0.30;
 
+// ТВОИ НОВЫЕ КООРДИНАТЫ
 const GEOFENCE = { lat: 56.482707, lon: 84.952464, radiusM: 40 };
 const GEO_TTL_MS = 2 * 60 * 60 * 1000;
 
@@ -1016,7 +1000,7 @@ function setActiveTab(tab){
   $("tabMoments").classList.toggle("active", tab==="moments");
 }
 
-/* Micro haptics */
+/* HAPTIC */
 function tap(){
   try{ tg?.HapticFeedback?.impactOccurred("light"); }catch{}
 }
@@ -1275,6 +1259,7 @@ async function startWaitingLoop(){
   waitPoll = setInterval(tick, 2000);
 }
 
+/* ACHIEVEMENTS */
 function calcAchievements(moments){
   const sessions = moments.length;
   const rated = moments.filter(m=>!!m.rating).length;
