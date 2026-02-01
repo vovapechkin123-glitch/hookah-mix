@@ -15,20 +15,15 @@
   color-scheme: dark;
 
   --ink: rgba(255,255,255,.94);
-  --muted: rgba(255,255,255,.70);
+  --muted: rgba(255,255,255,.72);
   --soft: rgba(255,255,255,.56);
 
-  --brass1: rgba(231,194,122,1);
-  --brass2: rgba(183,122,51,1);
+  --gold1: rgba(240,214,150,1);
+  --gold2: rgba(186,118,48,1);
 
-  --stroke: rgba(255,230,190,.12);
-  --stroke2: rgba(255,255,255,.08);
-
+  --stroke: rgba(255,255,255,.10);
   --ease: cubic-bezier(.2,.9,.2,1);
-  --r14: 14px;
-  --r18: 18px;
-  --r22: 22px;
-  --r26: 26px;
+  --ease2: cubic-bezier(.16,1,.3,1);
 
   --safeTop: env(safe-area-inset-top, 0px);
   --safeBottom: env(safe-area-inset-bottom, 0px);
@@ -39,16 +34,15 @@ html,body{ height:100%; }
 
 body{
   margin:0;
-  color:var(--ink);
   overflow:hidden;
-  font-family: "Cormorant Garamond", ui-serif, Georgia, "Times New Roman", serif;
+  color:var(--ink);
+  font-family:"Cormorant Garamond", ui-serif, Georgia, "Times New Roman", serif;
 
-  /* 🔥 главный фон — bgg.jpg */
   background:
-    radial-gradient(1400px 900px at 20% 10%, rgba(231,194,122,.10), transparent 60%),
-    radial-gradient(1100px 800px at 85% 35%, rgba(183,122,51,.10), transparent 62%),
-    radial-gradient(900px 700px at 40% 90%, rgba(0,0,0,.40), transparent 65%),
-    url("./bgg.jpg") center/cover no-repeat fixed;
+    radial-gradient(1200px 800px at 18% 12%, rgba(240,214,150,.14), transparent 60%),
+    radial-gradient(900px 700px at 82% 30%, rgba(186,118,48,.10), transparent 62%),
+    radial-gradient(700px 600px at 45% 90%, rgba(0,0,0,.60), transparent 66%),
+    linear-gradient(180deg, rgba(10,6,4,1), rgba(0,0,0,1));
 }
 
 body::before{
@@ -58,21 +52,20 @@ body::before{
   z-index:0;
   pointer-events:none;
   background:
-    radial-gradient(1200px 900px at 50% 42%, rgba(0,0,0,.15), rgba(0,0,0,.70) 72%, rgba(0,0,0,.92) 100%),
-    linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,.28) 40%, rgba(0,0,0,.72));
+    radial-gradient(1400px 900px at 50% 42%, rgba(0,0,0,.12), rgba(0,0,0,.78) 72%, rgba(0,0,0,.94) 100%),
+    linear-gradient(180deg, rgba(0,0,0,.72), rgba(0,0,0,.30) 40%, rgba(0,0,0,.82));
 }
 
-/* лёгкий шум */
 body::after{
   content:"";
   position:fixed;
   inset:0;
   z-index:0;
   pointer-events:none;
-  opacity:.06;
+  opacity:.09;
   mix-blend-mode: overlay;
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
 }
 
 #app{
@@ -85,127 +78,47 @@ body::after{
   padding: calc(16px + var(--safeTop)) 14px calc(16px + var(--safeBottom));
 }
 
-/* =========================
-   BOOK FRAME (LEATHER)
-   ========================= */
-.frame{
-  width:min(460px, 100%);
-  border-radius: var(--r26);
+.book{
+  width:min(500px, 100%);
+  border-radius: 30px;
   padding: 16px;
-
-  /* 🔥 обложка-кожа */
-  background:
-    radial-gradient(900px 500px at 30% 10%, rgba(231,194,122,.10), transparent 62%),
-    radial-gradient(900px 600px at 70% 90%, rgba(183,122,51,.10), transparent 60%),
-    url("./leather.jpg") center/cover no-repeat;
-
-  border: 1px solid rgba(255,255,255,.10);
-
-  box-shadow:
-    0 34px 120px rgba(0,0,0,.72),
-    0 10px 40px rgba(0,0,0,.55);
-
-  overflow:hidden;
-  animation: frameBreath 6.2s ease-in-out infinite;
-}
-
-@keyframes frameBreath{
-  0%,100%{ transform: translateY(0); filter: brightness(1); }
-  50%{ transform: translateY(-2px); filter: brightness(1.06); }
-}
-
-/* =========================
-   PANEL (PAPER)
-   ========================= */
-.panel{
-  border-radius: var(--r22);
   position:relative;
   overflow:hidden;
 
-  /* 🔥 бумага внутри */
   background:
-    radial-gradient(900px 520px at 30% 10%, rgba(231,194,122,.12), transparent 62%),
-    radial-gradient(860px 600px at 74% 92%, rgba(183,122,51,.10), transparent 60%),
-    url("./paper.jpg") center/cover no-repeat;
+    radial-gradient(1200px 700px at 30% 12%, rgba(240,214,150,.10), transparent 62%),
+    radial-gradient(900px 700px at 80% 90%, rgba(186,118,48,.08), transparent 60%),
+    linear-gradient(180deg, rgba(30,18,12,.98), rgba(14,8,6,.98));
 
-  border: 1px solid rgba(255,230,190,.16);
-
+  border:1px solid rgba(255,255,255,.10);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.10),
-    inset 0 -22px 50px rgba(0,0,0,.55),
+    0 40px 150px rgba(0,0,0,.78),
+    0 16px 70px rgba(0,0,0,.62);
+
+  transform: translateZ(0);
+  animation: float 6.2s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{ transform: translateY(0); }
+  50%{ transform: translateY(-3px); }
+}
+
+.panel{
+  position:relative;
+  border-radius: 24px;
+  overflow:hidden;
+  background:
+    radial-gradient(900px 520px at 30% 10%, rgba(240,214,150,.10), transparent 62%),
+    radial-gradient(860px 600px at 74% 92%, rgba(186,118,48,.10), transparent 60%),
+    linear-gradient(180deg, rgba(18,10,6,.94), rgba(10,6,4,.96));
+  border:1px solid rgba(240,214,150,.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -28px 60px rgba(0,0,0,.62),
     0 18px 70px rgba(0,0,0,.55);
 }
 
-/* внутренний бордер */
-.panel::before{
-  content:"";
-  position:absolute;
-  inset: 12px;
-  border-radius: var(--r18);
-  border: 1px solid rgba(255,255,255,.10);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.08),
-    inset 0 -18px 35px rgba(0,0,0,.42),
-    0 0 0 1px rgba(231,194,122,.06);
-  pointer-events:none;
-  opacity:.98;
-}
-
-/* 🔥 орнамент поверх */
-.panel::after{
-  content:"";
-  position:absolute;
-  inset: 6px;
-  pointer-events:none;
-  background: url("./ornament.png") center/contain no-repeat;
-  opacity:.88;
-  filter: drop-shadow(0 10px 24px rgba(0,0,0,.55));
-}
-
-/* 🔥 виньетка + пыль */
-.vignette{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background: url("./vignette.png") center/cover no-repeat;
-  opacity:.75;
-  mix-blend-mode: overlay;
-  z-index:1;
-}
-
-/* 🔥 золотое зерно для металла */
-.goldNoise{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background: url("./gold_noise.png") center/cover no-repeat;
-  opacity:.12;
-  mix-blend-mode: overlay;
-  z-index:1;
-}
-
-.glow{
-  position:absolute;
-  inset:-120px;
-  z-index:1;
-  pointer-events:none;
-  background:
-    radial-gradient(560px 420px at 18% 12%, rgba(231,194,122,.16), transparent 62%),
-    radial-gradient(560px 420px at 82% 88%, rgba(183,122,51,.14), transparent 62%),
-    radial-gradient(900px 700px at 50% 50%, rgba(0,0,0,.18), transparent 62%);
-  opacity:.55;
-  filter: blur(18px);
-  animation: glow 7.5s ease-in-out infinite;
-}
-
-@keyframes glow{
-  0%,100%{ transform: translate3d(0,0,0); opacity:.48; }
-  50%{ transform: translate3d(0,-8px,0); opacity:.76; }
-}
-
-/* =========================
-   UI ELEMENTS
-   ========================= */
 .topbar{
   position:relative;
   z-index:3;
@@ -222,282 +135,85 @@ body::after{
   gap:10px;
   letter-spacing:.22em;
   text-transform:uppercase;
-  font-weight:700;
+  font-weight:800;
   font-size:12px;
-  font-family: "Cinzel", serif;
-  color: rgba(255,255,255,.78);
+  font-family:"Cinzel", serif;
+  color: rgba(255,255,255,.82);
 }
 
 .brand .dot{
   width:7px;height:7px;border-radius:999px;
-  background: rgba(231,194,122,.78);
-  box-shadow: 0 0 0 4px rgba(231,194,122,.10);
+  background: rgba(240,214,150,.82);
+  box-shadow: 0 0 0 5px rgba(240,214,150,.12);
 }
 
 .iconBtn{
-  width:38px;height:38px;
+  width:40px;height:40px;
   border-radius:999px;
-  border: 1px solid rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.12);
   background:
-    radial-gradient(120px 120px at 30% 20%, rgba(231,194,122,.14), transparent 60%),
+    radial-gradient(120px 120px at 30% 20%, rgba(240,214,150,.18), transparent 60%),
     linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.22));
-  color: rgba(255,255,255,.88);
+  color: rgba(255,255,255,.92);
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;
-  transition: transform .14s var(--ease), border-color .14s var(--ease), box-shadow .14s var(--ease), opacity .14s var(--ease);
   user-select:none;
-  position:relative;
-  overflow:hidden;
+  transition: transform .14s var(--ease), box-shadow .14s var(--ease), border-color .14s var(--ease), filter .14s var(--ease);
 }
 
-.iconBtn::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: url("./gold_noise.png") center/cover no-repeat;
-  opacity:.12;
-  mix-blend-mode: overlay;
-  pointer-events:none;
-}
-
-.iconBtn:hover{ border-color: rgba(231,194,122,.26); }
+.iconBtn:hover{ border-color: rgba(240,214,150,.22); filter: brightness(1.05); }
 .iconBtn:active{ transform: translateY(1px) scale(.98); }
 .iconBtn.on{
-  border-color: rgba(231,194,122,.30);
-  box-shadow: 0 0 0 4px rgba(231,194,122,.12);
+  border-color: rgba(240,214,150,.30);
+  box-shadow: 0 0 0 5px rgba(240,214,150,.14);
 }
 
 .content{
   position:relative;
   z-index:3;
   padding: 10px 14px 12px;
-  max-height: calc(100vh - 160px);
+  max-height: calc(100vh - 170px);
   overflow:auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
 
-.content::-webkit-scrollbar{ width:8px; }
-.content::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.10); border-radius: 999px; }
-.content::-webkit-scrollbar-track{ background: transparent; }
-
-.bottombar{
-  position:relative;
-  z-index:3;
-  padding: 10px 14px calc(12px + var(--safeBottom));
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-}
-
-.tab{
-  width:100%;
-  padding: 14px 12px;
-  border-radius: 18px;
-  border:1px solid rgba(255,255,255,.10);
-  background:
-    radial-gradient(520px 260px at 30% 10%, rgba(231,194,122,.08), transparent 58%),
-    linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.22));
-  color: rgba(255,255,255,.72);
-  font-weight:800;
-  font-size:12px;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  font-family: "Cinzel", serif;
-  cursor:pointer;
-  transition: transform .14s var(--ease), background .14s var(--ease), border-color .14s var(--ease), color .14s var(--ease);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.06),
-    inset 0 -18px 28px rgba(0,0,0,.34);
-  position:relative;
-  overflow:hidden;
-}
-
-.tab::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: url("./gold_noise.png") center/cover no-repeat;
-  opacity:.10;
-  mix-blend-mode: overlay;
-  pointer-events:none;
-}
-
-.tab:active{ transform: translateY(1px) scale(.99); }
-
-.tab.active{
-  background:
-    radial-gradient(520px 260px at 30% 10%, rgba(231,194,122,.20), transparent 56%),
-    linear-gradient(180deg, rgba(231,194,122,.12), rgba(0,0,0,.22));
-  border-color: rgba(231,194,122,.22);
-  color: rgba(255,255,255,.92);
-}
+.screen{ display:none; }
+.screen.active{ display:block; }
 
 .h1{
   font-family:"Cinzel", serif;
-  font-size: 22px;
+  font-size:22px;
   margin:0 0 6px;
   letter-spacing:.03em;
   font-weight:800;
 }
 
 .sub{
-  color: var(--muted);
-  font-size: 14px;
+  color:var(--muted);
+  font-size:14px;
   line-height:1.55;
   margin:0 0 10px;
 }
-
-.hr{
-  height:1px;
-  background: linear-gradient(90deg, transparent, rgba(231,194,122,.22), transparent);
-  margin: 12px 0;
-}
-
-.card{
-  background:
-    radial-gradient(700px 320px at 20% 10%, rgba(231,194,122,.08), transparent 58%),
-    linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.20));
-  border:1px solid rgba(255,230,190,.10);
-  border-radius: var(--r18);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.06),
-    inset 0 -18px 34px rgba(0,0,0,.36);
-  padding: 12px;
-  position:relative;
-  overflow:hidden;
-}
-
-.card::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: url("./gold_noise.png") center/cover no-repeat;
-  opacity:.06;
-  mix-blend-mode: overlay;
-  pointer-events:none;
-}
-
-.card + .card{ margin-top: 10px; }
-
-.row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-
-.badge{
-  font-size:11px;
-  padding: 7px 12px;
-  border-radius: 999px;
-  border:1px solid rgba(255,255,255,.10);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.18));
-  color: rgba(255,255,255,.74);
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  font-family:"Cinzel", serif;
-  position:relative;
-  overflow:hidden;
-}
-
-.badge.brass{
-  border-color: rgba(231,194,122,.26);
-  background:
-    radial-gradient(260px 160px at 30% 10%, rgba(231,194,122,.22), transparent 60%),
-    linear-gradient(180deg, rgba(231,194,122,.12), rgba(0,0,0,.20));
-  color: rgba(255,255,255,.92);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.08),
-    inset 0 -18px 26px rgba(0,0,0,.26),
-    0 10px 26px rgba(183,122,51,.10);
-}
-
-.badge.pulse{ animation: badgePulse 2.4s ease-in-out infinite; }
-@keyframes badgePulse{ 0%,100%{ filter: brightness(1); } 50%{ filter: brightness(1.18); } }
 
 .btn{
   width:100%;
   padding: 12px 12px;
   border-radius: 16px;
   border:1px solid rgba(255,255,255,.10);
-  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.22));
-  color: rgba(255,255,255,.88);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.24));
+  color: rgba(255,255,255,.92);
   cursor:pointer;
-  font-weight:800;
+  font-weight:900;
   font-family:"Cinzel", serif;
   letter-spacing:.08em;
-  transition: transform .14s var(--ease), border-color .14s var(--ease), box-shadow .14s var(--ease), filter .14s var(--ease);
-  user-select:none;
-  position:relative;
-  overflow:hidden;
 }
-
-.btn::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: url("./gold_noise.png") center/cover no-repeat;
-  opacity:.10;
-  mix-blend-mode: overlay;
-  pointer-events:none;
-}
-
-.btn:hover{ border-color: rgba(231,194,122,.16); }
-.btn:active{ transform: translateY(1px) scale(.99); }
 
 .btn.primary{
-  border-color: rgba(231,194,122,.22);
+  border-color: rgba(240,214,150,.24);
   background:
-    radial-gradient(520px 260px at 30% 10%, rgba(231,194,122,.18), transparent 56%),
-    linear-gradient(180deg, rgba(231,194,122,.12), rgba(0,0,0,.22));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 26px rgba(183,122,51,.10);
-}
-
-.btn.ghost{ background: rgba(0,0,0,.14); }
-
-.btnRow{ display:flex; gap:10px; margin-top:10px; }
-.btnRow .btn{ width:100%; }
-
-.option{
-  padding: 12px 12px;
-  border-radius: 16px;
-  border:1px solid rgba(255,255,255,.10);
-  background:
-    radial-gradient(480px 220px at 20% 20%, rgba(231,194,122,.10), transparent 58%),
-    rgba(0,0,0,.18);
-  cursor:pointer;
-  transition: transform .14s var(--ease), border-color .14s var(--ease), filter .14s var(--ease);
-  user-select:none;
-  font-size: 16px;
-  position:relative;
-  overflow:hidden;
-}
-
-.option::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: url("./gold_noise.png") center/cover no-repeat;
-  opacity:.06;
-  mix-blend-mode: overlay;
-  pointer-events:none;
-}
-
-.option:hover{ border-color: rgba(231,194,122,.18); }
-.option:active{ transform: translateY(1px) scale(.99); }
-.option + .option{ margin-top: 10px; }
-
-.small{ font-size:12px; color: var(--soft); line-height:1.45; }
-
-.screen{ display:none; }
-.screen.active{ display:block; }
-
-.fadeIn{ animation: fadeIn .28s var(--ease) both; }
-@keyframes fadeIn{
-  from{ opacity:0; transform: translateY(10px); filter: blur(2px); }
-  to{ opacity:1; transform: translateY(0); filter: blur(0); }
+    radial-gradient(520px 260px at 30% 10%, rgba(240,214,150,.18), transparent 56%),
+    linear-gradient(180deg, rgba(240,214,150,.12), rgba(0,0,0,.24));
 }
 
 .gate{
@@ -510,508 +226,257 @@ body::after{
 }
 
 .seal{
-  width: 98px;
-  height: 98px;
-  border-radius: 999px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width:104px;height:104px;border-radius:999px;
+  display:flex;align-items:center;justify-content:center;
   margin: 10px auto 14px;
   cursor:pointer;
   user-select:none;
-
-  background:
-    radial-gradient(circle at 30% 30%, rgba(231,194,122,.96), rgba(183,122,51,.84));
-
-  box-shadow:
-    0 22px 70px rgba(183,122,51,.22),
-    inset 0 1px 0 rgba(255,255,255,.14),
-    inset 0 -18px 30px rgba(0,0,0,.28);
-
+  background: radial-gradient(circle at 30% 30%, rgba(240,214,150,.98), rgba(186,118,48,.86));
+  box-shadow: 0 26px 90px rgba(186,118,48,.22), inset 0 1px 0 rgba(255,255,255,.14), inset 0 -18px 30px rgba(0,0,0,.30);
   border:1px solid rgba(255,255,255,.10);
-  position:relative;
-  transform: translateZ(0);
 }
 
-.seal::after{
-  content:"";
-  position:absolute;
-  inset:-18px;
-  border-radius:999px;
-  background: radial-gradient(circle, rgba(231,194,122,.16), transparent 60%);
-  opacity:.72;
-  animation: pulse 2.8s ease-in-out infinite;
-}
-
-@keyframes pulse{
-  0%,100%{ transform: scale(1); opacity:.62; }
-  50%{ transform: scale(1.08); opacity:.92; }
-}
-
-.seal .note{
-  font-size: 34px;
-  font-weight: 900;
-  transform: translateY(-1px);
-  filter: drop-shadow(0 10px 22px rgba(0,0,0,.38));
-  position:relative;
-  z-index:1;
-}
-
-.profile{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom: 10px;
-}
-
-.name{
-  font-family:"Cinzel", serif;
-  font-size:20px;
-  font-weight:800;
-  letter-spacing:.02em;
-}
-
-.meta{
-  font-size:14px;
-  color: rgba(255,255,255,.62);
-  margin-top:4px;
-}
-
-.sectionTitle{
-  font-family:"Cinzel", serif;
-  font-size:12px;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color: rgba(255,255,255,.58);
-  margin: 12px 0 8px;
-}
-
-.momentTitle{
-  font-family:"Cinzel", serif;
-  font-weight:800;
-  font-size:18px;
-}
-
-.momentDate{
-  color: rgba(255,255,255,.56);
-  font-size:13px;
-  margin-top:4px;
-}
-
-.grid2{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:10px;
-}
-
-.medal{
-  position:relative;
-  border-radius: 18px;
-  border:1px solid rgba(255,255,255,.10);
-  background:
-    radial-gradient(420px 240px at 20% 20%, rgba(231,194,122,.10), transparent 60%),
-    radial-gradient(380px 260px at 80% 90%, rgba(183,122,51,.08), transparent 60%),
-    rgba(0,0,0,.16);
-  padding: 12px;
-  min-height: 96px;
-  overflow:hidden;
-  transition: transform .16s var(--ease), border-color .16s var(--ease), filter .16s var(--ease);
-  user-select:none;
-  cursor:pointer;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.06),
-    inset 0 -22px 38px rgba(0,0,0,.36);
-}
-
-.medal:active{ transform: translateY(1px) scale(.99); }
-.medal:hover{ border-color: rgba(231,194,122,.18); }
-
-.medal.lock{
-  opacity:.36;
-  filter: grayscale(.55) brightness(.82);
-  cursor:default;
-}
-
-.medal .head{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.medal .sealCoin{
-  width:46px;
-  height:46px;
-  border-radius:999px;
-  position:relative;
-  flex:0 0 auto;
-  border:1px solid rgba(255,255,255,.12);
-  background:
-    radial-gradient(circle at 30% 28%, rgba(231,194,122,.96), rgba(183,122,51,.58));
-  box-shadow:
-    0 14px 34px rgba(183,122,51,.18),
-    inset 0 1px 0 rgba(255,255,255,.12),
-    inset 0 -16px 18px rgba(0,0,0,.40);
-}
-
-.medal .t{
-  font-family:"Cinzel", serif;
-  font-weight:800;
-  font-size:13px;
-  margin-bottom:2px;
-  letter-spacing:.06em;
-}
-
-.medal .d{
-  font-size:13px;
-  color: rgba(255,255,255,.60);
-  line-height:1.35;
-}
-
-.tabsHint{
-  font-size:12px;
-  color: rgba(255,255,255,.52);
-  margin-top:10px;
-  text-align:center;
-}
-
-.waitCenter{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding: 8px 6px 2px;
-  min-height: 420px;
-}
-
-.hourIcon{
-  width: 92px;
-  height: 120px;
-  position:relative;
-  margin: 12px auto 12px;
-  filter: drop-shadow(0 16px 42px rgba(0,0,0,.48));
-}
-
-.hgFrame{
-  position:absolute;
-  inset:0;
-  border-radius: 26px;
-  border: 1px solid rgba(255,255,255,.10);
-  background:
-    radial-gradient(300px 220px at 30% 20%, rgba(231,194,122,.10), transparent 60%),
-    rgba(0,0,0,.20);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.06),
-    inset 0 -22px 44px rgba(0,0,0,.38);
-}
-
-.hgGlass{
-  position:absolute;
-  left:16px; right:16px;
-  top:14px; bottom:14px;
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,.08);
-  overflow:hidden;
-  background: rgba(0,0,0,.10);
-}
-
-.hgTop, .hgBottom{
-  position:absolute;
-  left:10px; right:10px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, rgba(231,194,122,.78), rgba(183,122,51,.36));
-  box-shadow: 0 12px 36px rgba(183,122,51,.12);
-}
-
-.hgTop{ top: 10px; height: 48%; }
-.hgBottom{ bottom: 10px; height: 0%; }
-
-.hgStream{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:2px;
-  height:46px;
-  transform: translate(-50%,-50%);
-  background: rgba(231,194,122,.62);
-  opacity:.75;
-  animation: stream 1.2s ease-in-out infinite;
-}
-
-@keyframes stream{
-  0%,100%{ opacity:.50; }
-  50%{ opacity:.94; }
-}
-
-.timer{
-  font-family:"Cinzel", serif;
-  font-size: 32px;
-  letter-spacing:.14em;
-  font-weight: 800;
-  margin: 8px 0 6px;
-  color: rgba(255,255,255,.92);
-}
-
-.lockLine{
-  font-size:13px;
-  color: rgba(255,255,255,.64);
-  margin-top:6px;
-}
-
-.kitchenTitle{
-  font-family:"Cinzel", serif;
-  font-size:18px;
-  font-weight:800;
-}
-
-.kitchenSub{
-  color: rgba(255,255,255,.64);
-  font-size:13px;
-  margin-top:4px;
-}
-
-.kBtns{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:10px;
-  margin-top: 10px;
-}
-
-.kBtns .btn{
-  padding: 11px 10px;
-  font-size:12px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-}
-
-.miniNote{
-  color: rgba(255,255,255,.55);
-  font-size:12px;
-  margin-top:8px;
-}
-
-a{ color: inherit; text-decoration:none; }
-
-@media (min-width: 900px){
-  #app{ padding: 40px 20px; }
-  .frame{ transform: scale(1.08); transform-origin: center; }
-}
+.seal .note{ font-size:34px; font-weight:900; }
 </style>
 </head>
-
 <body>
-<div id="app">
-  <div class="frame">
-    <div class="panel">
-      <div class="glow"></div>
-      <div class="goldNoise"></div>
-      <div class="vignette"></div>
+  <div id="app">
+    <div class="book">
+      <div class="panel">
 
-      <div class="topbar">
-        <div class="brand">
-          <span class="dot"></span>
-          <span>THE MENU</span>
-        </div>
-        <button class="iconBtn" id="musicBtn" title="Музыка">♫</button>
-      </div>
-
-      <div class="content">
-                <div class="screen active fadeIn" id="scr_gate">
-          <div class="gate">
-            <div>
-              <div class="seal" id="sealBtn"><div class="note">♫</div></div>
-              <div class="h1">Включите зал.</div>
-              <div class="sub">Нажмите на знак.<br>Дальше — без лишних слов.</div>
-              <div class="small">Громкость уже выставлена: 30%.</div>
-            </div>
+        <div class="topbar">
+          <div class="brand">
+            <span class="dot"></span>
+            <span>THE MENU</span>
           </div>
+          <button class="iconBtn" id="musicBtn" title="Музыка">♫</button>
         </div>
 
-        <div class="screen fadeIn" id="scr_door">
-          <div class="h1">Открыть дверь.</div>
-          <div class="sub">Это вход не в заказ.<br>Это вход в процесс.</div>
-          <div class="hr"></div>
-          <button class="btn primary" id="btnDoor">Открыть</button>
-          <button class="btn ghost" id="btnDoorHelp">Я не могу дать гео</button>
-          <div class="tabsHint">Если устройство молчит — сегодня без этого.</div>
-        </div>
+        <div class="content">
 
-        <div class="screen fadeIn" id="scr_outside">
-          <div class="h1">Снаружи.</div>
-          <div class="sub">Сейчас это место не совпадает с залом.<br>Вернитесь — и повторите.</div>
-          <div class="btnRow">
-            <button class="btn primary" id="btnOutsideRetry">Проверить снова</button>
-            <button class="btn" id="btnOutsideBack">Назад</button>
-          </div>
-        </div>
-
-        <div class="screen fadeIn" id="scr_noPerm">
-          <div class="h1">Дверь закрыта.</div>
-          <div class="sub">Без разрешения на геолокацию<br>зал не открывается.</div>
-          <div class="btnRow">
-            <button class="btn primary" id="btnNoPermRetry">Попробовать снова</button>
-            <button class="btn" id="btnNoPermBack">Назад</button>
-          </div>
-        </div>
-
-        <div class="screen fadeIn" id="scr_geoErr">
-          <div class="h1">Тишина.</div>
-          <div class="sub">Устройство молчит.<br>Сегодня — без этого.</div>
-          <button class="btn primary" id="btnGeoErrRetry">Ещё раз</button>
-          <button class="btn" id="btnGeoErrBack">Назад</button>
-        </div>
-
-        <div class="screen fadeIn" id="scr_welcome">
-          <div class="h1">Прежде чем мы начнём.</div>
-          <div class="sub">
-            Здесь не подбирают вкус.<br><br>
-            Здесь фиксируют момент.<br><br>
-            То, что вы получите,<br>не существует заранее.
-          </div>
-          <div class="hr"></div>
-          <button class="btn primary" id="btnStartCourse">Создать момент</button>
-          <button class="btn ghost" id="btnGoCabinet">В кабинет</button>
-        </div>
-
-        <div class="screen fadeIn" id="scr_course">
-          <div class="h1" id="qTitle">THE MENU</div>
-          <div class="sub" id="qText">К какому цвету тянется рука сейчас?</div>
-          <div id="qOptions"></div>
-          <div class="btnRow">
-            <button class="btn ghost" id="btnQBack">Назад</button>
-            <button class="btn" id="btnQAbort">В кабинет</button>
-          </div>
-        </div>
-
-        <div class="screen fadeIn" id="scr_wait">
-          <div class="waitCenter">
-            <div class="h1" id="waitTitle">Процесс идёт.</div>
-            <div class="sub" id="waitSub">Не вмешивайтесь.</div>
-
-            <div class="hourIcon" aria-hidden="true">
-              <div class="hgFrame"></div>
-              <div class="hgGlass">
-                <div class="hgTop" id="hgTop"></div>
-                <div class="hgStream"></div>
-                <div class="hgBottom" id="hgBottom"></div>
-              </div>
-            </div>
-
-            <div class="timer" id="waitTimer">—:—</div>
-            <div class="lockLine" id="waitHint">Время начнётся, когда кухня подтвердит.</div>
-
-            <button class="btn primary" id="btnWaitCab">В кабинет</button>
-          </div>
-        </div>
-
-        <div class="screen fadeIn" id="scr_cabinet">
-          <div class="profile">
-            <div>
-              <div class="brand" style="margin-bottom:10px;">
-                <span class="dot"></span><span>THE MENU</span>
-              </div>
-              <div class="name" id="cabName">Гость</div>
-              <div class="meta" id="cabMeta">Моментов: 0 · Оценок: 0</div>
-            </div>
-            <button class="iconBtn" id="musicBtn2" title="Музыка" style="margin-top:6px;">♫</button>
-          </div>
-
-          <div class="card" id="cabNowCard" style="display:none;">
-            <div class="row">
+          <!-- GATE -->
+          <div class="screen active" id="scr_gate">
+            <div class="gate">
               <div>
-                <div class="momentTitle" style="font-size:16px;">Сейчас</div>
-                <div class="small" id="cabNowText">Процесс уже начался. Не вмешивайтесь.</div>
+                <div class="seal" id="sealBtn"><div class="note">♫</div></div>
+                <div class="h1">Включите зал.</div>
+                <div class="sub">Нажмите на знак.<br>Дальше — без лишних слов.</div>
+                <div class="sub" style="font-size:12px;opacity:.75;margin-top:8px;">Громкость уже выставлена: 30%.</div>
               </div>
-              <span class="badge brass pulse" id="cabNowState">…</span>
-            </div>
-            <div class="btnRow">
-              <button class="btn primary" id="btnCabToWait">Вернуться к процессу</button>
-              <button class="btn" id="btnCabOpenNow">Открыть</button>
             </div>
           </div>
 
-          <div class="sectionTitle">Последние моменты</div>
-          <div id="cabLast"></div>
-
-          <div class="btnRow">
-            <button class="btn" id="btnOpenArchive">Архив</button>
-            <button class="btn primary" id="btnNewMoment">Создать новый момент</button>
-          </div>
-
-          <div class="sectionTitle">Знаки</div>
-          <div class="grid2" id="cabAch"></div>
-
-          <div class="tabsHint">Оценка — это не вкус. Это след.</div>
-        </div>
-
-        <div class="screen fadeIn" id="scr_archive">
-          <div class="row">
-            <div class="h1" style="margin:0;">Архив</div>
-            <span class="badge" id="archCount">0</span>
-          </div>
-          <div class="sub">Здесь лежат моменты, которые уже случились.</div>
-          <div id="archList"></div>
-          <button class="btn" id="btnArchBack">Назад</button>
-        </div>
-
-        <div class="screen fadeIn" id="scr_moment">
-          <div class="row">
-            <div>
-              <div class="h1" id="mTitle" style="margin:0;">Момент</div>
-              <div class="small" id="mDate">—</div>
+          <!-- DOOR -->
+          <div class="screen" id="scr_door">
+            <div class="h1">Открыть дверь.</div>
+            <div class="sub">Это вход не в заказ.<br>Это вход в процесс.</div>
+            <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(240,214,150,.22),transparent);margin:12px 0;"></div>
+            <button class="btn primary" id="btnDoor">Открыть</button>
+            <button class="btn" id="btnDoorHelp" style="margin-top:10px;background:rgba(0,0,0,.16);">Я не могу дать гео</button>
+            <div class="sub" style="font-size:12px;opacity:.7;margin-top:10px;text-align:center;">
+              Если устройство молчит — сегодня без этого.
             </div>
-            <span class="badge brass" id="mStatus">…</span>
           </div>
 
-          <div class="hr"></div>
+          <!-- OUTSIDE -->
+          <div class="screen" id="scr_outside">
+            <div class="h1">Снаружи.</div>
+            <div class="sub">Сейчас это место не совпадает с залом.<br>Вернитесь — и повторите.</div>
+            <div style="display:flex;gap:10px;margin-top:10px;">
+              <button class="btn primary" id="btnOutsideRetry">Проверить снова</button>
+              <button class="btn" id="btnOutsideBack">Назад</button>
+            </div>
+          </div>
 
-          <div class="card" id="mBody"></div>
+          <!-- NO PERMISSION -->
+          <div class="screen" id="scr_noPerm">
+            <div class="h1">Дверь закрыта.</div>
+            <div class="sub">Без разрешения на геолокацию<br>зал не открывается.</div>
+            <div style="display:flex;gap:10px;margin-top:10px;">
+              <button class="btn primary" id="btnNoPermRetry">Попробовать снова</button>
+              <button class="btn" id="btnNoPermBack">Назад</button>
+            </div>
+          </div>
 
-          <div class="card" style="margin-top:10px;">
-            <div class="momentTitle" style="font-size:14px;margin-bottom:6px;">Жест</div>
-            <div class="small" style="margin-bottom:10px;">Не вкус. Не табак. Результат момента.</div>
+          <!-- GEO ERROR -->
+          <div class="screen" id="scr_geoErr">
+            <div class="h1">Тишина.</div>
+            <div class="sub">Устройство молчит.<br>Сегодня — без этого.</div>
+            <button class="btn primary" id="btnGeoErrRetry">Ещё раз</button>
+            <button class="btn" id="btnGeoErrBack" style="margin-top:10px;">Назад</button>
+          </div>
 
-            <div class="btnRow">
-              <button class="btn" id="rateBad">Слабо</button>
-              <button class="btn" id="rateOk">Честно</button>
-              <button class="btn primary" id="ratePerfect">Идеально</button>
+          <!-- WELCOME -->
+          <div class="screen" id="scr_welcome">
+            <div class="h1">Прежде чем мы начнём.</div>
+            <div class="sub">
+              Здесь не подбирают вкус.<br><br>
+              Здесь фиксируют момент.<br><br>
+              То, что вы получите,<br>не существует заранее.
+            </div>
+            <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(240,214,150,.22),transparent);margin:12px 0;"></div>
+            <button class="btn primary" id="btnStartCourse">Создать момент</button>
+            <button class="btn" id="btnGoCabinet" style="margin-top:10px;background:rgba(0,0,0,.16);">В кабинет</button>
+          </div>
+
+          <!-- COURSE -->
+          <div class="screen" id="scr_course">
+            <div class="h1" id="qTitle">THE MENU</div>
+            <div class="sub" id="qText">К какому цвету тянется рука сейчас?</div>
+            <div id="qOptions"></div>
+
+            <div style="display:flex;gap:10px;margin-top:10px;">
+              <button class="btn" id="btnQBack" style="background:rgba(0,0,0,.16);">Назад</button>
+              <button class="btn" id="btnQAbort">В кабинет</button>
+            </div>
+          </div>
+
+          <!-- WAIT -->
+          <div class="screen" id="scr_wait">
+            <div class="gate" style="min-height:420px;">
+              <div style="width:100%;text-align:center;">
+                <div class="h1" id="waitTitle">Процесс идёт.</div>
+                <div class="sub" id="waitSub">Не вмешивайтесь.</div>
+
+                <div style="margin:14px auto 8px;width:92px;height:120px;position:relative;">
+                  <div style="position:absolute;inset:0;border-radius:26px;border:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.18);"></div>
+                  <div style="position:absolute;left:16px;right:16px;top:14px;bottom:14px;border-radius:18px;border:1px solid rgba(255,255,255,.08);overflow:hidden;background:rgba(0,0,0,.10);">
+                    <div id="hgTop" style="position:absolute;left:10px;right:10px;top:10px;height:48%;border-radius:14px;background:linear-gradient(180deg, rgba(240,214,150,.78), rgba(186,118,48,.36));"></div>
+                    <div style="position:absolute;left:50%;top:50%;width:2px;height:46px;transform:translate(-50%,-50%);background:rgba(240,214,150,.62);opacity:.75;"></div>
+                    <div id="hgBottom" style="position:absolute;left:10px;right:10px;bottom:10px;height:0%;border-radius:14px;background:linear-gradient(180deg, rgba(240,214,150,.78), rgba(186,118,48,.36));"></div>
+                  </div>
+                </div>
+
+                <div id="waitTimer" style="font-family:'Cinzel',serif;font-size:32px;letter-spacing:.14em;font-weight:900;margin:8px 0 6px;">
+                  —:—
+                </div>
+
+                <div class="sub" id="waitHint" style="font-size:13px;opacity:.75;">
+                  Время начнётся, когда кухня подтвердит.
+                </div>
+
+                <button class="btn primary" id="btnWaitCab" style="margin-top:12px;">В кабинет</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- CABINET -->
+          <div class="screen" id="scr_cabinet">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px;">
+              <div>
+                <div class="brand" style="margin-bottom:10px;">
+                  <span class="dot"></span><span>THE MENU</span>
+                </div>
+                <div style="font-family:'Cinzel',serif;font-size:20px;font-weight:900;" id="cabName">Гость</div>
+                <div style="font-size:14px;color:rgba(255,255,255,.62);margin-top:4px;" id="cabMeta">Моментов: 0 · Оценок: 0</div>
+              </div>
+              <button class="iconBtn" id="musicBtn2" title="Музыка" style="margin-top:6px;">♫</button>
             </div>
 
-            <button class="btn ghost" id="btnTip" style="margin-top:10px;">Оставить жест</button>
-          </div>
+            <div style="display:none;" id="cabNowCard">
+              <div style="padding:12px;border-radius:18px;border:1px solid rgba(240,214,150,.12);background:rgba(0,0,0,.18);">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                  <div>
+                    <div style="font-family:'Cinzel',serif;font-weight:900;font-size:16px;">Сейчас</div>
+                    <div style="font-size:12px;color:rgba(255,255,255,.56);line-height:1.45;" id="cabNowText">Процесс уже начался. Не вмешивайтесь.</div>
+                  </div>
+                  <span style="font-size:11px;padding:7px 12px;border-radius:999px;border:1px solid rgba(240,214,150,.26);background:rgba(0,0,0,.18);letter-spacing:.18em;font-family:'Cinzel',serif;" id="cabNowState">…</span>
+                </div>
 
-          <button class="btn" id="btnMomentBack">Назад</button>
-        </div>
-
-        <div class="screen fadeIn" id="scr_master">
-          <div class="row">
-            <div>
-              <div class="kitchenTitle">Кухня</div>
-              <div class="kitchenSub">Здесь не “заказы”. Здесь — моменты.</div>
+                <div style="display:flex;gap:10px;margin-top:10px;">
+                  <button class="btn primary" id="btnCabToWait">Вернуться</button>
+                  <button class="btn" id="btnCabOpenNow">Открыть</button>
+                </div>
+              </div>
             </div>
-            <span class="badge" id="kCount">…</span>
+
+            <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.58);margin:12px 0 8px;">
+              Последние моменты
+            </div>
+            <div id="cabLast"></div>
+
+            <div style="display:flex;gap:10px;margin-top:10px;">
+              <button class="btn" id="btnOpenArchive">Архив</button>
+              <button class="btn primary" id="btnNewMoment">Создать</button>
+            </div>
+
+            <div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.58);margin:12px 0 8px;">
+              Знаки
+            </div>
+            <div id="cabAch" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+
+            <div class="sub" style="font-size:12px;opacity:.7;margin-top:10px;text-align:center;">
+              Оценка — это не вкус. Это след.
+            </div>
           </div>
 
-          <div id="kList" style="margin-top:10px;"></div>
+          <!-- ARCHIVE -->
+          <div class="screen" id="scr_archive">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <div class="h1" style="margin:0;">Архив</div>
+              <span class="btn" style="width:auto;padding:7px 12px;border-radius:999px;font-size:12px;" id="archCount">0</span>
+            </div>
+            <div class="sub">Здесь лежат моменты, которые уже случились.</div>
+            <div id="archList"></div>
+            <button class="btn" id="btnArchBack">Назад</button>
+          </div>
 
-          <button class="btn" id="btnKRefresh">Обновить</button>
-          <div class="miniNote">Песок у гостя начнётся, когда вы нажмёте “Кухня услышала”.</div>
-        </div>
+          <!-- MOMENT -->
+          <div class="screen" id="scr_moment">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+              <div>
+                <div class="h1" id="mTitle" style="margin:0;">Момент</div>
+                <div class="sub" id="mDate" style="font-size:12px;opacity:.7;margin-top:6px;">—</div>
+              </div>
+              <span class="btn primary" style="width:auto;padding:7px 12px;border-radius:999px;font-size:12px;" id="mStatus">…</span>
+            </div>
 
-      </div><!-- /content -->
+            <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(240,214,150,.22),transparent);margin:12px 0;"></div>
 
-      <div class="bottombar" id="bottomTabs" style="display:none;">
-        <button class="tab" id="tabArchive">Архив</button>
-        <button class="tab active" id="tabMoments">Моменты</button>
-      </div>
+            <div id="mBody"></div>
 
-    </div><!-- /panel -->
-  </div><!-- /frame -->
-</div><!-- /app -->
+            <div style="margin-top:10px;padding:12px;border-radius:18px;border:1px solid rgba(240,214,150,.12);background:rgba(0,0,0,.18);">
+              <div style="font-family:'Cinzel',serif;font-weight:900;font-size:14px;margin-bottom:6px;">Жест</div>
+              <div class="sub" style="font-size:12px;opacity:.7;margin-bottom:10px;">Не вкус. Не табак. Результат момента.</div>
 
-<audio id="bgMusic" src="./7441574b62bac5e.mp3" loop preload="auto"></audio>
-<script>
+              <div style="display:flex;gap:10px;">
+                <button class="btn" id="rateBad">Слабо</button>
+                <button class="btn" id="rateOk">Честно</button>
+                <button class="btn primary" id="ratePerfect">Идеально</button>
+              </div>
+
+              <button class="btn" id="btnTip" style="margin-top:10px;background:rgba(0,0,0,.16);">Оставить жест</button>
+            </div>
+
+            <button class="btn" id="btnMomentBack" style="margin-top:10px;">Назад</button>
+          </div>
+
+          <!-- MASTER -->
+          <div class="screen" id="scr_master">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+              <div>
+                <div style="font-family:'Cinzel',serif;font-size:18px;font-weight:900;">Кухня</div>
+                <div class="sub" style="font-size:13px;opacity:.75;margin-top:4px;">Здесь не “заказы”. Здесь — моменты.</div>
+              </div>
+              <span class="btn" style="width:auto;padding:7px 12px;border-radius:999px;font-size:12px;" id="kCount">…</span>
+            </div>
+
+            <div id="kList" style="margin-top:10px;"></div>
+
+            <button class="btn" id="btnKRefresh">Обновить</button>
+            <div class="sub" style="font-size:12px;opacity:.7;margin-top:8px;">
+              Песок у гостя начнётся, когда вы нажмёте “Кухня услышала”.
+            </div>
+          </div>
+
+        </div><!-- /content -->
+
+      </div><!-- /panel -->
+    </div><!-- /book -->
+  </div><!-- /app -->
+
+  <audio id="bgMusic" src="./7441574b62bac5e.mp3" loop preload="auto"></audio>
+  <script>
 /* =========================
    CONFIG
    ========================= */
@@ -1022,7 +487,7 @@ const TIP_URL = "https://netmonet.co/qr/192937/tip?o=6";
 const DURATION_MS = 25 * 60 * 1000;
 const MUSIC_VOLUME = 0.30;
 
-/* координаты */
+// гео (оставил как было)
 const GEOFENCE = { lat: 56.482707, lon: 84.952464, radiusM: 40 };
 const GEO_TTL_MS = 2 * 60 * 60 * 1000;
 
@@ -1051,6 +516,7 @@ function escapeHtml(str=""){
     .replaceAll("'","&#039;");
 }
 
+/* Screens */
 const screens = [
   "scr_gate","scr_door","scr_outside","scr_noPerm","scr_geoErr",
   "scr_welcome","scr_course","scr_wait",
@@ -1059,20 +525,15 @@ const screens = [
 ];
 
 function go(id){
-  screens.forEach(s=>$(s).classList.remove("active"));
-  $(id).classList.add("active");
+  screens.forEach(s=>{
+    const el = $(s);
+    if(!el) return;
+    el.classList.remove("active");
+  });
+  $(id)?.classList.add("active");
 }
 
-function showBottomTabs(on){
-  $("bottomTabs").style.display = on ? "flex" : "none";
-}
-
-function setActiveTab(tab){
-  $("tabArchive").classList.toggle("active", tab==="archive");
-  $("tabMoments").classList.toggle("active", tab==="moments");
-}
-
-/* Micro haptics */
+/* Haptics */
 function tap(){
   try{ tg?.HapticFeedback?.impactOccurred("light"); }catch{}
 }
@@ -1101,19 +562,20 @@ async function playMusic(){
 }
 
 function pauseMusic(){
-  audioEl.pause();
+  try{ audioEl.pause(); }catch{}
   localStorage.setItem(LS_MUSIC_ON,"0");
   setMusicBtn(false);
   tap();
 }
 
 function toggleMusic(){
+  if(!audioEl) return;
   if(audioEl.paused) playMusic();
   else pauseMusic();
 }
 
-musicBtn.addEventListener("click", toggleMusic);
-musicBtn2.addEventListener("click", toggleMusic);
+musicBtn?.addEventListener("click", toggleMusic);
+musicBtn2?.addEventListener("click", toggleMusic);
 
 /* GEO */
 function distanceMeters(lat1, lon1, lat2, lon2){
@@ -1147,6 +609,7 @@ function hasGeoAccessNow(){ return Date.now() < Number(localStorage.getItem(LS_G
 function getMomentIds(){
   try{ return JSON.parse(localStorage.getItem(LS_MOMENT_IDS)||"[]"); }catch{ return []; }
 }
+
 function addMomentId(id){
   const ids = getMomentIds();
   if(!ids.includes(id)) ids.push(id);
@@ -1228,9 +691,13 @@ function renderQuestion(){
 
   const box = $("qOptions");
   box.innerHTML = "";
+
   q.options.forEach(opt=>{
     const div = document.createElement("div");
-    div.className = "option";
+    div.className = "btn";
+    div.style.marginTop = "10px";
+    div.style.background = "rgba(0,0,0,.16)";
+    div.style.border = "1px solid rgba(240,214,150,.12)";
     div.textContent = opt;
     div.onclick = ()=>{ tap(); pickAnswer(opt); };
     box.appendChild(div);
@@ -1281,8 +748,11 @@ function setHourglassProgress(p01){
   const p = Math.max(0, Math.min(1, p01));
   const top = $("hgTop");
   const bot = $("hgBottom");
+  if(!top || !bot) return;
+
   const topH = 48 - (44*p);
   const botH = 48 * p;
+
   top.style.height = `${topH}%`;
   bot.style.height = `${botH}%`;
 }
@@ -1294,14 +764,16 @@ async function startWaitingLoop(){
     try{
       const ids = getMomentIds();
       const data = await apiGetMoments(250);
-      const mine = (data.moments||[]).filter(m=>ids.includes(m.id)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+
+      const mine = (data.moments||[])
+        .filter(m=>ids.includes(m.id))
+        .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+
       const active = mine.find(m=>m.status !== "finished") || null;
 
       if(!active){
         await renderCabinet();
         go("scr_cabinet");
-        showBottomTabs(true);
-        setActiveTab("moments");
         return;
       }
 
@@ -1355,6 +827,7 @@ function calcAchievements(moments){
   ];
 }
 
+/* CABINET */
 async function renderCabinet(){
   $("cabName").textContent = guest.name;
 
@@ -1366,9 +839,11 @@ async function renderCabinet(){
 
   try{
     const data = await apiGetMoments(250);
-    const mine = (data.moments||[]).filter(m=>ids.includes(m.id)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-    const rated = mine.filter(m=>!!m.rating).length;
+    const mine = (data.moments||[])
+      .filter(m=>ids.includes(m.id))
+      .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
 
+    const rated = mine.filter(m=>!!m.rating).length;
     $("cabMeta").textContent = `Моментов: ${mine.length} · Оценок: ${rated}`;
 
     const active = mine.find(m=>m.status !== "finished") || null;
@@ -1385,7 +860,7 @@ async function renderCabinet(){
 
     const last = mine.slice(0,3);
     if(!last.length){
-      lastBox.innerHTML = `<div class="small">Пока пусто. Но зал уже здесь.</div>`;
+      lastBox.innerHTML = `<div class="sub" style="font-size:12px;opacity:.7;">Пока пусто. Но зал уже здесь.</div>`;
     }else{
       last.forEach(m=>{
         const badge = (m.status==="finished")
@@ -1393,17 +868,17 @@ async function renderCabinet(){
           : (m.acceptedAt ? "В ПРОЦЕССЕ" : "НОВЫЙ");
 
         lastBox.innerHTML += `
-          <div class="card">
-            <div class="row">
+          <div style="padding:12px;border-radius:18px;border:1px solid rgba(240,214,150,.12);background:rgba(0,0,0,.18);margin-top:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
               <div>
-                <div class="momentTitle">${escapeHtml(m.epithet||"Момент")}</div>
-                <div class="momentDate">${new Date(m.createdAt||Date.now()).toLocaleString("ru-RU")}</div>
+                <div style="font-family:'Cinzel',serif;font-weight:900;font-size:16px;">${escapeHtml(m.epithet||"Момент")}</div>
+                <div style="font-size:12px;color:rgba(255,255,255,.56);margin-top:4px;">${new Date(m.createdAt||Date.now()).toLocaleString("ru-RU")}</div>
               </div>
-              <span class="badge brass">${escapeHtml(badge)}</span>
+              <span style="font-size:11px;padding:7px 12px;border-radius:999px;border:1px solid rgba(240,214,150,.26);background:rgba(0,0,0,.18);letter-spacing:.18em;font-family:'Cinzel',serif;">
+                ${escapeHtml(badge)}
+              </span>
             </div>
-            <div class="btnRow">
-              <button class="btn" onclick="tap(); openMoment('${escapeHtml(m.id)}')">Открыть</button>
-            </div>
+            <button class="btn primary" style="margin-top:10px;" onclick="tap(); openMoment('${escapeHtml(m.id)}')">Открыть</button>
           </div>
         `;
       });
@@ -1412,24 +887,20 @@ async function renderCabinet(){
     const ach = calcAchievements(mine);
     ach.forEach(a=>{
       achBox.innerHTML += `
-        <div class="medal ${a.ok ? "" : "lock"}">
-          <div class="head">
-            <div class="sealCoin"></div>
-            <div>
-              <div class="t">${escapeHtml(a.t)}</div>
-              <div class="d">${escapeHtml(a.d)}</div>
-            </div>
-          </div>
+        <div style="padding:12px;border-radius:18px;border:1px solid rgba(240,214,150,.12);background:rgba(0,0,0,.18);opacity:${a.ok?1:.35};">
+          <div style="font-family:'Cinzel',serif;font-weight:900;font-size:13px;">${escapeHtml(a.t)}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.56);margin-top:4px;">${escapeHtml(a.d)}</div>
         </div>
       `;
     });
 
   }catch(e){
     $("cabMeta").textContent = "Нет связи.";
-    lastBox.innerHTML = `<div class="small">Нет связи.</div>`;
+    lastBox.innerHTML = `<div class="sub" style="font-size:12px;opacity:.7;">Нет связи.</div>`;
   }
 }
 
+/* ARCHIVE */
 async function renderArchive(){
   const ids = getMomentIds();
   const box = $("archList");
@@ -1437,42 +908,44 @@ async function renderArchive(){
 
   try{
     const data = await apiGetMoments(250);
-    const mine = (data.moments||[]).filter(m=>ids.includes(m.id)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    const mine = (data.moments||[])
+      .filter(m=>ids.includes(m.id))
+      .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
 
     $("archCount").textContent = String(mine.length);
 
     if(!mine.length){
-      box.innerHTML = `<div class="small">Архив пуст.</div>`;
+      box.innerHTML = `<div class="sub" style="font-size:12px;opacity:.7;">Архив пуст.</div>`;
       return;
     }
 
     mine.forEach(m=>{
       const mark = m.rating ? "ОЦЕНЕНО" : "БЕЗ ОЦЕНКИ";
       box.innerHTML += `
-        <div class="card">
-          <div class="row">
+        <div style="padding:12px;border-radius:18px;border:1px solid rgba(240,214,150,.12);background:rgba(0,0,0,.18);margin-top:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
             <div>
-              <div class="momentTitle">${escapeHtml(m.epithet||"Момент")}</div>
-              <div class="momentDate">${new Date(m.createdAt||Date.now()).toLocaleString("ru-RU")}</div>
+              <div style="font-family:'Cinzel',serif;font-weight:900;font-size:16px;">${escapeHtml(m.epithet||"Момент")}</div>
+              <div style="font-size:12px;color:rgba(255,255,255,.56);margin-top:4px;">${new Date(m.createdAt||Date.now()).toLocaleString("ru-RU")}</div>
             </div>
-            <span class="badge">${escapeHtml(mark)}</span>
+            <span style="font-size:11px;padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);letter-spacing:.18em;font-family:'Cinzel',serif;">
+              ${escapeHtml(mark)}
+            </span>
           </div>
-          <div class="btnRow">
-            <button class="btn" onclick="tap(); openMoment('${escapeHtml(m.id)}')">Открыть</button>
-          </div>
+          <button class="btn primary" style="margin-top:10px;" onclick="tap(); openMoment('${escapeHtml(m.id)}')">Открыть</button>
         </div>
       `;
     });
 
   }catch(e){
-    box.innerHTML = `<div class="small">Нет связи.</div>`;
+    box.innerHTML = `<div class="sub" style="font-size:12px;opacity:.7;">Нет связи.</div>`;
   }
 }
 
+/* MOMENT OPEN */
 window.openMoment = async function(id){
   openMomentId = id;
   go("scr_moment");
-  showBottomTabs(false);
   await renderMoment();
 };
 
@@ -1480,6 +953,8 @@ async function renderMoment(){
   const id = openMomentId;
   if(!id){
     $("mTitle").textContent = "Недоступно";
+    $("mDate").textContent = "—";
+    $("mStatus").textContent = "—";
     $("mBody").innerHTML = "";
     return;
   }
@@ -1496,15 +971,17 @@ async function renderMoment(){
     const ans = m.answers || {};
     const lines = Object.keys(ans)
       .sort((a,b)=>Number(a)-Number(b))
-      .map(k=>`<div class="small"><b>q${escapeHtml(k)}:</b> ${escapeHtml(ans[k])}</div>`)
+      .map(k=>`<div style="font-size:12px;color:rgba(255,255,255,.70);line-height:1.45;margin-top:6px;"><b>q${escapeHtml(k)}:</b> ${escapeHtml(ans[k])}</div>`)
       .join("");
 
     $("mBody").innerHTML = `
-      <div class="momentTitle" style="font-size:14px;margin-bottom:6px;">Условия</div>
-      ${lines || `<div class="small">—</div>`}
+      <div style="padding:12px;border-radius:18px;border:1px solid rgba(240,214,150,.12);background:rgba(0,0,0,.18);">
+        <div style="font-family:'Cinzel',serif;font-weight:900;font-size:14px;margin-bottom:6px;">Условия</div>
+        ${lines || `<div style="font-size:12px;color:rgba(255,255,255,.56);">—</div>`}
+      </div>
     `;
   }catch(e){
-    $("mBody").innerHTML = `<div class="small">Нет связи.</div>`;
+    $("mBody").innerHTML = `<div class="sub" style="font-size:12px;opacity:.7;">Нет связи.</div>`;
   }
 }
 
@@ -1519,35 +996,38 @@ async function renderKitchen(){
     $("kCount").textContent = String(arr.length);
 
     if(!arr.length){
-      list.innerHTML = `<div class="small">Нет активных моментов.</div>`;
+      list.innerHTML = `<div class="sub" style="font-size:12px;opacity:.7;">Нет активных моментов.</div>`;
       return;
     }
 
     arr.forEach(m=>{
       const badge = (m.status==="finished") ? "СЛУЧИЛСЯ" : (m.acceptedAt ? "В ПРОЦЕССЕ" : "НОВЫЙ");
       list.innerHTML += `
-        <div class="card">
-          <div class="row">
+        <div style="padding:12px;border-radius:18px;border:1px solid rgba(240,214,150,.12);background:rgba(0,0,0,.18);margin-top:10px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
             <div>
-              <div class="momentTitle">${escapeHtml(m.guest?.name || "Гость")}</div>
-              <div class="momentDate">${new Date(m.createdAt||Date.now()).toLocaleString("ru-RU")}</div>
-              <div class="small">Песок: ${m.acceptedAt ? "идёт" : "ещё не запущен"}</div>
+              <div style="font-family:'Cinzel',serif;font-weight:900;font-size:16px;">${escapeHtml(m.guest?.name || "Гость")}</div>
+              <div style="font-size:12px;color:rgba(255,255,255,.56);margin-top:4px;">${new Date(m.createdAt||Date.now()).toLocaleString("ru-RU")}</div>
+              <div style="font-size:12px;color:rgba(255,255,255,.56);margin-top:6px;">Песок: ${m.acceptedAt ? "идёт" : "ещё не запущен"}</div>
             </div>
-            <span class="badge brass">${escapeHtml(badge)}</span>
+            <span style="font-size:11px;padding:7px 12px;border-radius:999px;border:1px solid rgba(240,214,150,.26);background:rgba(0,0,0,.18);letter-spacing:.18em;font-family:'Cinzel',serif;">
+              ${escapeHtml(badge)}
+            </span>
           </div>
 
-          <div class="kBtns">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
             <button class="btn primary" onclick="tap(); kSet('${escapeHtml(m.id)}','accepted')">Кухня услышала</button>
             <button class="btn" onclick="tap(); kSet('${escapeHtml(m.id)}','in_progress')">Печь работает</button>
             <button class="btn" onclick="tap(); kSet('${escapeHtml(m.id)}','serving')">Подача</button>
             <button class="btn" onclick="tap(); kSet('${escapeHtml(m.id)}','finished')">Момент случился</button>
           </div>
-        `;
+        </div>
+      `;
     });
 
   }catch(e){
     $("kCount").textContent = "нет связи";
-    list.innerHTML = `<div class="small">Нет связи.</div>`;
+    list.innerHTML = `<div class="sub" style="font-size:12px;opacity:.7;">Нет связи.</div>`;
   }
 }
 
@@ -1567,60 +1047,56 @@ async function openDoor(){
 
     if(!ok){
       go("scr_outside");
-      showBottomTabs(false);
       return;
     }
 
     setGeoAccessUntil(Date.now()+GEO_TTL_MS);
     go("scr_gate");
-    showBottomTabs(false);
   }catch(e){
     if(e && e.code === 1){
       go("scr_noPerm");
     }else{
       go("scr_geoErr");
     }
-    showBottomTabs(false);
   }
 }
 
 /* BUTTONS */
-$("sealBtn").addEventListener("click", async ()=>{
+$("sealBtn")?.addEventListener("click", async ()=>{
   await playMusic();
   go("scr_welcome");
-  showBottomTabs(false);
 });
 
-$("btnDoor").addEventListener("click", openDoor);
-$("btnDoorHelp").addEventListener("click", ()=>{
+$("btnDoor")?.addEventListener("click", openDoor);
+$("btnDoorHelp")?.addEventListener("click", ()=>{
   tap();
   alert("Если гео не отдаётся: попробуйте открыть мини-апп в Telegram и дать доступ к геолокации в настройках iOS. Если устройство молчит — сегодня без этого.");
 });
-$("btnOutsideRetry").addEventListener("click", openDoor);
-$("btnOutsideBack").addEventListener("click", ()=>{ tap(); go("scr_door"); });
-$("btnNoPermRetry").addEventListener("click", openDoor);
-$("btnNoPermBack").addEventListener("click", ()=>{ tap(); go("scr_door"); });
-$("btnGeoErrRetry").addEventListener("click", openDoor);
-$("btnGeoErrBack").addEventListener("click", ()=>{ tap(); go("scr_door"); });
 
-$("btnStartCourse").addEventListener("click", ()=>{
+$("btnOutsideRetry")?.addEventListener("click", openDoor);
+$("btnOutsideBack")?.addEventListener("click", ()=>{ tap(); go("scr_door"); });
+
+$("btnNoPermRetry")?.addEventListener("click", openDoor);
+$("btnNoPermBack")?.addEventListener("click", ()=>{ tap(); go("scr_door"); });
+
+$("btnGeoErrRetry")?.addEventListener("click", openDoor);
+$("btnGeoErrBack")?.addEventListener("click", ()=>{ tap(); go("scr_door"); });
+
+$("btnStartCourse")?.addEventListener("click", ()=>{
   tap();
   qIndex = 0;
   answers = {};
   go("scr_course");
-  showBottomTabs(false);
   renderQuestion();
 });
 
-$("btnGoCabinet").addEventListener("click", async ()=>{
+$("btnGoCabinet")?.addEventListener("click", async ()=>{
   tap();
   await renderCabinet();
   go("scr_cabinet");
-  showBottomTabs(true);
-  setActiveTab("moments");
 });
 
-$("btnQBack").addEventListener("click", ()=>{
+$("btnQBack")?.addEventListener("click", ()=>{
   tap();
   if(qIndex<=0){ go("scr_welcome"); return; }
   qIndex = Math.max(0, qIndex-1);
@@ -1628,108 +1104,80 @@ $("btnQBack").addEventListener("click", ()=>{
   renderQuestion();
 });
 
-$("btnQAbort").addEventListener("click", async ()=>{
+$("btnQAbort")?.addEventListener("click", async ()=>{
   tap();
   await renderCabinet();
   go("scr_cabinet");
-  showBottomTabs(true);
-  setActiveTab("moments");
 });
 
-$("btnWaitCab").addEventListener("click", async ()=>{
+$("btnWaitCab")?.addEventListener("click", async ()=>{
   tap();
   await renderCabinet();
   go("scr_cabinet");
-  showBottomTabs(true);
-  setActiveTab("moments");
 });
 
-$("btnCabToWait").addEventListener("click", ()=>{
+$("btnCabToWait")?.addEventListener("click", ()=>{
   tap();
   go("scr_wait");
-  showBottomTabs(false);
   startWaitingLoop();
 });
 
-$("btnCabOpenNow").addEventListener("click", async ()=>{
+$("btnCabOpenNow")?.addEventListener("click", async ()=>{
   tap();
   if(!openMomentId){ return; }
   await window.openMoment(openMomentId);
 });
 
-$("btnOpenArchive").addEventListener("click", async ()=>{
+$("btnOpenArchive")?.addEventListener("click", async ()=>{
   tap();
   await renderArchive();
   go("scr_archive");
-  showBottomTabs(true);
-  setActiveTab("archive");
 });
 
-$("btnNewMoment").addEventListener("click", ()=>{
+$("btnNewMoment")?.addEventListener("click", ()=>{
   tap();
   qIndex = 0;
   answers = {};
   go("scr_course");
-  showBottomTabs(false);
   renderQuestion();
 });
 
-$("btnArchBack").addEventListener("click", async ()=>{
+$("btnArchBack")?.addEventListener("click", async ()=>{
   tap();
   await renderCabinet();
   go("scr_cabinet");
-  showBottomTabs(true);
-  setActiveTab("moments");
 });
 
-$("btnMomentBack").addEventListener("click", async ()=>{
+$("btnMomentBack")?.addEventListener("click", async ()=>{
   tap();
   await renderCabinet();
   go("scr_cabinet");
-  showBottomTabs(true);
-  setActiveTab("moments");
 });
 
-$("btnTip").addEventListener("click", ()=>{ tap(); window.open(TIP_URL, "_blank"); });
+$("btnTip")?.addEventListener("click", ()=>{ tap(); window.open(TIP_URL, "_blank"); });
 
-$("rateBad").addEventListener("click", async ()=>{
+$("rateBad")?.addEventListener("click", async ()=>{
   tap();
   if(!openMomentId) return;
   try{ await apiSetRating(openMomentId,"bad"); }catch{}
   alert("Запомнил.");
 });
 
-$("rateOk").addEventListener("click", async ()=>{
+$("rateOk")?.addEventListener("click", async ()=>{
   tap();
   if(!openMomentId) return;
   try{ await apiSetRating(openMomentId,"ok"); }catch{}
   alert("Запомнил.");
 });
 
-$("ratePerfect").addEventListener("click", async ()=>{
+$("ratePerfect")?.addEventListener("click", async ()=>{
   tap();
   if(!openMomentId) return;
   try{ await apiSetRating(openMomentId,"perfect"); }catch{}
   alert("Запомнил.");
 });
 
-$("tabArchive").addEventListener("click", async ()=>{
-  tap();
-  await renderArchive();
-  go("scr_archive");
-  showBottomTabs(true);
-  setActiveTab("archive");
-});
-
-$("tabMoments").addEventListener("click", async ()=>{
-  tap();
-  await renderCabinet();
-  go("scr_cabinet");
-  showBottomTabs(true);
-  setActiveTab("moments");
-});
-
-$("btnKRefresh").addEventListener("click", ()=>{ tap(); renderKitchen(); });
+$("btnKRefresh")?.addEventListener("click", ()=>{ tap(); renderKitchen(); });
 
 /* START */
 document.addEventListener("DOMContentLoaded", async ()=>{
@@ -1740,7 +1188,6 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
   if(isMaster){
     go("scr_master");
-    showBottomTabs(false);
     await renderKitchen();
     setInterval(renderKitchen, 3000);
     return;
@@ -1752,21 +1199,16 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   if(ids.length){
     await renderCabinet();
     go("scr_cabinet");
-    showBottomTabs(true);
-    setActiveTab("moments");
     return;
   }
 
   if(!geoOk){
     go("scr_door");
-    showBottomTabs(false);
     return;
   }
 
   go("scr_gate");
-  showBottomTabs(false);
 });
 </script>
-
 </body>
 </html>
