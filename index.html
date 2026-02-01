@@ -216,12 +216,13 @@ body::after{
 
 .tab{
   width:100%;
-  padding: 12px 12px;
-  border-radius: 16px;
+  padding: 14px 12px;
+  border-radius: 18px;
   border:1px solid rgba(255,255,255,.10);
   background:
-    linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.18));
-  color: rgba(255,255,255,.78);
+    radial-gradient(520px 260px at 30% 10%, rgba(231,194,122,.08), transparent 58%),
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.22));
+  color: rgba(255,255,255,.72);
   font-weight:800;
   font-size:12px;
   letter-spacing:.22em;
@@ -229,15 +230,19 @@ body::after{
   font-family: "Cinzel", serif;
   cursor:pointer;
   transition: transform .14s var(--ease), background .14s var(--ease), border-color .14s var(--ease), color .14s var(--ease);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    inset 0 -18px 28px rgba(0,0,0,.34);
 }
+
 .tab:active{ transform: translateY(1px) scale(.99); }
+
 .tab.active{
   background:
-    radial-gradient(420px 240px at 30% 10%, rgba(231,194,122,.18), transparent 55%),
-    linear-gradient(180deg, rgba(231,194,122,.12), rgba(0,0,0,.18));
+    radial-gradient(520px 260px at 30% 10%, rgba(231,194,122,.20), transparent 56%),
+    linear-gradient(180deg, rgba(231,194,122,.10), rgba(0,0,0,.22));
   border-color: rgba(231,194,122,.22);
   color: rgba(255,255,255,.92);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
 }
 
 .h1{
@@ -304,28 +309,43 @@ body::after{
   pointer-events:none;
 }
 .badge.brass{
-  border-color: rgba(231,194,122,.22);
+  border-color: rgba(231,194,122,.26);
   background:
-    radial-gradient(220px 140px at 30% 10%, rgba(231,194,122,.16), transparent 55%),
-    linear-gradient(180deg, rgba(231,194,122,.10), rgba(0,0,0,.18));
-  color: rgba(255,255,255,.90);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    radial-gradient(260px 160px at 30% 10%, rgba(231,194,122,.22), transparent 60%),
+    linear-gradient(180deg, rgba(231,194,122,.12), rgba(0,0,0,.20));
+  color: rgba(255,255,255,.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -18px 26px rgba(0,0,0,.26),
+    0 10px 26px rgba(183,122,51,.10);
+  position:relative;
+  overflow:hidden;
 }
-.badge.pulse{
-  animation: badgePulse 2.4s ease-in-out infinite;
+.badge.brass::after{
+  content:"";
+  position:absolute;
+  inset:-40px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+  transform: translateX(-60%);
+  opacity:.55;
+  animation: brassShine 3.8s ease-in-out infinite;
+  pointer-events:none;
 }
-@keyframes badgePulse{
-  0%,100%{ filter: brightness(1); }
-  50%{ filter: brightness(1.18); }
+@keyframes brassShine{
+  0%{ transform: translateX(-60%); opacity:0; }
+  30%{ opacity:.55; }
+  60%{ opacity:0; }
+  100%{ transform: translateX(60%); opacity:0; }
 }
+.badge.pulse{ animation: badgePulse 2.4s ease-in-out infinite; }
+@keyframes badgePulse{ 0%,100%{ filter: brightness(1); } 50%{ filter: brightness(1.18); } }
 
 .btn{
   width:100%;
   padding: 12px 12px;
   border-radius: 16px;
   border:1px solid rgba(255,255,255,.10);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.22));
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.22));
   color: rgba(255,255,255,.88);
   cursor:pointer;
   font-weight:800;
@@ -342,13 +362,9 @@ body::after{
   background:
     radial-gradient(520px 260px at 30% 10%, rgba(231,194,122,.18), transparent 56%),
     linear-gradient(180deg, rgba(231,194,122,.12), rgba(0,0,0,.22));
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.06),
-    0 10px 26px rgba(183,122,51,.10);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 26px rgba(183,122,51,.10);
 }
-.btn.ghost{
-  background: rgba(0,0,0,.14);
-}
+.btn.ghost{ background: rgba(0,0,0,.14); }
 
 .btnRow{ display:flex; gap:10px; margin-top:10px; }
 .btnRow .btn{ width:100%; }
@@ -374,10 +390,17 @@ body::after{
 .fadeIn{ animation: fadeIn .26s var(--ease) both; }
 @keyframes fadeIn{ from{opacity:0; transform: translateY(6px);} to{opacity:1; transform:none;} }
 
+.stagger{
+  animation: fadeInStagger .28s var(--ease) both;
+}
+@keyframes fadeInStagger{
+  from{ opacity:0; transform: translateY(10px); filter: blur(2px); }
+  to{ opacity:1; transform: translateY(0); filter: blur(0); }
+}
+
 .screen{ display:none; }
 .screen.active{ display:block; }
 
-/* GATE */
 .gate{
   display:flex;
   align-items:center;
@@ -437,7 +460,6 @@ body::after{
   to{ opacity:0; transform: translateY(10px) scale(.985); }
 }
 
-/* CABINET */
 .profile{
   display:flex;
   align-items:flex-start;
@@ -482,7 +504,6 @@ body::after{
   gap:10px;
 }
 
-/* MEDALS */
 .medal{
   position:relative;
   border-radius: 18px;
@@ -503,8 +524,11 @@ body::after{
 }
 .medal:active{ transform: translateY(1px) scale(.99); }
 .medal:hover{ border-color: rgba(231,194,122,.18); }
-.medal.lock{ opacity:.36; filter: grayscale(.55) brightness(.82); cursor:default; }
-
+.medal.lock{
+  opacity:.36;
+  filter: grayscale(.55) brightness(.82);
+  cursor:default;
+}
 .medal::after{
   content:"";
   position:absolute;
@@ -515,9 +539,11 @@ body::after{
     linear-gradient(90deg, transparent, rgba(231,194,122,.08), transparent);
   opacity:.35;
 }
-
-.medal .head{ display:flex; align-items:center; gap:12px; }
-
+.medal .head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
 .medal .sealCoin{
   width:46px;
   height:46px;
@@ -532,7 +558,6 @@ body::after{
     inset 0 1px 0 rgba(255,255,255,.12),
     inset 0 -16px 18px rgba(0,0,0,.40);
 }
-
 .medal .sealCoin::before{
   content:"";
   position:absolute;
@@ -544,7 +569,34 @@ body::after{
     inset 0 -10px 14px rgba(0,0,0,.28);
   opacity:.9;
 }
-
+.medal .sealCoin::after{
+  content:"";
+  position:absolute;
+  inset:-14px;
+  border-radius:999px;
+  background: radial-gradient(circle, rgba(231,194,122,.14), transparent 60%);
+  opacity:0;
+  transform: scale(.95);
+  transition: opacity .18s var(--ease), transform .18s var(--ease);
+}
+.medal.ok::before{
+  content:"";
+  position:absolute;
+  inset:-80px;
+  background: radial-gradient(circle, rgba(231,194,122,.14), transparent 60%);
+  opacity:.65;
+  filter: blur(18px);
+  animation: medalGlow 3.4s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes medalGlow{
+  0%,100%{ transform: translate3d(0,0,0); opacity:.45; }
+  50%{ transform: translate3d(0,-6px,0); opacity:.85; }
+}
+.medal.ok:hover .sealCoin::after{
+  opacity:.9;
+  transform: scale(1);
+}
 .medal .sealIcon{
   position:absolute;
   inset:0;
@@ -555,18 +607,20 @@ body::after{
   opacity:.78;
   filter: drop-shadow(0 1px 0 rgba(255,255,255,.08));
 }
-
-.medal .sealIcon svg{ width:22px; height:22px; }
-
+.medal .sealIcon svg{
+  width:22px;
+  height:22px;
+}
 .medal .sealIcon path,
-.medal .sealIcon circle{
+.medal .sealIcon circle,
+.medal .sealIcon polygon,
+.medal .sealIcon line{
   stroke: rgba(0,0,0,.55);
   fill: none;
   stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-
 .medal .t{
   font-family:"Cinzel", serif;
   font-weight:800;
@@ -587,7 +641,6 @@ body::after{
   text-align:center;
 }
 
-/* WAITING */
 .waitCenter{
   display:flex;
   flex-direction:column;
@@ -670,7 +723,6 @@ body::after{
   margin-top:6px;
 }
 
-/* MASTER */
 .kitchenTitle{
   font-family:"Cinzel", serif;
   font-size:18px;
@@ -1223,6 +1275,17 @@ async function startWaitingLoop(){
   waitPoll = setInterval(tick, 2000);
 }
 
+function calcAchievements(moments){
+  const sessions = moments.length;
+  const rated = moments.filter(m=>!!m.rating).length;
+
+  return [
+    { key:"first", t:"Первый момент", d:"Вы вошли.", ok:sessions>=1, icon:"spark" },
+    { key:"return", t:"Возвращение", d:"Вы вернулись.", ok:sessions>=2, icon:"loop" },
+    { key:"honest", t:"Честность", d:"Вы оценили три.", ok:rated>=3, icon:"eye" }
+  ];
+}
+
 async function renderCabinet(){
   $("cabName").textContent = guest.name;
 
@@ -1242,7 +1305,7 @@ async function renderCabinet(){
     const active = mine.find(m=>m.status !== "finished") || null;
     if(active){
       $("cabNowCard").style.display = "block";
-      $("cabNowState").textContent = active.acceptedAt ? "в процессе" : "новый";
+      $("cabNowState").textContent = active.acceptedAt ? "В ПРОЦЕССЕ" : "НОВЫЙ";
       $("cabNowText").textContent = active.acceptedAt
         ? "Процесс уже начался. Не вмешивайтесь."
         : "Песок ещё не запущен.";
@@ -1255,10 +1318,13 @@ async function renderCabinet(){
     if(!last.length){
       lastBox.innerHTML = `<div class="small">Пока пусто. Но зал уже здесь.</div>`;
     }else{
-      last.forEach(m=>{
-        const badge = (m.status==="finished") ? "случился" : (m.acceptedAt ? "в процессе" : "новый");
+      last.forEach((m, idx)=>{
+        const badge = (m.status==="finished")
+          ? "СЛУЧИЛСЯ"
+          : (m.acceptedAt ? "В ПРОЦЕССЕ" : "НОВЫЙ");
+
         lastBox.innerHTML += `
-          <div class="card">
+          <div class="card stagger" style="animation-delay:${idx*70}ms;">
             <div class="row">
               <div>
                 <div class="momentTitle">${escapeHtml(m.epithet||"Момент")}</div>
@@ -1274,9 +1340,95 @@ async function renderCabinet(){
       });
     }
 
+    const ach = calcAchievements(mine);
+
+    function achIcon(type){
+      if(type === "spark"){
+        return `
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2 L14.2 9.1 L22 12 L14.2 14.9 L12 22 L9.8 14.9 L2 12 L9.8 9.1 Z"></path>
+          </svg>
+        `;
+      }
+      if(type === "loop"){
+        return `
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 8c1.6-2.4 4-3.6 6.6-3.6 4 0 7.2 3.2 7.2 7.2"></path>
+            <path d="M21 11l-2.2-2.2"></path>
+            <path d="M17 16c-1.6 2.4-4 3.6-6.6 3.6-4 0-7.2-3.2-7.2-7.2"></path>
+            <path d="M3 13l2.2 2.2"></path>
+          </svg>
+        `;
+      }
+      if(type === "eye"){
+        return `
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2.5 12s3.6-6.5 9.5-6.5S21.5 12 21.5 12s-3.6 6.5-9.5 6.5S2.5 12 2.5 12z"></path>
+            <circle cx="12" cy="12" r="2.6"></circle>
+          </svg>
+        `;
+      }
+      return "";
+    }
+
+    ach.forEach(a=>{
+      achBox.innerHTML += `
+        <div class="medal ${a.ok ? "ok" : "lock"}">
+          <div class="head">
+            <div class="sealCoin">
+              <div class="sealIcon">${achIcon(a.icon)}</div>
+            </div>
+            <div>
+              <div class="t">${escapeHtml(a.t)}</div>
+              <div class="d">${escapeHtml(a.d)}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
   }catch(e){
     $("cabMeta").textContent = "Нет связи.";
     lastBox.innerHTML = `<div class="small">Нет связи.</div>`;
+  }
+}
+
+async function renderArchive(){
+  const ids = getMomentIds();
+  const box = $("archList");
+  box.innerHTML = "";
+
+  try{
+    const data = await apiGetMoments(250);
+    const mine = (data.moments||[]).filter(m=>ids.includes(m.id)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+
+    $("archCount").textContent = String(mine.length);
+
+    if(!mine.length){
+      box.innerHTML = `<div class="small">Архив пуст.</div>`;
+      return;
+    }
+
+    mine.forEach(m=>{
+      const mark = m.rating ? "ОЦЕНЕНО" : "БЕЗ ОЦЕНКИ";
+      box.innerHTML += `
+        <div class="card">
+          <div class="row">
+            <div>
+              <div class="momentTitle">${escapeHtml(m.epithet||"Момент")}</div>
+              <div class="momentDate">${new Date(m.createdAt||Date.now()).toLocaleString("ru-RU")}</div>
+            </div>
+            <span class="badge">${escapeHtml(mark)}</span>
+          </div>
+          <div class="btnRow">
+            <button class="btn" onclick="tap(); openMoment('${escapeHtml(m.id)}')">Открыть</button>
+          </div>
+        </div>
+      `;
+    });
+
+  }catch(e){
+    box.innerHTML = `<div class="small">Нет связи.</div>`;
   }
 }
 
@@ -1284,7 +1436,298 @@ window.openMoment = async function(id){
   openMomentId = id;
   go("scr_moment");
   showBottomTabs(false);
+  await renderMoment();
 };
+
+async function renderMoment(){
+  const id = openMomentId;
+  if(!id){
+    $("mTitle").textContent = "Недоступно";
+    $("mBody").innerHTML = "";
+    return;
+  }
+
+  try{
+    const data = await apiGetMoments(250);
+    const m = (data.moments||[]).find(x=>String(x.id)===String(id));
+    if(!m) return;
+
+    $("mTitle").textContent = m.epithet || "Момент";
+    $("mDate").textContent = new Date(m.createdAt||Date.now()).toLocaleString("ru-RU");
+    $("mStatus").textContent = (m.status==="finished") ? "СЛУЧИЛСЯ" : (m.acceptedAt ? "В ПРОЦЕССЕ" : "НОВЫЙ");
+
+    const ans = m.answers || {};
+    const lines = Object.keys(ans)
+      .sort((a,b)=>Number(a)-Number(b))
+      .map(k=>`<div class="small"><b>q${escapeHtml(k)}:</b> ${escapeHtml(ans[k])}</div>`)
+      .join("");
+
+    $("mBody").innerHTML = `
+      <div class="momentTitle" style="font-size:14px;margin-bottom:6px;">Условия</div>
+      ${lines || `<div class="small">—</div>`}
+    `;
+  }catch(e){
+    $("mBody").innerHTML = `<div class="small">Нет связи.</div>`;
+  }
+}
+
+/* MASTER */
+async function renderKitchen(){
+  const list = $("kList");
+  list.innerHTML = "";
+
+  try{
+    const data = await apiGetMoments(250);
+    const arr = (data.moments||[]).slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    $("kCount").textContent = String(arr.length);
+
+    if(!arr.length){
+      list.innerHTML = `<div class="small">Нет активных моментов.</div>`;
+      return;
+    }
+
+    arr.forEach(m=>{
+      const badge = (m.status==="finished") ? "СЛУЧИЛСЯ" : (m.acceptedAt ? "В ПРОЦЕССЕ" : "НОВЫЙ");
+      list.innerHTML += `
+        <div class="card">
+          <div class="row">
+            <div>
+              <div class="momentTitle">${escapeHtml(m.guest?.name || "Гость")}</div>
+              <div class="momentDate">${new Date(m.createdAt||Date.now()).toLocaleString("ru-RU")}</div>
+              <div class="small">Песок: ${m.acceptedAt ? "идёт" : "ещё не запущен"}</div>
+            </div>
+            <span class="badge brass">${escapeHtml(badge)}</span>
+          </div>
+
+          <div class="kBtns">
+            <button class="btn primary" onclick="tap(); kSet('${escapeHtml(m.id)}','accepted')">Кухня услышала</button>
+            <button class="btn" onclick="tap(); kSet('${escapeHtml(m.id)}','in_progress')">Печь работает</button>
+            <button class="btn" onclick="tap(); kSet('${escapeHtml(m.id)}','serving')">Подача</button>
+            <button class="btn" onclick="tap(); kSet('${escapeHtml(m.id)}','finished')">Момент случился</button>
+          </div>
+        </div>
+      `;
+    });
+
+  }catch(e){
+    $("kCount").textContent = "нет связи";
+    list.innerHTML = `<div class="small">Нет связи.</div>`;
+  }
+}
+window.kSet = async function(id,status){
+  try{
+    await apiSetStatus(id,status);
+    await renderKitchen();
+  }catch(e){}
+};
+
+/* DOOR FLOW */
+async function openDoor(){
+  tap();
+  try{
+    const pos = await requestLocation();
+    const ok = isInsideFence(pos.lat, pos.lon);
+
+    if(!ok){
+      go("scr_outside");
+      showBottomTabs(false);
+      return;
+    }
+
+    setGeoAccessUntil(Date.now()+GEO_TTL_MS);
+    go("scr_gate");
+    showBottomTabs(false);
+  }catch(e){
+    if(e && e.code === 1){
+      go("scr_noPerm");
+    }else{
+      go("scr_geoErr");
+    }
+    showBottomTabs(false);
+  }
+}
+
+/* BUTTONS */
+$("sealBtn").addEventListener("click", async ()=>{
+  await playMusic();
+  $("scr_gate").classList.add("gateOut");
+  setTimeout(()=>{
+    $("scr_gate").classList.remove("gateOut");
+    go("scr_welcome");
+    showBottomTabs(false);
+  }, 560);
+});
+
+$("btnDoor").addEventListener("click", openDoor);
+$("btnDoorHelp").addEventListener("click", ()=>{
+  tap();
+  alert("Если гео не отдаётся: попробуйте открыть мини-апп в Telegram и дать доступ к геолокации в настройках iOS. Если устройство молчит — сегодня без этого.");
+});
+$("btnOutsideRetry").addEventListener("click", openDoor);
+$("btnOutsideBack").addEventListener("click", ()=>{ tap(); go("scr_door"); });
+$("btnNoPermRetry").addEventListener("click", openDoor);
+$("btnNoPermBack").addEventListener("click", ()=>{ tap(); go("scr_door"); });
+$("btnGeoErrRetry").addEventListener("click", openDoor);
+$("btnGeoErrBack").addEventListener("click", ()=>{ tap(); go("scr_door"); });
+
+$("btnStartCourse").addEventListener("click", ()=>{
+  tap();
+  qIndex = 0;
+  answers = {};
+  go("scr_course");
+  showBottomTabs(false);
+  renderQuestion();
+});
+
+$("btnGoCabinet").addEventListener("click", async ()=>{
+  tap();
+  await renderCabinet();
+  go("scr_cabinet");
+  showBottomTabs(true);
+  setActiveTab("moments");
+});
+
+$("btnQBack").addEventListener("click", ()=>{
+  tap();
+  if(qIndex<=0){ go("scr_welcome"); return; }
+  qIndex = Math.max(0, qIndex-1);
+  delete answers[String(qIndex+1)];
+  renderQuestion();
+});
+$("btnQAbort").addEventListener("click", async ()=>{
+  tap();
+  await renderCabinet();
+  go("scr_cabinet");
+  showBottomTabs(true);
+  setActiveTab("moments");
+});
+
+$("btnWaitCab").addEventListener("click", async ()=>{
+  tap();
+  await renderCabinet();
+  go("scr_cabinet");
+  showBottomTabs(true);
+  setActiveTab("moments");
+});
+
+$("btnCabToWait").addEventListener("click", ()=>{
+  tap();
+  go("scr_wait");
+  showBottomTabs(false);
+  startWaitingLoop();
+});
+$("btnCabOpenNow").addEventListener("click", async ()=>{
+  tap();
+  if(!openMomentId){ return; }
+  await window.openMoment(openMomentId);
+});
+
+$("btnOpenArchive").addEventListener("click", async ()=>{
+  tap();
+  await renderArchive();
+  go("scr_archive");
+  showBottomTabs(true);
+  setActiveTab("archive");
+});
+
+$("btnNewMoment").addEventListener("click", ()=>{
+  tap();
+  qIndex = 0;
+  answers = {};
+  go("scr_course");
+  showBottomTabs(false);
+  renderQuestion();
+});
+
+$("btnArchBack").addEventListener("click", async ()=>{
+  tap();
+  await renderCabinet();
+  go("scr_cabinet");
+  showBottomTabs(true);
+  setActiveTab("moments");
+});
+
+$("btnMomentBack").addEventListener("click", async ()=>{
+  tap();
+  await renderCabinet();
+  go("scr_cabinet");
+  showBottomTabs(true);
+  setActiveTab("moments");
+});
+
+$("btnTip").addEventListener("click", ()=>{ tap(); window.open(TIP_URL, "_blank"); });
+
+$("rateBad").addEventListener("click", async ()=>{
+  tap();
+  if(!openMomentId) return;
+  try{ await apiSetRating(openMomentId,"bad"); }catch{}
+  alert("Запомнил.");
+});
+$("rateOk").addEventListener("click", async ()=>{
+  tap();
+  if(!openMomentId) return;
+  try{ await apiSetRating(openMomentId,"ok"); }catch{}
+  alert("Запомнил.");
+});
+$("ratePerfect").addEventListener("click", async ()=>{
+  tap();
+  if(!openMomentId) return;
+  try{ await apiSetRating(openMomentId,"perfect"); }catch{}
+  alert("Запомнил.");
+});
+
+$("tabArchive").addEventListener("click", async ()=>{
+  tap();
+  await renderArchive();
+  go("scr_archive");
+  showBottomTabs(true);
+  setActiveTab("archive");
+});
+$("tabMoments").addEventListener("click", async ()=>{
+  tap();
+  await renderCabinet();
+  go("scr_cabinet");
+  showBottomTabs(true);
+  setActiveTab("moments");
+});
+
+$("btnKRefresh").addEventListener("click", ()=>{ tap(); renderKitchen(); });
+
+/* START */
+document.addEventListener("DOMContentLoaded", async ()=>{
+  try{ tg?.ready(); tg?.expand(); }catch{}
+
+  const on = localStorage.getItem(LS_MUSIC_ON)==="1";
+  setMusicBtn(on);
+
+  if(isMaster){
+    go("scr_master");
+    showBottomTabs(false);
+    await renderKitchen();
+    setInterval(renderKitchen, 3000);
+    return;
+  }
+
+  const ids = getMomentIds();
+  const geoOk = hasGeoAccessNow();
+
+  if(ids.length){
+    await renderCabinet();
+    go("scr_cabinet");
+    showBottomTabs(true);
+    setActiveTab("moments");
+    return;
+  }
+
+  if(!geoOk){
+    go("scr_door");
+    showBottomTabs(false);
+    return;
+  }
+
+  go("scr_gate");
+  showBottomTabs(false);
+});
 </script>
 </body>
 </html>
