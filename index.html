@@ -1309,14 +1309,32 @@ async function startWaitingLoop(){
   waitPoll = setInterval(tick, 2000);
 }
 
-/* CABINET / ARCHIVE / MOMENT */
 function calcAchievements(moments){
   const sessions = moments.length;
   const rated = moments.filter(m=>!!m.rating).length;
+
   return [
-    { t:"Первый момент", d:"Вы вошли.", ok: sessions>=1, mark:"I" },
-    { t:"Возвращение", d:"Вы вернулись.", ok: sessions>=2, mark:"II" },
-    { t:"Честность", d:"Вы оценили три.", ok: rated>=3, mark:"III" }
+    {
+      key: "first",
+      t: "Первый момент",
+      d: "Вы вошли.",
+      ok: sessions >= 1,
+      icon: "spark"
+    },
+    {
+      key: "return",
+      t: "Возвращение",
+      d: "Вы вернулись.",
+      ok: sessions >= 2,
+      icon: "loop"
+    },
+    {
+      key: "honest",
+      t: "Честность",
+      d: "Вы оценили три.",
+      ok: rated >= 3,
+      icon: "eye"
+    }
   ];
 }
 
@@ -1372,21 +1390,50 @@ async function renderCabinet(){
     }
 
     const ach = calcAchievements(mine);
-    ach.forEach(a=>{
-      achBox.innerHTML += `
-        <div class="medal ${a.ok ? "ok" : "lock"}">
-          <div class="head">
-            <div class="sealCoin">
-              <div class="sealMark">${escapeHtml(a.mark)}</div>
-            </div>
-            <div>
-              <div class="t">${escapeHtml(a.t)}</div>
-              <div class="d">${escapeHtml(a.d)}</div>
-            </div>
-          </div>
+    function achIcon(type){
+  if(type === "spark"){
+    return `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2 L14.2 9.1 L22 12 L14.2 14.9 L12 22 L9.8 14.9 L2 12 L9.8 9.1 Z"></path>
+      </svg>
+    `;
+  }
+  if(type === "loop"){
+    return `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7 8c1.6-2.4 4-3.6 6.6-3.6 4 0 7.2 3.2 7.2 7.2"></path>
+        <path d="M21 11l-2.2-2.2"></path>
+        <path d="M17 16c-1.6 2.4-4 3.6-6.6 3.6-4 0-7.2-3.2-7.2-7.2"></path>
+        <path d="M3 13l2.2 2.2"></path>
+      </svg>
+    `;
+  }
+  if(type === "eye"){
+    return `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M2.5 12s3.6-6.5 9.5-6.5S21.5 12 21.5 12s-3.6 6.5-9.5 6.5S2.5 12 2.5 12z"></path>
+        <circle cx="12" cy="12" r="2.6"></circle>
+      </svg>
+    `;
+  }
+  return "";
+}
+
+ach.forEach(a=>{
+  achBox.innerHTML += `
+    <div class="medal ${a.ok ? "ok" : "lock"}">
+      <div class="head">
+        <div class="sealCoin">
+          <div class="sealIcon">${achIcon(a.icon)}</div>
         </div>
-      `;
-    });
+        <div>
+          <div class="t">${escapeHtml(a.t)}</div>
+          <div class="d">${escapeHtml(a.d)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+});
 
   }catch(e){
     $("cabMeta").textContent = "Нет связи.";
