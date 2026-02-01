@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Активный сеанс | THE MENU</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-dark: #0a0604;
+            --secondary-dark: #1a120e;
+            --accent-gold: #f0d696;
+            --accent-copper: #ba7630;
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --success: #4ade80;
+            --warning: #fbbf24;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--primary-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            opacity: 0;
+            animation: bodyAppear 1s ease 0.3s forwards;
+        }
+
+        /* Анимированный фон */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-pattern {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(186, 118, 48, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(240, 214, 150, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(0, 0, 0, 0.8) 0%, transparent 50%);
+            animation: bgMove 30s infinite linear;
+        }
+
+        /* Сканирующая линия */
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            box-shadow: 0 0 10px var(--accent-gold);
+            z-index: 100;
+            opacity: 0;
+            animation: scan 4s infinite;
+        }
+
+        /* Основной контейнер */
+        .session-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Шапка сеанса */
+        .session-header {
+            text-align: center;
+            padding: 3rem 0 2rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .session-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .session-title::after {
+            content: '●';
+            position: absolute;
+            top: 50%;
+            right: -1.5rem;
+            transform: translateY(-50%);
+            color: var(--success);
+            font-size: 1rem;
+            animation: blink 2s infinite;
+        }
+
+        .session-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Информационная панель */
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-card {
+            background: rgba(10, 6, 4, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card:hover {
+            border-color: rgba(240, 214, 150, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-copper);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .card-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Прогресс-бар */
+        .progress-section {
+            margin: 2rem 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .progress-percentage {
+            font-size: 1rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .progress-bar-container {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 45%;
+            background: linear-gradient(90deg, var(--accent-copper), var(--accent-gold));
+            border-radius: 3px;
+            position: relative;
+            animation: progressFlow 3s infinite ease-in-out;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: var(--accent-gold);
+            filter: blur(5px);
+        }
+
+        /* Консоль лог */
+        .console-log {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .log-time {
+            color: var(--accent-gold);
+            margin-right: 1rem;
+        }
+
+        .log-message {
+            color: var(--text-primary);
+        }
+
+        /* Контролы */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 0.8rem 2rem;
+            background: rgba(240, 214, 150, 0.1);
+            border: 1px solid rgba(240, 214, 150, 0.3);
+            color: var(--accent-gold);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            background: rgba(240, 214, 150, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .control-btn.primary {
+            background: linear-gradient(135deg, var(--accent-copper), var(--accent-gold));
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        /* Таймер */
+        .timer-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-family: 'Monaco', 'Courier New', monospace;
+            color: var(--accent-gold);
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* Кнопка звука */
+        .sound-control {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+        }
+
+        .sound-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, var(--accent-gold), var(--accent-copper));
+            border: none;
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+        }
+
+        .sound-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(186, 118, 48, 0.4);
+        }
+
+        .sound-btn.muted {
+            background: radial-gradient(circle at 30% 30%, #666, #444);
+            color: var(--text-muted);
+        }
+
+        /* Футер */
+        .session-footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Анимации */
+        @keyframes bodyAppear {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes bgMove {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100vh; opacity: 0; }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes progressFlow {
+            0%, 100% { width: 44%; }
+            50% { width: 46%; }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .session-container {
+                padding: 1rem;
+            }
+            
+            .session-title {
+                font-size: 2rem;
+            }
+            
+            .info-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .timer-display {
+                font-size: 2.5rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .control-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="bg-pattern"></div>
+    </div>
+    <div class="scan-line"></div>
+    
+    <div class="session-container">
+        <header class="session-header">
+            <h1 class="session-title">СЕАНС АКТИВЕН</h1>
+            <p class="session-subtitle">Аудиополе инициализировано. Сбор данных в реальном времени</p>
+        </header>
+        
+        <section class="info-panel">
+            <div class="info-card">
+                <div class="card-header">
+                    <span class="card-title">Статус системы</span>
+                    <span class="card-value" id="systemStatus">ONLINE</span>
+                </div>
+                <p class="card-description">Все модули функционируют в штатном режиме. Соединение стабильно.</p>
+            </div>
+            
+            <div class="info-card">
+                <div class="card-header">
+                    <span class="card-title">Интеграция данных</span>
+                    <span class="card-value" id="dataProgress">45%</span>
+                </div>
+                <div class="progress-section">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-card">
+                <div class="card-header">
+                    <span class="card-title">Аудио параметры</span>
+                    <span class="card-value">432Hz</span>
+                </div>
+                <p class="card-description">Частота: 432 Гц | Амплитуда: 87% | Помехи: &lt;0.3%</p>
+            </div>
+            
+            <div class="info-card">
+                <div class="card-header">
+                    <span class="card-title">Идентификатор</span>
+                    <span class="card-value">MN-7441</span>
+                </div>
+                <p class="card-description">Сеанс #7441574b62bac5e | Начало: <span id="sessionStart">--:--:--</span></p>
+            </div>
+        </section>
+        
+        <section class="progress-section">
+            <div class="progress-header">
+                <span class="progress-label">Общий прогресс сеанса</span>
+                <span class="progress-percentage" id="overallProgress">25%</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" style="width: 25%"></div>
+            </div>
+        </section>
+        
+        <section class="console-log" id="consoleLog">
+            <div class="log-entry">
+                <span class="log-time">[00:00:03]</span>
+                <span class="log-message">Инициализация аудиополя... УСПЕХ</span>
+            </div>
+            <div class="log-entry">
+                <span class="log-time">[00:00:05]</span>
+                <span class="log-message">Подключение к основным модулям... УСТАНОВЛЕНО</span>
+            </div>
+            <div class="log-entry">
+                <span class="log-time">[00:00:08]</span>
+                <span class="log-message">Начало сбора данных в реальном времени</span>
+            </div>
+            <div class="log-entry">
+                <span class="log-time">[00:00:12]</span>
+                <span class="log-message">Калибровка частотных параметров... ВЫПОЛНЕНО</span>
+            </div>
+            <div class="log-entry">
+                <span class="log-time">[00:00:15]</span>
+                <span class="log-message">Система переведена в активный режим</span>
+            </div>
+        </section>
+        
+        <section class="timer-section">
+            <div class="timer-label">Оставшееся время сеанса</div>
+            <div class="timer-display" id="sessionTimer">25:00</div>
+        </section>
+        
+        <section class="controls">
+            <button class="control-btn" id="pauseBtn">
+                <i class="fas fa-pause"></i> Пауза
+            </button>
+            <button class="control-btn primary" id="extendBtn">
+                <i class="fas fa-plus"></i> Продлить на 10 мин
+            </button>
+            <button class="control-btn" id="exportBtn">
+                <i class="fas fa-download"></i> Экспорт данных
+            </button>
+            <button class="control-btn" id="terminateBtn">
+                <i class="fas fa-power-off"></i> Завершить сеанс
+            </button>
+        </section>
+        
+        <footer class="session-footer">
+            <p class="footer-text">
+                Сеанс активен. Все данные записываются в защищённый архив.<br>
+                Автоматическое завершение через <span id="autoTerminate">25:00</span>
+            </p>
+        </footer>
+    </div>
+    
+    <div class="sound-control">
+        <button class="sound-btn" id="soundToggle">
+            <i class="fas fa-volume-up"></i>
+        </button>
+    </div>
+    
+    <audio id="backgroundMusic" autoplay loop>
+        <source src="./7441574b62bac5e.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        // Элементы
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const soundToggle = document.getElementById('soundToggle');
+        const sessionTimer = document.getElementById('sessionTimer');
+        const autoTerminate = document.getElementById('autoTerminate');
+        const sessionStart = document.getElementById('sessionStart');
+        const consoleLog = document.getElementById('consoleLog');
+        const systemStatus = document.getElementById('systemStatus');
+        const dataProgress = document.getElementById('dataProgress');
+        const overallProgress = document.getElementById('overallProgress');
+        
+        // Конфигурация
+        const SESSION_DURATION = 25 * 60; // 25 минут в секундах
+        const VOLUME = 0.30;
+        
+        // Состояние
+        let sessionActive = true;
+        let timeRemaining = SESSION_DURATION;
+        let startTime = new Date();
+        
+        // Инициализация
+        function initSession() {
+            // Устанавливаем громкость
+            backgroundMusic.volume = VOLUME;
+            
+            // Устанавливаем время начала
+            const now = new Date();
+            sessionStart.textContent = now.toLocaleTimeString('ru-RU');
+            
+            // Запускаем таймер
+            updateTimer();
+            setInterval(updateTimer, 1000);
+            
+            // Симулируем обновление данных
+            simulateDataUpdates();
+            
+            // Добавляем логи в консоль
+            addConsoleLogs();
+        }
+        
+        // Обновление таймера
+        function updateTimer() {
+            if (!sessionActive) return;
+            
+            timeRemaining--;
+            
+            if (timeRemaining <= 0) {
+                timeRemaining = 0;
+                sessionActive = false;
+                endSession();
+            }
+            
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            
+            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            sessionTimer.textContent = timeString;
+            autoTerminate.textContent = timeString;
+        }
+        
+        // Симуляция обновления данных
+        function simulateDataUpdates() {
+            setInterval(() => {
+                // Случайное обновление прогресса данных
+                const currentProgress = parseInt(dataProgress.textContent);
+                const newProgress = Math.min(100, currentProgress + Math.random() * 2);
+                dataProgress.textContent = Math.round(newProgress) + '%';
+                
+                // Общий прогресс сеанса
+                const sessionProgress = 100 - Math.round((timeRemaining / SESSION_DURATION) * 100);
+                overallProgress.textContent = sessionProgress + '%';
+                
+                // Анимация прогресс-бара
+                document.querySelector('.progress-bar').style.width = newProgress + '%';
+                document.querySelectorAll('.progress-bar')[1].style.width = sessionProgress + '%';
+                
+                // Мерцание статуса
+                if (Math.random() > 0.8) {
+                    systemStatus.style.opacity = '0.7';
+                    setTimeout(() => {
+                        systemStatus.style.opacity = '1';
+                    }, 200);
+                }
+                
+            }, 2000);
+        }
+        
+        // Добавление логов в консоль
+        function addConsoleLogs() {
+            const logMessages = [
+                "[00:01:30] Синхронизация временных меток... ВЫПОЛНЕНО",
+                "[00:02:15] Оптимизация частотного диапазона... АКТИВНО",
+                "[00:03:45] Проверка целостности данных... ПРОЙДЕНО",
+                "[00:05:20] Калибровка аудио модуля... ЗАВЕРШЕНО",
+                "[00:07:10] Мониторинг помех... В НОРМЕ",
+                "[00:09:30] Резервное копирование... СОЗДАНО",
+                "[00:12:15] Анализ спектра... В ПРОЦЕССЕ",
+                "[00:15:40] Проверка соединения... СТАБИЛЬНО",
+                "[00:18:25] Обновление параметров... ВЫПОЛНЕНО",
+                "[00:21:10] Финальная проверка систем... ПРОЙДЕНА"
+            ];
+            
+            let messageIndex = 0;
+            
+            setInterval(() => {
+                if (messageIndex < logMessages.length && sessionActive) {
+                    const logEntry = document.createElement('div');
+                    logEntry.className = 'log-entry';
+                    logEntry.innerHTML = `<span class="log-time">${logMessages[messageIndex].split(']')[0]}]</span>
+                                          <span class="log-message">${logMessages[messageIndex].split('] ')[1]}</span>`;
+                    
+                    consoleLog.appendChild(logEntry);
+                    consoleLog.scrollTop = consoleLog.scrollHeight;
+                    messageIndex++;
+                }
+            }, 10000); // Новое сообщение каждые 10 секунд
+        }
+        
+        // Завершение сеанса
+        function endSession() {
+            systemStatus.textContent = 'COMPLETED';
+            systemStatus.style.color = 'var(--success)';
+            
+            const completedLog = document.createElement('div');
+            completedLog.className = 'log-entry';
+            completedLog.innerHTML = `<span class="log-time">[${new Date().toLocaleTimeString('ru-RU', {hour12: false})}]</span>
+                                      <span class="log-message" style="color: var(--success)">Сеанс завершён. Все данные сохранены.</span>`;
+            
+            consoleLog.appendChild(completedLog);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+            
+            // Вибрация
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+        }
+        
+        // Управление звуком
+        soundToggle.addEventListener('click', () => {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+                soundToggle.classList.remove('muted');
+                soundToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+            } else {
+                backgroundMusic.pause();
+                soundToggle.classList.add('muted');
+                soundToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+        });
+        
+        // Управление кнопками
+        document.getElementById('pauseBtn').addEventListener('click', () => {
+            sessionActive = !sessionActive;
+            document.getElementById('pauseBtn').innerHTML = sessionActive ? 
+                '<i class="fas fa-pause"></i> Пауза' : 
+                '<i class="fas fa-play"></i> Продолжить';
+        });
+        
+        document.getElementById('extendBtn').addEventListener('click', () => {
+            timeRemaining += 600; // +10 минут
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            sessionTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span class="log-time">[${new Date().toLocaleTimeString('ru-RU', {hour12: false})}]</span>
+                                  <span class="log-message">Сеанс продлён на 10 минут</span>`;
+            
+            consoleLog.appendChild(logEntry);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        });
+        
+        document.getElementById('terminateBtn').addEventListener('click', () => {
+            if (confirm('Завершить сеанс досрочно? Все несохранённые данные будут потеряны.')) {
+                sessionActive = false;
+                endSession();
+                sessionTimer.textContent = '00:00';
+            }
+        });
+        
+        // Запуск сеанса при загрузке
+        window.addEventListener('load', () => {
+            initSession();
+            
+            // Плавное появление
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
